@@ -1,0 +1,19 @@
+# ─── Frontend ───────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/dev-dist/
+frontend/.env*.local
+frontend/.cache/
+frontend/coverage/
+
+# ─── Backend ────────────────────────────
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.ruff_cache
+backend/*.pyc
+backend/.venv/
+backend/.env
+backend/*.egg-info/
+backend/dist/
+backend/.pytest_cache/
+backend/instance/

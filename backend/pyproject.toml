@@ -1,0 +1,21 @@
+[project]
+name = "backend"
+version = "0.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.18.4",
+    "fastapi[standard]>=0.138.2",
+    "pikepdf>=10.7.0",
+    "pymupdf>=1.27.2.3",
+    "scalar-fastapi>=1.8.2",
+    "sqlalchemy>=2.0.51",
+    "xxhash>=3.7.0",
+]
+
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]
