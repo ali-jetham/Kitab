@@ -1,6 +1,6 @@
-import Status from "./components/Status";
-import styles from "./App.module.css";
 import { useLocation } from "@solidjs/router";
+import styles from "./App.module.css";
+import Status from "./components/Status";
 import View from "./components/View";
 
 export default function AppShell() {

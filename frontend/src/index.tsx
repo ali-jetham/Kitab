@@ -2,12 +2,12 @@
 import { render } from "solid-js/web";
 import "solid-devtools";
 
-import AppShell from "./app/AppShell";
 import { Route, Router } from "@solidjs/router";
+import AppShell from "./app/AppShell";
 import "@pdfslick/solid/dist/pdf_viewer.css";
 import "pdfjs-dist/web/pdf_viewer.css";
-import Library from "./features/library/Library";
 import App from "./app/App";
+import Library from "./features/library/Library";
 import "./core/commands";
 
 const root = document.getElementById("root");

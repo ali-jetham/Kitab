@@ -1,6 +1,6 @@
 import { Match, Switch } from "solid-js/web";
-import styles from "./View.module.css";
 import PDFViewer from "../../features/viewers/components/PDFViewer";
+import styles from "./View.module.css";
 
 type ViewProps = {
 	id: string;

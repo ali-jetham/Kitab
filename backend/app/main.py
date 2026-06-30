@@ -47,8 +47,3 @@ async def scalar_html():
         # Avoid CORS issues (optional)
         scalar_proxy_url="https://proxy.scalar.com",
     )
-
-
-# @app.get("/")
-# async def serve_root():
-#     return FileResponse("static/index.html")

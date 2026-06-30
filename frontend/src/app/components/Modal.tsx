@@ -1,6 +1,18 @@
-import { createSignal, createEffect, For, on, onCleanup, onMount } from "solid-js";
+import {
+	createEffect,
+	createSignal,
+	For,
+	on,
+	onCleanup,
+	onMount,
+} from "solid-js";
+import {
+	COMMANDS,
+	type CommandId,
+	executeCommand,
+	registerCommand,
+} from "../../core/keybinds";
 import styles from "./Modal.module.css";
-import { COMMANDS, executeCommand, registerCommand, type CommandId } from "../../core/keybinds";
 
 export default function Modal() {
 	const [search, setSearch] = createSignal("");
@@ -23,10 +35,14 @@ export default function Modal() {
 	};
 
 	const unregisterModalNext = registerCommand("modal.next", () => {
-		setCurrentIndex((prev) => (prev + 1 >= modalCommands.length ? 0 : prev + 1));
+		setCurrentIndex((prev) =>
+			prev + 1 >= modalCommands.length ? 0 : prev + 1,
+		);
 	});
 	const unregisterModalPrev = registerCommand("modal.prev", () => {
-		setCurrentIndex((prev) => (prev - 1 < 0 ? modalCommands.length - 1 : prev - 1));
+		setCurrentIndex((prev) =>
+			prev - 1 < 0 ? modalCommands.length - 1 : prev - 1,
+		);
 	});
 	const unregisterModalSelect = registerCommand("modal.select", () => {
 		const command = modalCommands[currentIndex()];
@@ -68,7 +84,11 @@ export default function Modal() {
 					<ul ref={modalOptionsListRef}>
 						<For each={modalCommands}>
 							{(command, index) => (
-								<li class={index() === currentIndex() ? styles.modalItemActive : ""}>
+								<li
+									class={
+										index() === currentIndex() ? styles.modalItemActive : ""
+									}
+								>
 									<button type="button" onClick={() => runCommand(command)}>
 										{command.label}
 									</button>

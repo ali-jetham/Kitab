@@ -1,6 +1,6 @@
+import { onMount } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
 import { viewerApi } from "../features/viewers/viewerApi";
-import { onMount } from "solid-js";
 export type PDFRect = [x1: number, y1: number, x2: number, y2: number];
 
 export type Annotation = {

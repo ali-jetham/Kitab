@@ -1,7 +1,7 @@
 import { useSearchParams } from "@solidjs/router";
-import { createResource, For, Show, Suspense, type JSX } from "solid-js";
-import styles from "./Library.module.css";
+import { createResource, For, type JSX, Show, Suspense } from "solid-js";
 import LibraryItem from "./components/LibraryItem";
+import styles from "./Library.module.css";
 import { libraryApi as api } from "./libraryApi";
 
 export default function Library(): JSX.Element {
@@ -10,13 +10,18 @@ export default function Library(): JSX.Element {
 
 	const filteredBooks = () =>
 		books()?.filter((book: any) =>
-			book.title?.toLowerCase().includes((searchParams.q as string)?.toLowerCase() ?? ""),
+			book.title
+				?.toLowerCase()
+				.includes((searchParams.q as string)?.toLowerCase() ?? ""),
 		);
 
 	return (
 		<div class={styles.library}>
 			<div class={styles.headerBar}>
-				<input type="text" onInput={(e) => setSearchParams({ q: e.target.value })} />
+				<input
+					type="text"
+					onInput={(e) => setSearchParams({ q: e.target.value })}
+				/>
 
 				{/* <div>
 					<button type="button">+</button>

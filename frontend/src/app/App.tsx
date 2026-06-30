@@ -1,8 +1,8 @@
-import { Portal, Show } from "solid-js/web";
-import Modal from "./components/Modal";
-import { createEffect, createSignal, type JSX, onCleanup, onMount } from "solid-js";
-import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
 import type { RouteSectionProps } from "@solidjs/router";
+import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { Portal, Show } from "solid-js/web";
+import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
+import Modal from "./components/Modal";
 
 export default function App(props: RouteSectionProps) {
 	const [isModalVisible, setModalVisible] = createSignal(false);
@@ -15,7 +15,9 @@ export default function App(props: RouteSectionProps) {
 	});
 
 	createEffect(() => {
-		setActiveContexts(isModalVisible() ? ["modal", "viewer", "global"] : ["viewer", "global"]);
+		setActiveContexts(
+			isModalVisible() ? ["modal", "viewer", "global"] : ["viewer", "global"],
+		);
 	});
 
 	onMount(() => {

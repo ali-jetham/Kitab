@@ -9,7 +9,7 @@ export type Command = {
 };
 
 export const COMMANDS = [
-	{ id: "library.refreshCovers", label: "Library: Refersh Covers", hidden: false },
+	{id: "library.refreshCovers",label: "Library: Refersh Covers",hidden: false},
 	{ id: "library.scan", label: "Library: Scan", hidden: false },
 	{ id: "ui.modal.toggle", label: "Toggle Command Palette", hidden: true },
 	{ id: "ui.modal.close", label: "Close Command Palette", hidden: true },
@@ -27,7 +27,11 @@ export const COMMANDS = [
 	{ id: "pdf.gotoFirstPage", label: "Go to First Page", hidden: false },
 	{ id: "pdf.gotoLastPage", label: "Go to Last Page", hidden: false },
 	{ id: "pdf.rotateClockwise", label: "Rotate Clockwise", hidden: false },
-	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false },
+	{
+		id: "pdf.rotateAntiClockwise",
+		label: "Rotate Counter-Clockwise",
+		hidden: false,
+	},
 ] as const;
 
 export type CommandId = (typeof COMMANDS)[number]["id"];
@@ -80,7 +84,10 @@ export function setActiveContexts(contexts: Context[]) {
 	resetSequenceState();
 }
 
-export function registerCommand(command: CommandId, handler: CommandHandler): () => void {
+export function registerCommand(
+	command: CommandId,
+	handler: CommandHandler,
+): () => void {
 	commandRegistry.set(command, handler);
 
 	return function unregister() {
@@ -92,7 +99,10 @@ export function registerCommand(command: CommandId, handler: CommandHandler): ()
 }
 
 // Run a command directly by id, independent of any key (used by the command palette).
-export function executeCommand(command: CommandId, context: CommandContext = {}): boolean {
+export function executeCommand(
+	command: CommandId,
+	context: CommandContext = {},
+): boolean {
 	const handler = commandRegistry.get(command);
 	if (!handler) return false;
 
@@ -142,7 +152,9 @@ function dispatchBinding(
 	count?: number,
 ): boolean {
 	for (const context of activeContexts) {
-		const binding = keymap.find((value) => value.context === context && value.key === key);
+		const binding = keymap.find(
+			(value) => value.context === context && value.key === key,
+		);
 
 		if (!binding) continue;
 		if (isTyping && !binding.isInputAllowed) continue;
@@ -165,7 +177,11 @@ function isDigitKey(key: string): boolean {
 	return key.length === 1 && key >= "0" && key <= "9";
 }
 
-function dispatchSequence(event: KeyboardEvent, key: string, isTyping: boolean): boolean {
+function dispatchSequence(
+	event: KeyboardEvent,
+	key: string,
+	isTyping: boolean,
+): boolean {
 	const isViewerActive = activeContexts.includes("viewer");
 	if (!isViewerActive || isTyping || key.includes("+")) {
 		if (pendingCount !== "" || pendingSequence !== "") {
@@ -211,7 +227,8 @@ function dispatchSequence(event: KeyboardEvent, key: string, isTyping: boolean):
 	}
 
 	if (pendingSequence === "g" && key === "g") {
-		const count = pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
+		const count =
+			pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
 		resetSequenceState();
 		return dispatchBinding("gg", event, isTyping, count);
 	}

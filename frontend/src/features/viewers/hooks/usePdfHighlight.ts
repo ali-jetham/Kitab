@@ -1,13 +1,17 @@
 import type { PDFSlickState } from "@pdfslick/solid";
 import { type Accessor, onCleanup, onMount } from "solid-js";
 import {
-	createBookStore,
-	type PDFRect,
 	type Annotation,
+	createBookStore,
 	type NewAnnotation,
+	type PDFRect,
 } from "../../../stores/bookStore";
 
-export function usePdfHighlight(pdfStore: PDFSlickState, tick: Accessor<number>, id: string) {
+export function usePdfHighlight(
+	pdfStore: PDFSlickState,
+	tick: Accessor<number>,
+	id: string,
+) {
 	const { store, addAnnotation } = createBookStore(id);
 
 	const highlightRects = () => {
@@ -16,12 +20,20 @@ export function usePdfHighlight(pdfStore: PDFSlickState, tick: Accessor<number>,
 			const page = pdfStore.pdfSlick?.getPageView(annotation.page - 1);
 			if (!page?.viewport || !page.canvas) return [];
 
-			const canvasRect = (page?.canvas as HTMLCanvasElement).getBoundingClientRect();
+			const canvasRect = (
+				page?.canvas as HTMLCanvasElement
+			).getBoundingClientRect();
 
 			return annotation.rects
 				.map((rect: PDFRect) => {
-					const [x1, y1] = page.viewport.convertToViewportPoint(rect[0], rect[1]);
-					const [x2, y2] = page.viewport.convertToViewportPoint(rect[2], rect[3]);
+					const [x1, y1] = page.viewport.convertToViewportPoint(
+						rect[0],
+						rect[1],
+					);
+					const [x2, y2] = page.viewport.convertToViewportPoint(
+						rect[2],
+						rect[3],
+					);
 
 					return {
 						left: canvasRect.left + Math.min(x1, x2),
@@ -61,7 +73,9 @@ export function usePdfHighlight(pdfStore: PDFSlickState, tick: Accessor<number>,
 			return;
 		}
 
-		const canvasRect = (page.canvas as HTMLCanvasElement).getBoundingClientRect();
+		const canvasRect = (
+			page.canvas as HTMLCanvasElement
+		).getBoundingClientRect();
 
 		const pdfRects: Array<PDFRect> = mergedRects.map((rect) => {
 			const [x1, y1] = page.viewport.convertToPdfPoint(

@@ -1,8 +1,8 @@
+import { usePDFSlick } from "@pdfslick/solid";
+import { debounce, throttle } from "@solid-primitives/scheduled";
 import { createEffect, createSignal, For, onCleanup, onMount } from "solid-js";
 import { Portal } from "solid-js/web";
 import pdf from "../../../assets/bgc_a4_c_1.pdf";
-import { debounce, throttle } from "@solid-primitives/scheduled";
-import { usePDFSlick } from "@pdfslick/solid";
 import { registerCommand } from "../../../core/keybinds";
 import { usePdfHighlight } from "../hooks/usePdfHighlight";
 
@@ -15,7 +15,11 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	const [tick, setTick] = createSignal(0);
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
-		getDocumentParams: { rangeChunkSize: 65536, disableAutoFetch: true, disableStream: false },
+		getDocumentParams: {
+			rangeChunkSize: 65536,
+			disableAutoFetch: true,
+			disableStream: false,
+		},
 	});
 	const { highlightRects } = usePdfHighlight(pdfSlickStore, tick, props.id);
 
@@ -45,16 +49,19 @@ export default function PDFViewer(props: PDFViewerProps) {
 		if (!pdfSlickStore.pdfSlick) return;
 		pdfSlickStore.pdfSlick.viewer.previousPage();
 	});
-	const unregisterGotoFirstPage = registerCommand("pdf.gotoFirstPage", ({ count }) => {
-		if (!pdfSlickStore.pdfSlick) return;
-		const totalPages = pdfSlickStore.pdfSlick.document?.numPages;
-		if (!totalPages) return;
+	const unregisterGotoFirstPage = registerCommand(
+		"pdf.gotoFirstPage",
+		({ count }) => {
+			if (!pdfSlickStore.pdfSlick) return;
+			const totalPages = pdfSlickStore.pdfSlick.document?.numPages;
+			if (!totalPages) return;
 
-		const targetPage = count ?? 1;
-		if (targetPage < 1 || targetPage > totalPages) return;
+			const targetPage = count ?? 1;
+			if (targetPage < 1 || targetPage > totalPages) return;
 
-		pdfSlickStore.pdfSlick.viewer.currentPageNumber = targetPage;
-	});
+			pdfSlickStore.pdfSlick.viewer.currentPageNumber = targetPage;
+		},
+	);
 	const unregisterGotoLastPage = registerCommand("pdf.gotoLastPage", () => {
 		if (!pdfSlickStore.pdfSlick) return;
 		const lastPage = pdfSlickStore.pdfSlick.document?.numPages;
@@ -62,14 +69,20 @@ export default function PDFViewer(props: PDFViewerProps) {
 			pdfSlickStore.pdfSlick.viewer.currentPageNumber = lastPage;
 		}
 	});
-	const unregisterRotateClockwise = registerCommand("pdf.rotateClockwise", () => {
-		if (!pdfSlickStore.pdfSlick) return;
-		pdfSlickStore.pdfSlick.setRotation(pdfSlickStore.pagesRotation + 90);
-	});
-	const unregisterRotateAntiClockwise = registerCommand("pdf.rotateAntiClockwise", () => {
-		if (!pdfSlickStore.pdfSlick) return;
-		pdfSlickStore.pdfSlick.setRotation(pdfSlickStore.pagesRotation - 90);
-	});
+	const unregisterRotateClockwise = registerCommand(
+		"pdf.rotateClockwise",
+		() => {
+			if (!pdfSlickStore.pdfSlick) return;
+			pdfSlickStore.pdfSlick.setRotation(pdfSlickStore.pagesRotation + 90);
+		},
+	);
+	const unregisterRotateAntiClockwise = registerCommand(
+		"pdf.rotateAntiClockwise",
+		() => {
+			if (!pdfSlickStore.pdfSlick) return;
+			pdfSlickStore.pdfSlick.setRotation(pdfSlickStore.pagesRotation - 90);
+		},
+	);
 	const unregisterScrollDown = registerCommand("pdf.scrollDown", () => {
 		const el = pdfSlickStore.pdfSlick?.viewer.container;
 		el?.scrollBy({ top: 100, behavior: "instant" });

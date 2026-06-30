@@ -1,6 +1,6 @@
+import { useNavigate } from "@solidjs/router";
 import type { JSX } from "solid-js";
 import styles from "./LibraryItem.module.css";
-import { useNavigate } from "@solidjs/router";
 
 type LibraryItemProps = {
 	id: string;

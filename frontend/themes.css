@@ -1,12 +1,24 @@
 :root {
-	--border-color: color-mix(in srgb, currentColor var(--border-opacity), transparent);
+	--border-color: color-mix(
+		in srgb,
+		currentColor var(--border-opacity),
+		transparent
+	);
 	--border-opacity: 15%;
 
 	--view-hover-color: color-mix(in srgb, currentColor 4%, transparent);
 	--view-active-color: color-mix(in srgb, currentColor 8%, transparent);
 	--view_selected_color: color-mix(in srgb, currentColor 10%, transparent);
-	--view_selected_hover_color: color-mix(in srgb, currentColor 13%, transparent);
-	--view_selected_active_color: color-mix(in srgb, currentColor 17%, transparent);
+	--view_selected_hover_color: color-mix(
+		in srgb,
+		currentColor 13%,
+		transparent
+	);
+	--view_selected_active_color: color-mix(
+		in srgb,
+		currentColor 17%,
+		transparent
+	);
 }
 
 html[data-theme="light"] {
