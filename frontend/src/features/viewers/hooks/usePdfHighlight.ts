@@ -47,7 +47,7 @@ export function usePdfHighlight(
 		return rects;
 	};
 
-	function handleMouseUp() {
+	function handlePointerUp() {
 		const selection = document.getSelection();
 		if (!selection || selection.isCollapsed) {
 			return;
@@ -101,11 +101,11 @@ export function usePdfHighlight(
 	}
 
 	onMount(() => {
-		document.addEventListener("mouseup", handleMouseUp);
+		document.addEventListener("pointerup", handlePointerUp);
 	});
 
 	onCleanup(() => {
-		document.removeEventListener("mouseup", handleMouseUp);
+		document.removeEventListener("pointerup", handlePointerUp);
 	});
 
 	return {
