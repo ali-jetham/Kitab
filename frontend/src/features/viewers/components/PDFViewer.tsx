@@ -1,9 +1,8 @@
 import { usePDFSlick } from "@pdfslick/solid";
-import { debounce, throttle } from "@solid-primitives/scheduled";
-import { createEffect, createSignal, For, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, For, onCleanup } from "solid-js";
 import { Portal } from "solid-js/web";
-import pdf from "../../../assets/bgc_a4_c_1.pdf";
 import { registerCommand } from "../../../core/keybinds";
+import { usePdfGestures } from "../hooks/usePdfGestures";
 import { usePdfHighlight } from "../hooks/usePdfHighlight";
 
 type PDFViewerProps = {
@@ -15,6 +14,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	const [tick, setTick] = createSignal(0);
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
+		scaleValue: "page-fit",
 		getDocumentParams: {
 			rangeChunkSize: 65536,
 			disableAutoFetch: true,
@@ -22,8 +22,9 @@ export default function PDFViewer(props: PDFViewerProps) {
 		},
 	});
 	const { highlightRects } = usePdfHighlight(pdfSlickStore, tick, props.id);
-
 	let pdfSlickContainerRef: HTMLDivElement | undefined;
+
+	usePdfGestures(pdfSlickStore, setTick);
 
 	const unregisterFitHeight = registerCommand("pdf.fitHeight", () => {
 		if (!pdfSlickStore.pdfSlick) return;
@@ -92,19 +93,17 @@ export default function PDFViewer(props: PDFViewerProps) {
 		el?.scrollBy({ top: -100, behavior: "instant" });
 	});
 
-	const debouncedTick = debounce(() => setTick((t) => t + 1), 100);
+	// const debouncedTick = debounce(() => setTick((t) => t + 1), 100);
+	function handlePageRendered() {
+		setTick((t) => t + 1);
+	}
 
 	createEffect(() => {
 		if (!pdfSlickStore.pdfSlick) return;
-		pdfSlickStore.pdfSlick.eventBus.on("pagerendered", debouncedTick);
+		pdfSlickStore.pdfSlick.eventBus.on("pagerendered", handlePageRendered);
 		onCleanup(() => {
-			pdfSlickStore.pdfSlick?.eventBus.off("pagerendered", debouncedTick);
+			pdfSlickStore.pdfSlick?.eventBus.off("pagerendered", handlePageRendered);
 		});
-	});
-
-	const handleScroll = throttle(() => setTick((t) => t + 1), 16);
-	onMount(() => {
-		document.addEventListener("scroll", handleScroll, true);
 	});
 
 	onCleanup(() => {
@@ -120,7 +119,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 		unregisterRotateAntiClockwise();
 		unregisterScrollDown();
 		unregisterScrollUp();
-		document.removeEventListener("scroll", handleScroll);
 	});
 
 	return (
