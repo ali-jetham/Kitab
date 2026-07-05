@@ -1,18 +1,11 @@
 import type { PDFSlickState } from "@pdfslick/core";
-import { onCleanup, onMount, type Setter } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 
-export function usePdfGestures(
-	pdfSlickStore: PDFSlickState,
-	setTick: Setter<number>,
-) {
+export function usePdfGestures(pdfSlickStore: PDFSlickState) {
 	let initialDistance: number | null = null;
 	let initialScale = pdfSlickStore.scale;
 	let newScale = pdfSlickStore.scale;
 	let midpoint: number[] | null = null;
-
-	function handleScroll() {
-		setTick((t) => t + 1);
-	}
 
 	function handleTouchStart(e: TouchEvent) {
 		if (e.touches.length === 2) {
@@ -30,10 +23,7 @@ export function usePdfGestures(
 			const touch2 = e.touches[1];
 			const currentDistance = getDistanceBetweenTouches(e);
 			const zoomFactor = currentDistance / initialDistance;
-			midpoint = [
-				(touch1.clientX + touch2.clientX) / 2,
-				(touch1.clientY + touch2.clientY) / 2,
-			];
+			midpoint = [(touch1.clientX + touch2.clientX) / 2, (touch1.clientY + touch2.clientY) / 2];
 			newScale = initialScale * zoomFactor;
 
 			const viewer = document.getElementById("viewer");
@@ -84,14 +74,12 @@ export function usePdfGestures(
 	}
 
 	onMount(() => {
-		document.addEventListener("scroll", handleScroll, true);
 		document.addEventListener("touchstart", handleTouchStart, { passive: false });
 		document.addEventListener("touchmove", handleTouchMove, { passive: false });
 		document.addEventListener("touchend", handleTouchEnd);
 	});
 
 	onCleanup(() => {
-		document.removeEventListener("scroll", handleScroll, true);
 		document.removeEventListener("touchstart", handleTouchStart);
 		document.removeEventListener("touchmove", handleTouchMove);
 		document.removeEventListener("touchend", handleTouchEnd);

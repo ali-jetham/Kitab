@@ -1,52 +1,67 @@
 import type { PDFSlickState } from "@pdfslick/solid";
-import { type Accessor, onCleanup, onMount } from "solid-js";
-import {
-	type Annotation,
-	createBookStore,
-	type NewAnnotation,
-	type PDFRect,
-} from "../../../stores/bookStore";
+import type { PDFPageView } from "pdfjs-dist/web/pdf_viewer.mjs";
+import { onCleanup, onMount } from "solid-js";
+import { createBookStore, type NewAnnotation, type PDFRect } from "../../../stores/bookStore";
+import styles from "../components/PDFViewer.module.css";
 
-export function usePdfHighlight(
-	pdfStore: PDFSlickState,
-	tick: Accessor<number>,
-	id: string,
-) {
+export function usePdfHighlight(pdfStore: PDFSlickState, id: string) {
 	const { store, addAnnotation } = createBookStore(id);
 
-	const highlightRects = () => {
-		tick();
-		const rects = store.annotations.flatMap((annotation: Annotation) => {
-			const page = pdfStore.pdfSlick?.getPageView(annotation.page - 1);
-			if (!page?.viewport || !page.canvas) return [];
+	function getHighlightRectsByPage(pageNumber: number): Array<PDFRect[]> {
+		const highlights = store.annotations
+			.filter((ann) => ann.page === pageNumber)
+			.map((ann) => ann.rects);
+		return highlights;
+	}
 
-			const canvasRect = (
-				page?.canvas as HTMLCanvasElement
-			).getBoundingClientRect();
+	function pdfRectToSvgRect(
+		[x1, y1, x2, y2]: PDFRect,
+		pageHeight: number,
+	): { x: number; y: number; width: number; height: number } {
+		return {
+			x: Math.min(x1, x2),
+			y: pageHeight - Math.max(y1, y2),
+			width: Math.abs(x2 - x1),
+			height: Math.abs(y2 - y1),
+		};
+	}
 
-			return annotation.rects
-				.map((rect: PDFRect) => {
-					const [x1, y1] = page.viewport.convertToViewportPoint(
-						rect[0],
-						rect[1],
-					);
-					const [x2, y2] = page.viewport.convertToViewportPoint(
-						rect[2],
-						rect[3],
-					);
+	function makeHighlight(ann: NewAnnotation) {}
 
-					return {
-						left: canvasRect.left + Math.min(x1, x2),
-						top: canvasRect.top + Math.min(y1, y2),
-						width: Math.abs(x2 - x1),
-						height: Math.abs(y2 - y1),
-					};
-				})
-				.filter((rect) => rect.width > 0 && rect.height > 0);
-		});
-		return rects;
-	};
+	function renderHighlights(pageNumber: number, pageHeight: number, svg: SVGSVGElement) {
+		const pdfRects: Array<PDFRect[]> = getHighlightRectsByPage(pageNumber);
 
+		for (const rects of pdfRects) {
+			for (const rect of rects) {
+				const { x, y, width, height } = pdfRectToSvgRect(rect, pageHeight);
+				const svgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+				svgRect.setAttribute("x", String(x));
+				svgRect.setAttribute("y", String(y));
+				svgRect.setAttribute("width", String(width));
+				svgRect.setAttribute("height", String(height));
+				svgRect.setAttribute("fill", "yellow"); // TODO: use color from ann
+				svgRect.setAttribute("fill-opacity", "0.3");
+				svgRect.classList.add("highlight");
+				svg.appendChild(svgRect);
+			}
+		}
+	}
+
+	function addHighlightLayer(pdfPageView: PDFPageView, pageNumber: number) {
+		const svgExists = pdfPageView?.div.querySelector('[data-highlight-layer="true"]');
+		if (svgExists) return;
+
+		const { width, height } = pdfPageView.pdfPage.getViewport({ scale: 1 });
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+		svg.setAttribute("preserveAspectRatio", "none");
+		svg.setAttribute("data-highlight-layer", "true");
+		svg.classList.add(styles.highlightLayer);
+		pdfPageView.div.appendChild(svg);
+		renderHighlights(pageNumber, height, svg);
+	}
+
+	// TODO: way too big, make smaller and easier to understand
 	function handlePointerUp() {
 		const selection = document.getSelection();
 		if (!selection || selection.isCollapsed) {
@@ -73,11 +88,10 @@ export function usePdfHighlight(
 			return;
 		}
 
-		const canvasRect = (
-			page.canvas as HTMLCanvasElement
-		).getBoundingClientRect();
+		const canvasRect = (page.canvas as HTMLCanvasElement).getBoundingClientRect();
 
 		const pdfRects: Array<PDFRect> = mergedRects.map((rect) => {
+			// TODO: rename to llx, lly, urx, ury
 			const [x1, y1] = page.viewport.convertToPdfPoint(
 				rect.left - canvasRect.left,
 				rect.top - canvasRect.top,
@@ -98,6 +112,7 @@ export function usePdfHighlight(
 			rects: pdfRects,
 		};
 		addAnnotation(annotation);
+		makeHighlight(annotation);
 	}
 
 	onMount(() => {
@@ -108,9 +123,7 @@ export function usePdfHighlight(
 		document.removeEventListener("pointerup", handlePointerUp);
 	});
 
-	return {
-		highlightRects,
-	};
+	return { getHighlightsByPage: getHighlightRectsByPage, createHighlightLayer: addHighlightLayer };
 }
 
 function mergeSelectionRects(selectionRects: DOMRect[]): DOMRect[] {
@@ -140,6 +153,5 @@ function mergeSelectionRects(selectionRects: DOMRect[]): DOMRect[] {
 
 		i = j;
 	}
-
 	return merged;
 }

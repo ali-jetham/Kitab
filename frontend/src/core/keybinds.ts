@@ -9,7 +9,7 @@ export type Command = {
 };
 
 export const COMMANDS = [
-	{id: "library.refreshCovers",label: "Library: Refersh Covers",hidden: false},
+	{ id: "library.refreshCovers", label: "Library: Refersh Covers", hidden: false },
 	{ id: "library.scan", label: "Library: Scan", hidden: false },
 	{ id: "ui.modal.toggle", label: "Toggle Command Palette", hidden: true },
 	{ id: "ui.modal.close", label: "Close Command Palette", hidden: true },
@@ -238,8 +238,6 @@ function dispatchSequence(
 }
 
 export function dispatch(event: KeyboardEvent): boolean {
-	console.log(event.key);
-
 	const key = toKey(event);
 	if (!key) return false;
 
