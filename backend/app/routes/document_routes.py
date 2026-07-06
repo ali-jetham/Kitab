@@ -5,24 +5,17 @@ from fastapi.responses import FileResponse
 
 from app.core.config import settings
 from app.core.dependencies import get_document_service
+from app.schemas.document import DocumentDTO
 from app.services.document_service import DocumentService
 
 router = APIRouter(prefix="/api/docs", tags=["docs"])
 
 
 @router.get("/")
-async def get_docs(service: DocumentService = Depends(get_document_service)):
-    return [
-        {
-            "id": doc.id,
-            "title": doc.title,
-            "author": doc.author,
-            "file_name": doc.file_name,
-            "cover": f"api/docs/{doc.id}/cover",
-            "created_at": doc.created_at,
-        }
-        for doc in service.get_docs()
-    ]
+async def get_docs(
+    service: DocumentService = Depends(get_document_service),
+) -> list[DocumentDTO]:
+    return [DocumentDTO.model_validate(doc) for doc in service.get_docs()]
 
 
 @router.get("/scan")

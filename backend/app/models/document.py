@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import JSON, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -18,4 +18,7 @@ class Document(Base):
     cover: Mapped[str] = mapped_column(String())
     annotations: Mapped[list["Annotation"]] = relationship()
     created_at: Mapped[datetime] = mapped_column(DateTime())
-    created_at: Mapped[datetime] = mapped_column(DateTime())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(),
+        default=lambda: datetime.now(UTC),
+    )
