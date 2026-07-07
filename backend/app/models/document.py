@@ -16,9 +16,11 @@ class Document(Base):
     title: Mapped[str] = mapped_column(nullable=True)
     author: Mapped[str] = mapped_column(JSON())
     cover: Mapped[str] = mapped_column(String())
-    annotations: Mapped[list["Annotation"]] = relationship()
+    primary_color: Mapped[str] = mapped_column(String(7), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(),
         default=lambda: datetime.now(UTC),
     )
+
+    annotations: Mapped[list["Annotation"]] = relationship()

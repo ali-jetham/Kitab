@@ -4,11 +4,12 @@ from pathlib import Path
 
 import pikepdf
 import pymupdf
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
 from app.models.document import Document
+from app.schemas.document import DocumentRead, DocumentUpdate
 from app.utils.helper import normalize_pikepdf_value
 
 
@@ -17,15 +18,19 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    def get_docs(self) -> list[Document]:
-        return list(self.db.scalars(select(Document)).all())
+    def get_docs(self) -> list[DocumentRead]:
+        documents = list(self.db.scalars(select(Document)).all())
+        return [DocumentRead.model_validate(doc) for doc in documents]
 
-    def get_doc(self, id: str) -> Document | None:
-        return self.db.scalar(
+    def get_doc(self, id: str) -> DocumentRead | None:
+        doc = self.db.scalar(
             select(Document)
             .where(Document.id == id)
             .options(selectinload(Document.annotations))
         )
+        if doc is None:
+            return None
+        return DocumentRead.model_validate(doc)
 
     def get_doc_file(self, id: str) -> Path | None:
         doc: Document | None = self.db.get(Document, id)
@@ -33,6 +38,12 @@ class DocumentService:
             return None
         path = Path(doc.file_path)
         return path if path.is_file() else None
+
+    def update_doc(self, id: str, document: DocumentUpdate):
+        update_data = document.model_dump(exclude_unset=True)
+        stmt = update(Document).where(Document.id == id).values(**update_data)
+        self.db.execute(stmt)
+        self.db.commit()
 
     def _scan(self):
         """Scan library_root for PDFs."""
