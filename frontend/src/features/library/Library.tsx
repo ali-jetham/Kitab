@@ -10,9 +10,9 @@ export default function Library(): JSX.Element {
 
 	const filteredBooks = () =>
 		books()?.filter((book: any) =>
-			book.title
-				?.toLowerCase()
-				.includes((searchParams.q as string)?.toLowerCase() ?? ""),
+			book.title?.toLowerCase().includes(
+				(searchParams.q as string)?.toLowerCase() ?? "",
+			)
 		);
 
 	return (
@@ -23,17 +23,21 @@ export default function Library(): JSX.Element {
 					onInput={(e) => setSearchParams({ q: e.target.value })}
 				/>
 
-				{/* <div>
+				{
+					/* <div>
 					<button type="button">+</button>
 					<button type="button">o</button>
-				</div> */}
+				</div> */
+				}
 			</div>
 
 			<Suspense fallback={<div>Loading books...</div>}>
 				{/* FIXME: show when no books found*/}
-				{/* <Show when={books.length === 0}>
+				{
+					/* <Show when={books.length === 0}>
 					<div>No books indexed</div>
-				</Show> */}
+				</Show> */
+				}
 
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>

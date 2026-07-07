@@ -13,9 +13,15 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const url = `api/docs/${props.id}/file`;
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
 		scaleValue: "page-fit",
-		getDocumentParams: { rangeChunkSize: 65536, disableAutoFetch: true, disableStream: false },
+		getDocumentParams: {
+			rangeChunkSize: 65536,
+			disableAutoFetch: true,
+			disableStream: false,
+		},
 	});
-	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(props.id);
+	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(
+		props.id,
+	);
 	const gestures = Gestures.make(pdfSlickStore);
 	const keybinds = PDFKeybinds.make(pdfSlickStore);
 	const highlights = PDFHighlights.make(pdfSlickStore, addAnnotation);
@@ -23,11 +29,20 @@ export default function PDFViewer(props: PDFViewerProps) {
 	function handlePageRendered(e: TEventBusEvent) {
 		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1);
 		if (!page) return;
-		if (page.div.querySelector("[data-highlightLayer]")) return
+		if (page.div.querySelector("[data-highlightLayer]")) return;
 
-		const { width, height } = highlights.getPageDimensions(page)
-		const annotations = getAnnotationsByPage(e.pageNumber)
-		render(() => <PDFHighlightLayer width={width} height={height} annotations={annotations} />, page.div)
+		const { width, height } = highlights.getPageDimensions(page);
+		const annotations = getAnnotationsByPage(e.pageNumber);
+		render(
+			() => (
+				<PDFHighlightLayer
+					width={width}
+					height={height}
+					annotations={annotations}
+				/>
+			),
+			page.div,
+		);
 	}
 
 	createEffect(() => {
@@ -40,11 +55,14 @@ export default function PDFViewer(props: PDFViewerProps) {
 	});
 
 	onMount(() => {
-		document.addEventListener("touchstart", gestures.handleTouchStart, { passive: false });
-		document.addEventListener("touchmove", gestures.handleTouchMove, { passive: false });
+		document.addEventListener("touchstart", gestures.handleTouchStart, {
+			passive: false,
+		});
+		document.addEventListener("touchmove", gestures.handleTouchMove, {
+			passive: false,
+		});
 		document.addEventListener("touchend", gestures.handleTouchEnd);
 		document.addEventListener("pointerup", highlights.handlePointerUp);
-
 	});
 
 	onCleanup(() => {

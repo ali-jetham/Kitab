@@ -18,12 +18,9 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 	);
 }
 
-render(
-	() => (
-		<Router root={App}>
-			<Route path="/" component={Library} />
-			<Route path="/viewer" component={AppShell} />
-		</Router>
-	),
-	root!,
-);
+render(() => (
+	<Router root={App}>
+		<Route path="/" component={Library} />
+		<Route path="/viewer" component={AppShell} />
+	</Router>
+), root!);

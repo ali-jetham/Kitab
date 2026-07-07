@@ -1,23 +1,23 @@
 .libraryItem {
-	height: max-content;
-	font-size: small;
-	color: var(--window-fg-color);
-	transition: transform 0.3s ease;
+  height: max-content;
+  font-size: small;
+  color: var(--window-fg-color);
+  transition: transform 0.3s ease;
 }
 
 .libraryItem:hover {
-	transform: scale(1.06);
+  transform: scale(1.06);
 }
 
 .libraryItem > img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	border-radius: 0.3rem;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.3rem;
 }
 
 .libraryItem > p {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

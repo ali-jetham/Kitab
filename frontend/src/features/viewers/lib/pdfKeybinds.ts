@@ -33,4 +33,4 @@ function make(pdfSlickStore: PDFSlickState) {
 	};
 }
 
-export const PDFKeybinds = {make}
+export const PDFKeybinds = { make };

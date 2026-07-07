@@ -5,9 +5,7 @@ async function addAnnotation(ann: NewAnnotation) {
 
 	const res = await fetch("/api/annotations", {
 		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
+		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(ann),
 	});
 	if (!res.ok) {

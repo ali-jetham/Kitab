@@ -1,8 +1,8 @@
 .view {
-	min-height: 0;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	background: var(--window-bg-color);
-	color: var(--window-fg-color);
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--window-bg-color);
+  color: var(--window-fg-color);
 }

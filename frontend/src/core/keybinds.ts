@@ -1,12 +1,7 @@
 import { keymap } from "./keymap";
 
 export type Context = "global" | "viewer" | "modal";
-
-export type Command = {
-	id: string;
-	label: string;
-	hidden: boolean;
-};
+export type Command = { id: string; label: string; hidden: boolean; };
 
 export const COMMANDS = [
 	{ id: "library.refreshCovers", label: "Library: Refersh Covers", hidden: false },
@@ -27,11 +22,7 @@ export const COMMANDS = [
 	{ id: "pdf.gotoFirstPage", label: "Go to First Page", hidden: false },
 	{ id: "pdf.gotoLastPage", label: "Go to Last Page", hidden: false },
 	{ id: "pdf.rotateClockwise", label: "Rotate Clockwise", hidden: false },
-	{
-		id: "pdf.rotateAntiClockwise",
-		label: "Rotate Counter-Clockwise",
-		hidden: false,
-	},
+	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false },
 ] as const;
 
 export type CommandId = (typeof COMMANDS)[number]["id"];
@@ -44,11 +35,7 @@ export type Keybind = {
 	isInputAllowed?: boolean;
 };
 
-export type CommandContext = {
-	event?: KeyboardEvent;
-	count?: number;
-};
-
+export type CommandContext = { event?: KeyboardEvent; count?: number; };
 export type CommandHandler = (context: CommandContext) => void;
 
 const commandRegistry = new Map<CommandId, CommandHandler>();
@@ -84,10 +71,7 @@ export function setActiveContexts(contexts: Context[]) {
 	resetSequenceState();
 }
 
-export function registerCommand(
-	command: CommandId,
-	handler: CommandHandler,
-): () => void {
+export function registerCommand(command: CommandId, handler: CommandHandler): () => void {
 	commandRegistry.set(command, handler);
 
 	return function unregister() {
@@ -99,10 +83,7 @@ export function registerCommand(
 }
 
 // Run a command directly by id, independent of any key (used by the command palette).
-export function executeCommand(
-	command: CommandId,
-	context: CommandContext = {},
-): boolean {
+export function executeCommand(command: CommandId, context: CommandContext = {}): boolean {
 	const handler = commandRegistry.get(command);
 	if (!handler) return false;
 
@@ -115,12 +96,7 @@ function isTypingElement(target: EventTarget | null): boolean {
 		return false;
 	}
 	const tagName = target.tagName.toLowerCase();
-	return (
-		target.isContentEditable ||
-		tagName === "input" ||
-		tagName === "textarea" ||
-		tagName === "select"
-	);
+	return (target.isContentEditable || tagName === "input" || tagName === "textarea" || tagName === "select");
 }
 
 function normalizeKey(key: string): string | null {
@@ -145,16 +121,9 @@ function toKey(event: KeyboardEvent): string | null {
 	return parts.join("+");
 }
 
-function dispatchBinding(
-	key: string,
-	event: KeyboardEvent,
-	isTyping: boolean,
-	count?: number,
-): boolean {
+function dispatchBinding(key: string, event: KeyboardEvent, isTyping: boolean, count?: number): boolean {
 	for (const context of activeContexts) {
-		const binding = keymap.find(
-			(value) => value.context === context && value.key === key,
-		);
+		const binding = keymap.find((value) => value.context === context && value.key === key);
 
 		if (!binding) continue;
 		if (isTyping && !binding.isInputAllowed) continue;
@@ -177,11 +146,7 @@ function isDigitKey(key: string): boolean {
 	return key.length === 1 && key >= "0" && key <= "9";
 }
 
-function dispatchSequence(
-	event: KeyboardEvent,
-	key: string,
-	isTyping: boolean,
-): boolean {
+function dispatchSequence(event: KeyboardEvent, key: string, isTyping: boolean): boolean {
 	const isViewerActive = activeContexts.includes("viewer");
 	if (!isViewerActive || isTyping || key.includes("+")) {
 		if (pendingCount !== "" || pendingSequence !== "") {
@@ -227,8 +192,7 @@ function dispatchSequence(
 	}
 
 	if (pendingSequence === "g" && key === "g") {
-		const count =
-			pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
+		const count = pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
 		resetSequenceState();
 		return dispatchBinding("gg", event, isTyping, count);
 	}

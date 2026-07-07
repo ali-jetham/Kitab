@@ -1,23 +1,17 @@
 import type { PDFSlickState } from "@pdfslick/core";
 
- function make(pdfSlickStore: PDFSlickState) {
+function make(pdfSlickStore: PDFSlickState) {
 	let initialDistance: number | null = null;
 	let initialScale: number = pdfSlickStore.scale;
 	let newScale: number = pdfSlickStore.scale;
 	let midpoint: number[] | null = null;
 
 	function getDistanceBetweenTouches(e: TouchEvent): number {
-		return Math.hypot(
-			e.touches[0].pageX - e.touches[1].pageX,
-			e.touches[0].pageY - e.touches[1].pageY,
-		);
+		return Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
 	}
 
 	function getMidpoint(e: TouchEvent) {
-		return [
-			(e.touches[0].clientX + e.touches[1].clientX) / 2,
-			(e.touches[0].clientY + e.touches[1].clientY) / 2,
-		];
+		return [(e.touches[0].clientX + e.touches[1].clientX) / 2, (e.touches[0].clientY + e.touches[1].clientY) / 2];
 	}
 
 	return {
@@ -80,4 +74,4 @@ import type { PDFSlickState } from "@pdfslick/core";
 	};
 }
 
-export const Gestures = {make}
+export const Gestures = { make };

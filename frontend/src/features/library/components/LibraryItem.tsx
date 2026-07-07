@@ -2,10 +2,7 @@ import { useNavigate } from "@solidjs/router";
 import type { JSX } from "solid-js";
 import styles from "./LibraryItem.module.css";
 
-type LibraryItemProps = {
-	id: string;
-	name: string;
-};
+type LibraryItemProps = { id: string; name: string; };
 
 export default function LibraryItem(props: LibraryItemProps): JSX.Element {
 	const navigate = useNavigate();

@@ -7,8 +7,8 @@ import {
 	onMount,
 } from "solid-js";
 import {
-	COMMANDS,
 	type CommandId,
+	COMMANDS,
 	executeCommand,
 	registerCommand,
 } from "../../core/keybinds";
@@ -27,7 +27,7 @@ export default function Modal() {
 
 	const modalCommands = COMMANDS.filter((c) => !c.hidden);
 
-	const runCommand = (command: { id: CommandId }) => {
+	const runCommand = (command: { id: CommandId; }) => {
 		console.log("running command", command);
 
 		executeCommand(command.id);
@@ -35,13 +35,11 @@ export default function Modal() {
 	};
 
 	const unregisterModalNext = registerCommand("modal.next", () => {
-		setCurrentIndex((prev) =>
-			prev + 1 >= modalCommands.length ? 0 : prev + 1,
-		);
+		setCurrentIndex((prev) => prev + 1 >= modalCommands.length ? 0 : prev + 1);
 	});
 	const unregisterModalPrev = registerCommand("modal.prev", () => {
 		setCurrentIndex((prev) =>
-			prev - 1 < 0 ? modalCommands.length - 1 : prev - 1,
+			prev - 1 < 0 ? modalCommands.length - 1 : prev - 1
 		);
 	});
 	const unregisterModalSelect = registerCommand("modal.select", () => {
@@ -57,17 +55,12 @@ export default function Modal() {
 		unregisterModalSelect();
 	});
 
-	createEffect(
-		on(currentIndex, (index) => {
-			const activeItem = modalOptionsListRef?.children.item(index);
-			if (activeItem instanceof HTMLElement) {
-				activeItem.scrollIntoView({
-					block: "nearest",
-					behavior: "smooth",
-				});
-			}
-		}),
-	);
+	createEffect(on(currentIndex, (index) => {
+		const activeItem = modalOptionsListRef?.children.item(index);
+		if (activeItem instanceof HTMLElement) {
+			activeItem.scrollIntoView({ block: "nearest", behavior: "smooth" });
+		}
+	}));
 
 	return (
 		<div class={styles.modalContainer}>
@@ -85,9 +78,9 @@ export default function Modal() {
 						<For each={modalCommands}>
 							{(command, index) => (
 								<li
-									class={
-										index() === currentIndex() ? styles.modalItemActive : ""
-									}
+									class={index() === currentIndex()
+										? styles.modalItemActive
+										: ""}
 								>
 									<button type="button" onClick={() => runCommand(command)}>
 										{command.label}

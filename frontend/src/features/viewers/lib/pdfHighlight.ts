@@ -87,5 +87,4 @@ function convertToPDFRect(rect: DOMRect, viewport: PageViewport): PDFRect {
 	return [x1, y1, x2, y2];
 }
 
-
-export const PDFHighlights = {make,  convertToSVGRect}
+export const PDFHighlights = { make, convertToSVGRect };
