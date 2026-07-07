@@ -1,10 +1,7 @@
-async function fetchDocs() {
-	const res = await fetch("api/docs");
+import { http } from "../../utils/http";
 
-	if (!res.ok) {
-		throw new Error(`Server error: ${res.status}`);
-	}
-	return await res.json();
+async function fetchDocs() {
+	return await http.get("api/docs");
 }
 
 export const libraryApi = { fetchDocs };

@@ -1,25 +1,12 @@
 import type { NewAnnotation } from "../../stores/createBookStore";
+import { http } from "../../utils/http";
 
 async function addAnnotation(ann: NewAnnotation) {
-	console.log("adding annotation", JSON.stringify(ann));
-
-	const res = await fetch("/api/annotations", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(ann),
-	});
-	if (!res.ok) {
-		throw new Error(`Server error: ${res.status}`);
-	}
-	return await res.json();
+	return await http.post("/api/annotations", ann);
 }
 
 async function getDoc(id: string) {
-	const result = await fetch(`/api/docs/${id}`);
-	if (!result.ok) {
-		throw new Error(`Cannot find document with id: ${id}`);
-	}
-	return await result.json();
+	return await http.get(`/api/docs/${id}`);
 }
 
 export const viewerApi = { addAnnotation, getBook: getDoc };

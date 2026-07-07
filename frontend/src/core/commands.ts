@@ -1,18 +1,11 @@
+import { http } from "../utils/http";
 import { registerCommand } from "./keybinds";
 
 async function libraryScan() {
-	const url = "api/docs/scan";
-	try {
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(`Response status: ${response.status}`);
-		}
+	const res = http.get("api/docs/scan");
+}
 
-		const result = await response.json();
-		console.log(result);
-	} catch (error) {
-		console.error(error.message);
-	}
+async function setPrimaryColor() {
 }
 
 registerCommand("library.scan", libraryScan);
