@@ -1,4 +1,4 @@
-import type { NewAnnotation } from "../../stores/bookStore";
+import type { NewAnnotation } from "../../stores/createBookStore";
 
 async function addAnnotation(ann: NewAnnotation) {
 	console.log("adding annotation", JSON.stringify(ann));
