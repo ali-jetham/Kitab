@@ -1,12 +1,19 @@
 {
+	"$schema": "",
 	"typescript": {
-		"lineWidth": 100,
+		"lineWidth": 120,
 		"indentWidth": 2,
 		"useTabs": true,
 		"semiColons": "always",
 		"quoteStyle": "alwaysDouble",
 		"newLineKind": "lf",
-		"preferSingleLine": true
+		"preferSingleLine": true,
+		"overrides": [
+			{
+				"files": ["**/*.tsx", "**/*.jsx"],
+				"lineWidth": 80
+			}
+		]
 	},
 	"json": {},
 	"malva": {},
