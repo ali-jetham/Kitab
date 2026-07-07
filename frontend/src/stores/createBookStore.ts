@@ -1,7 +1,7 @@
-import { onMount } from "solid-js";
+import { Accessor, onMount } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
 import { viewerApi } from "../features/viewers/viewerApi";
-export type PDFRect = [x1: number, y1: number, x2: number, y2: number];
+export type PDFRect = [llx: number, lly: number, urx: number, ury: number];
 
 export type Annotation = {
 	id: number;
@@ -58,8 +58,14 @@ export function createBookStore(id: string) {
 		// TODO: assign tempId to annotation before adding to store, to remove later if needed
 	}
 
+	function getAnnotationsByPage(page: number) : Accessor<Annotation[]>
+	{
+		return () => store.annotations.filter(ann => ann.page === page)
+	}
+
 	return {
 		store,
 		addAnnotation,
+		getAnnotationsByPage
 	};
 }
