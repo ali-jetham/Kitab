@@ -24,7 +24,12 @@ export default function PDFViewer(props: PDFViewerProps) {
 	);
 	const gestures = Gestures.make(pdfSlickStore);
 	const keybinds = PDFKeybinds.make(pdfSlickStore);
-	const highlights = PDFHighlights.make(pdfSlickStore, addAnnotation);
+	const highlights = PDFHighlights.make(
+		pdfSlickStore,
+		addAnnotation,
+		props.id,
+		store.primaryColor,
+	);
 
 	function handlePageRendered(e: TEventBusEvent) {
 		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1);

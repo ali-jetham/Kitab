@@ -29,7 +29,7 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 									y={rect.y}
 									width={rect.width}
 									height={rect.height}
-									color={"yellow"}
+									color={annotation.color}
 									data-annotation-id={annotation.id}
 								/>
 							);

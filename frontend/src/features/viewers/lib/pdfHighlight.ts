@@ -1,11 +1,15 @@
 import type { PDFSlickState } from "@pdfslick/solid";
 import { PageViewport } from "pdfjs-dist/types/src/display/editor/annotation_editor_layer";
 import type { PDFPageView } from "pdfjs-dist/web/pdf_viewer.mjs";
-import type { NewAnnotation, PDFRect } from "../../../stores/createBookStore";
+import { v7 as uuid7 } from "uuid";
+import type { AnnotationCreate, PDFRect } from "../../../stores/createBookStore";
+import { viewerApi } from "../viewerApi";
 
 type SVGRect = { x: number; y: number; width: number; height: number; };
 
-function make(pdfStore: PDFSlickState, addAnnotation: any) {
+function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color: string) {
+	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
+
 	// TODO: rewrite this
 	function mergeSelectionRects(selectionRects: DOMRect[]): DOMRect[] {
 		const sorted = selectionRects.toSorted((a, b) => {
@@ -52,15 +56,19 @@ function make(pdfStore: PDFSlickState, addAnnotation: any) {
 				return convertToPDFRect(relativeRect, page.viewport);
 			});
 
-			const annotation: NewAnnotation = {
+			const annotation: AnnotationCreate = {
+				id: uuid7(),
+				docId: docId,
 				style: "highlight",
-				color: "",
+				color: color === "" ? DEFAULT_HIGHLIGHT_COLOR : color,
 				note: "",
 				page: pageNumber,
 				text: selection.toString(),
 				rects: pdfRects,
 			};
 			addAnnotation(annotation);
+			const res = viewerApi.addAnnotation(annotation);
+			selection.removeAllRanges();
 		},
 		getPageDimensions(pdfPage: PDFPageView) {
 			const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1 });
@@ -68,6 +76,7 @@ function make(pdfStore: PDFSlickState, addAnnotation: any) {
 		},
 	};
 }
+
 function convertToSVGRect([llx, lly, urx, ury]: PDFRect, pageHeight: number): SVGRect {
 	return {
 		x: Math.min(llx, urx),

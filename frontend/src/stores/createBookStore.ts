@@ -4,7 +4,7 @@ import { viewerApi } from "../features/viewers/viewerApi";
 export type PDFRect = [llx: number, lly: number, urx: number, ury: number];
 
 export type Annotation = {
-	id: number;
+	id: string;
 	docId: string;
 	page: number;
 	text: string;
@@ -15,9 +15,15 @@ export type Annotation = {
 	createdAt: string;
 	updatedAt: string;
 };
-export type NewAnnotation = Omit<Annotation, "id" | "createdAt" | "updatedAt">;
+export type AnnotationCreate = Omit<Annotation, "createdAt" | "updatedAt">;
 
-export type BookStore = { id: string; annotations: Annotation[]; location: []; isDirty: boolean; };
+export type BookStore = {
+	id: string;
+	primaryColor: string;
+	annotations: Annotation[];
+	location: [];
+	isDirty: boolean;
+};
 
 export function createBookStore(id: string) {
 	onMount(() => {
@@ -25,18 +31,28 @@ export function createBookStore(id: string) {
 		init();
 	});
 
-	const [store, setStore] = createStore<BookStore>({ id: id, annotations: [], location: [], isDirty: false });
+	const [store, setStore] = createStore<BookStore>({
+		id: id,
+		primaryColor: "",
+		annotations: [],
+		location: [],
+		isDirty: false,
+	});
 
 	async function init() {
-		const doc = await viewerApi.getBook(id);
-		setStore(reconcile({ id, annotations: doc?.annotations ?? [], location: doc?.location ?? [], isDirty: false }));
+		const doc = await viewerApi.getDoc(id);
+		setStore(
+			reconcile({
+				id,
+				primaryColor: doc?.primaryColor,
+				annotations: doc?.annotations ?? [],
+				location: doc?.location ?? [],
+				isDirty: false,
+			}),
+		);
 	}
-	async function addAnnotation(annotation: NewAnnotation) {
-		annotation.docId = id;
+	async function addAnnotation(annotation: AnnotationCreate) {
 		setStore("annotations", store.annotations.length, { ...annotation });
-		const res = viewerApi.addAnnotation(annotation);
-		// TODO: if res error remove annotation from store and notify user
-		// TODO: assign tempId to annotation before adding to store, to remove later if needed
 	}
 
 	function getAnnotationsByPage(page: number): Accessor<Annotation[]> {
