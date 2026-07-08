@@ -5,7 +5,6 @@ import "solid-devtools";
 import { Route, Router } from "@solidjs/router";
 import AppShell from "./app/AppShell";
 import "@pdfslick/solid/dist/pdf_viewer.css";
-import "pdfjs-dist/web/pdf_viewer.css";
 import App from "./app/App";
 import Library from "./features/library/Library";
 import "./core/commands";
