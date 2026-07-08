@@ -15,7 +15,7 @@ class Style(str, enum.Enum):
 class Annotation(Base):
     __tablename__ = "annotations"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     docId: Mapped[str] = mapped_column(ForeignKey("documents.id"))
     color: Mapped[str] = mapped_column()
     style: Mapped[Style] = mapped_column(Enum(Style, name="style"))

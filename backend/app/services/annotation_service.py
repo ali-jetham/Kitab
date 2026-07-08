@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.models.annotation import Annotation
 from app.models.document import Document
-from app.schemas.annotation import AnnotationDTO
+from app.schemas.annotation import AnnotationCreate, AnnotationRead
 
 
 class AnnotationService:
@@ -12,7 +12,7 @@ class AnnotationService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    async def add_annotation(self, ann: AnnotationDTO) -> AnnotationDTO | None:
+    async def add_annotation(self, ann: AnnotationCreate) -> AnnotationRead | None:
         new_ann = Annotation(**ann.model_dump())
         doc_exists = self.db.scalar(
             select(Document).where(Document.id == new_ann.docId)
@@ -22,6 +22,8 @@ class AnnotationService:
 
         self.db.add(new_ann)
         self.db.commit()
+        self.db.refresh(new_ann)  # TODO: understand how this works
+        return AnnotationRead.model_validate(new_ann)
 
     async def delete_annotation(self, id: int):
         stmt = delete(Annotation).where(Annotation.id == id)

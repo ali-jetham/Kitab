@@ -22,6 +22,7 @@ class DocumentService:
         documents = list(self.db.scalars(select(Document)).all())
         return [DocumentRead.model_validate(doc) for doc in documents]
 
+    # TODO: write a version which does NOT return with all the annotations for Library.tsx page
     def get_doc(self, id: str) -> DocumentRead | None:
         doc = self.db.scalar(
             select(Document)

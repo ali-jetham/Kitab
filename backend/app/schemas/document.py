@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.schemas.annotation import AnnotationDTO
+from app.schemas.annotation import AnnotationBase
 
 
 class DocumentBase(BaseModel):
@@ -15,7 +15,7 @@ class DocumentRead(DocumentBase):
     file_name: str
     id: str
     cover: str
-    annotations: list[AnnotationDTO]
+    annotations: list[AnnotationBase]
 
 
 class DocumentUpdate(DocumentBase):
