@@ -38,6 +38,7 @@ function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color:
 	}
 
 	return {
+		// TODO: check if modal is active before
 		handlePointerUp() {
 			const selection = document.getSelection();
 			if (!selection || selection.isCollapsed) return;

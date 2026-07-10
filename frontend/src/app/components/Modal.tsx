@@ -1,96 +1,53 @@
-import {
-	createEffect,
-	createSignal,
-	For,
-	on,
-	onCleanup,
-	onMount,
-} from "solid-js";
-import {
-	type CommandId,
-	COMMANDS,
-	executeCommand,
-	registerCommand,
-} from "../../core/keybinds";
+import { Combobox } from "@kobalte/core/combobox";
+import { createSignal, onCleanup, onMount } from "solid-js";
+import { COMMANDS, executeCommand } from "../../core/keybinds";
 import styles from "./Modal.module.css";
 
 export default function Modal() {
-	const [search, setSearch] = createSignal("");
 	const [currentIndex, setCurrentIndex] = createSignal(0);
-
-	let modalInputRef: HTMLInputElement | undefined;
-	let modalOptionsListRef: HTMLUListElement | undefined;
+	const modalCommands = COMMANDS.filter((c) => !c.hidden);
+	let inputRef: HTMLInputElement | undefined = undefined;
 
 	onMount(() => {
-		modalInputRef?.focus();
-	});
-
-	const modalCommands = COMMANDS.filter((c) => !c.hidden);
-
-	const runCommand = (command: { id: CommandId; }) => {
-		console.log("running command", command);
-
-		executeCommand(command.id);
-		executeCommand("ui.modal.close");
-	};
-
-	const unregisterModalNext = registerCommand("modal.next", () => {
-		setCurrentIndex((prev) => prev + 1 >= modalCommands.length ? 0 : prev + 1);
-	});
-	const unregisterModalPrev = registerCommand("modal.prev", () => {
-		setCurrentIndex((prev) =>
-			prev - 1 < 0 ? modalCommands.length - 1 : prev - 1
-		);
-	});
-	const unregisterModalSelect = registerCommand("modal.select", () => {
-		const command = modalCommands[currentIndex()];
-		if (command) {
-			runCommand(command);
-		}
+		inputRef!.focus();
 	});
 
 	onCleanup(() => {
-		unregisterModalNext();
-		unregisterModalPrev();
-		unregisterModalSelect();
 	});
 
-	createEffect(on(currentIndex, (index) => {
-		const activeItem = modalOptionsListRef?.children.item(index);
-		if (activeItem instanceof HTMLElement) {
-			activeItem.scrollIntoView({ block: "nearest", behavior: "smooth" });
-		}
-	}));
-
 	return (
-		<div class={styles.modalContainer}>
-			<div class={styles.modal}>
-				<input
-					ref={modalInputRef}
-					value={search()}
-					onInput={(e) => setSearch(e.currentTarget.value)}
-					autofocus
-					type="text"
-					placeholder="Search for commands"
-				/>
-				<div>
-					<ul ref={modalOptionsListRef}>
-						<For each={modalCommands}>
-							{(command, index) => (
-								<li
-									class={index() === currentIndex()
-										? styles.modalItemActive
-										: ""}
-								>
-									<button type="button" onClick={() => runCommand(command)}>
-										{command.label}
-									</button>
-								</li>
-							)}
-						</For>
-					</ul>
-				</div>
-			</div>
-		</div>
+		<Combobox
+			options={modalCommands}
+			optionValue="id"
+			optionTextValue="label"
+			optionDisabled="hidden"
+			placeholder="Execute a command..."
+			class={styles.combobox}
+			gutter={0}
+			preventScroll={true}
+			open={true}
+			onOpenChange={() => {}}
+			shouldFocusWrap={true}
+			itemComponent={props => (
+				<Combobox.Item item={props.item} class={styles.combobox__item}>
+					<Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
+					<Combobox.ItemIndicator class={styles.combobox__itemIndicator}>
+					</Combobox.ItemIndicator>
+				</Combobox.Item>
+			)}
+			onChange={(value) => {
+				if (!value) return;
+				executeCommand(value.id);
+			}}
+		>
+			<Combobox.Control class={styles.combobox__control}>
+				<Combobox.Input ref={inputRef} class={styles.combobox__input} />
+			</Combobox.Control>
+			<Combobox.Portal>
+				<Combobox.Content class={styles.combobox__content}>
+					<Combobox.Listbox class={styles.combobox__listbox} />
+				</Combobox.Content>
+			</Combobox.Portal>
+		</Combobox>
 	);
 }
