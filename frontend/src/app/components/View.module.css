@@ -3,6 +3,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: 1;
   background: var(--window-bg-color);
   color: var(--window-fg-color);
 }

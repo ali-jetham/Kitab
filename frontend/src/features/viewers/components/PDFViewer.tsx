@@ -6,6 +6,7 @@ import { Gestures } from "../lib/gestures";
 import { PDFHighlights } from "../lib/pdfHighlight";
 import { PDFKeybinds } from "../lib/pdfKeybinds";
 import PDFHighlightLayer from "./PDFHighlightLayer";
+import styles from "./PDFViewer.module.css";
 
 type PDFViewerProps = { id: string; };
 

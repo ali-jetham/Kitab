@@ -10,8 +10,8 @@
   justify-content: space-between;
 }
 
-.headerBar > input {
-  width: 70%;
+.input {
+  width: 60vw;
   background: var(--color-bg-3);
   border-radius: 0.3rem;
 }

@@ -2,7 +2,9 @@ import type { RouteSectionProps } from "@solidjs/router";
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, Show } from "solid-js/web";
 import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
+import styles from "./App.module.css";
 import Modal from "./components/Modal";
+import Status from "./components/Status";
 
 export default function App(props: RouteSectionProps) {
 	const [isModalVisible, setModalVisible] = createSignal(false);
@@ -30,14 +32,14 @@ export default function App(props: RouteSectionProps) {
 		unregisterCloseModal();
 	});
 	return (
-		<>
-			{props.children}
-
+		<div class={styles.app}>
+			<main class={styles.main}>{props.children}</main>
+			<Status />
 			<Portal>
 				<Show when={isModalVisible()}>
 					<Modal />
 				</Show>
 			</Portal>
-		</>
+		</div>
 	);
 }

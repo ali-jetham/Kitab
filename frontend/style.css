@@ -15,11 +15,15 @@ button {
 }
 
 body {
-  min-height: 100vh;
+  height: 100%;
   background: var(--window-bg-color);
   font-family: "Inter", sans-serif;
   font-style: normal;
   color: var(--window-fg-color);
+}
+
+#root {
+  height: 100%;
 }
 
 input {
@@ -36,12 +40,4 @@ input {
 .frame,
 input {
   border: 1px solid var(--border-color);
-}
-
-.pdfSlick {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  inset: 0;
-  background-color: var(--color-bg);
 }
