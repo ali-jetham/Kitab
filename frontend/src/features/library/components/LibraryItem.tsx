@@ -1,3 +1,4 @@
+import { Image } from "@kobalte/core/image";
 import { useNavigate } from "@solidjs/router";
 import type { JSX } from "solid-js";
 import styles from "./LibraryItem.module.css";
@@ -14,7 +15,9 @@ export default function LibraryItem(props: LibraryItemProps): JSX.Element {
 
 	return (
 		<div class={styles.libraryItem} onclick={handleClick}>
-			<img src={`api/docs/${props.id}/cover`} alt="cover" />
+			<Image>
+				<Image.Img src={`api/docs/${props.id}/cover`} alt="cover" />
+			</Image>
 			<p>{props.title ?? props.fileName}</p>
 		</div>
 	);
