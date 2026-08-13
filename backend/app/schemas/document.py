@@ -1,10 +1,13 @@
 from pydantic import BaseModel, ConfigDict
+from pydantic.alias_generators import to_camel
 
 from app.schemas.annotation import AnnotationBase
 
 
 class DocumentBase(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        populate_by_name=True, alias_generator=to_camel, from_attributes=True
+    )
 
     title: str | None = None
     author: list[str] | None = None

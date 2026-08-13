@@ -10,11 +10,15 @@ export default function Library(): JSX.Element {
 	const [books] = createResource(api.fetchDocs);
 
 	const filteredBooks = () =>
-		books()?.filter((book: any) =>
-			book.title?.toLowerCase().includes(
-				(searchParams.q as string)?.toLowerCase() ?? "",
-			)
-		);
+		books()?.filter((book: any) => {
+			return book.title
+				? book.title?.toLowerCase().includes(
+					(searchParams.q as string)?.toLowerCase() ?? "",
+				)
+				: book.fileName?.toLowerCase().includes(
+					(searchParams.q as string)?.toLowerCase() ?? "",
+				);
+		});
 
 	return (
 		<div class={styles.library}>
@@ -23,26 +27,25 @@ export default function Library(): JSX.Element {
 					<TextField.Label />
 					<TextField.Input
 						class={styles.input}
+						placeholder="Search for books"
 						onChange={(e) => setSearchParams({ q: e.target.value })}
 					/>
 					<TextField.Description />
 					<TextField.ErrorMessage />
 				</TextField>
-
-				{
-					/* <div>
-					<button type="button">+</button>
-					<button type="button">o</button>
-				</div> */
-				}
 			</div>
 
 			<Suspense fallback={<div>Loading books...</div>}>
 				{/* FIXME: show when no books found*/}
-
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
-						{(book) => <LibraryItem name={book.title} id={book.id} />}
+						{(book) => (
+							<LibraryItem
+								id={book.id}
+								title={book.title}
+								fileName={book.fileName}
+							/>
+						)}
 					</For>
 				</div>
 			</Suspense>

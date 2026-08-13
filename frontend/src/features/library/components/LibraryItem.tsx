@@ -2,7 +2,7 @@ import { useNavigate } from "@solidjs/router";
 import type { JSX } from "solid-js";
 import styles from "./LibraryItem.module.css";
 
-type LibraryItemProps = { id: string; name: string; };
+type LibraryItemProps = { id: string; title: string | null; fileName: string; };
 
 export default function LibraryItem(props: LibraryItemProps): JSX.Element {
 	const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function LibraryItem(props: LibraryItemProps): JSX.Element {
 	return (
 		<div class={styles.libraryItem} onclick={handleClick}>
 			<img src={`api/docs/${props.id}/cover`} alt="cover" />
-			<p>{props.name}</p>
+			<p>{props.title ?? props.fileName}</p>
 		</div>
 	);
 }
