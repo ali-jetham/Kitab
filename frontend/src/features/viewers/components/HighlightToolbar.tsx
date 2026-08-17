@@ -1,17 +1,20 @@
 import { ColorSwatch } from "@kobalte/core/color-swatch";
 import { parseColor } from "@kobalte/core/colors";
 import { Popover } from "@kobalte/core/popover";
-import { type Setter } from "solid-js";
+import { For, type Setter } from "solid-js";
 import styles from "./HighlightToolbar.module.css";
-import { ToolbarState } from "../lib/pdfHighlight";
+import { ToolbarState } from "./PDFViewer";
 
 export type HighlightToolbarProps = {
 	open: boolean;
 	anchorRef: HTMLElement | undefined;
 	setToolbarState: Setter<ToolbarState>;
+	onSelectColor: (color: string) => void;
 };
 
 export default function HighlightToolbar(props: HighlightToolbarProps) {
+	const colors = ["#ffd400", "#ff6666", "#2ea8e5", "#e56eee", "#aaaaaa"];
+
 	return (
 		<Popover
 			open={props.open}
@@ -22,11 +25,16 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 			<Popover.Portal>
 				<Popover.Content class={styles.popover__content}>
 					<Popover.Arrow />
-					<ColorSwatch class={styles.ColorSwatchRoot} value={parseColor("#ffd400")} />
-					<ColorSwatch class={styles.ColorSwatchRoot} value={parseColor("#ff6666")} />
-					<ColorSwatch class={styles.ColorSwatchRoot} value={parseColor("#2ea8e5")} />
-					<ColorSwatch class={styles.ColorSwatchRoot} value={parseColor("#e56eee")} />
-					<ColorSwatch class={styles.ColorSwatchRoot} value={parseColor("#aaaaaa")} />
+					<For each={colors}>
+						{(color) => (
+							<button
+								type="button"
+								onClick={() => props.onSelectColor(color)}
+							>
+								<ColorSwatch class={styles.ColorSwatch} value={parseColor(color)} />
+							</button>
+						)}
+					</For>
 				</Popover.Content>
 			</Popover.Portal>
 		</Popover>

@@ -1,4 +1,4 @@
-import { http } from "../../utils/http";
+import { http } from "../../core/http";
 
 async function fetchDocs() {
 	return await http.get("api/docs");

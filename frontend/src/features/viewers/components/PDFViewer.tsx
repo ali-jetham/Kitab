@@ -2,16 +2,18 @@ import { type TEventBusEvent, usePDFSlick } from "@pdfslick/solid";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { render } from "solid-js/web";
 import { createBookStore } from "../../../stores/createBookStore";
-import { Gestures } from "../lib/gestures";
-import { PDFHighlights } from "../lib/pdfHighlight";
-import { PDFKeybinds } from "../lib/pdfKeybinds";
+import { usePDFGestures } from "../primitives/createPDFGestures";
+import { getPageDimensions, usePDFHighlights } from "../primitives/createPDFHighlight";
+import { usePDFKeybinds } from "../primitives/createPDFKeybinds";
 import HighlightToolbar, { HighlightToolbarProps } from "./HighlightToolbar";
 import PDFHighlightLayer from "./PDFHighlightLayer";
-import styles from "./PDFViewer.module.css";
 
 type PDFViewerProps = { id: string; };
+export type ToolbarState = { open: boolean; anchorRef: HTMLElement | undefined; };
 
 export default function PDFViewer(props: PDFViewerProps) {
+	let containerRef!: HTMLDivElement;
+
 	const url = `api/docs/${props.id}/file`;
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
 		scaleValue: "page-fit",
@@ -22,14 +24,21 @@ export default function PDFViewer(props: PDFViewerProps) {
 		}
 	});
 
+	const [toolbarState, setToolbarState] = createSignal<ToolbarState>({
+		open: false,
+		anchorRef: undefined
+	});
+	const [selectedColor, setSelectedColor] = createSignal("#ffd400");
+
 	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(props.id);
-	const gestures = Gestures.make(pdfSlickStore);
-	const keybinds = PDFKeybinds.make(pdfSlickStore);
-	const highlights = PDFHighlights.make(
+	usePDFGestures(pdfSlickStore, () => containerRef);
+	usePDFKeybinds(pdfSlickStore);
+	const highlights = usePDFHighlights(
 		pdfSlickStore,
 		addAnnotation,
 		props.id,
-		store.primaryColor,
+		selectedColor,
+		setToolbarState
 	);
 
 	function handlePageRendered(e: TEventBusEvent) {
@@ -37,7 +46,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		if (!page) return;
 		if (page.div.querySelector("[data-highlightLayer]")) return;
 
-		const { width, height } = highlights.getPageDimensions(page);
+		const { width, height } = getPageDimensions(page);
 		const annotations = getAnnotationsByPage(e.pageNumber);
 		render(
 			() => <PDFHighlightLayer width={width} height={height} annotations={annotations} />,
@@ -55,29 +64,28 @@ export default function PDFViewer(props: PDFViewerProps) {
 	});
 
 	onMount(() => {
-		document.addEventListener("touchstart", gestures.handleTouchStart, {
-			passive: false
-		});
-		document.addEventListener("touchmove", gestures.handleTouchMove, { passive: false });
-		document.addEventListener("touchend", gestures.handleTouchEnd);
 		document.addEventListener("pointerup", (e) => highlights.handlePointerUp(e));
 	});
 
 	onCleanup(() => {
-		document.removeEventListener("touchstart", gestures.handleTouchStart);
-		document.removeEventListener("touchmove", gestures.handleTouchMove);
-		document.removeEventListener("touchend", gestures.handleTouchEnd);
 		document.removeEventListener("pointerup", highlights.handlePointerUp); // fix
-
-		keybinds.destroy();
 	});
 
 	return (
-		<div class="pdfslick-container pdfSlick">
+		<div ref={containerRef} class="pdfslick-container pdfSlick">
 			<div>
 				<PDFSlickViewer {...{ store: pdfSlickStore, viewerRef }} />
 			</div>
-			<HighlightToolbar {...highlights.toolbarState()} setToolbarState={highlights.setToolbarState} />
+
+			<HighlightToolbar
+				{...toolbarState()}
+				setToolbarState={setToolbarState}
+				onSelectColor={(color) => {
+					setSelectedColor(color)
+					setToolbarState(() => ({ open: false, anchorRef: undefined }))
+					highlights.commitAnnotation(color)
+				}}
+			/>
 		</div>
 	);
 }

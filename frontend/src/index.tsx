@@ -7,7 +7,7 @@ import "@pdfslick/solid/dist/pdf_viewer.css";
 import App from "./app/App";
 import Library from "./features/library/Library";
 import "./core/commands";
-import View from "./app/components/View";
+import Viewer from "./features/viewers/Viewer";
 
 const root = document.getElementById("root");
 
@@ -20,6 +20,6 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(() => (
 	<Router root={App}>
 		<Route path="/" component={Library} />
-		<Route path="/viewer" component={View} />
+		<Route path="/viewer" component={Viewer} />
 	</Router>
 ), root!);

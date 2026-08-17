@@ -1,7 +1,6 @@
 import { Accessor, For } from "solid-js";
 import { type Annotation } from "../../../stores/createBookStore";
-import { PDFHighlights } from "../lib/pdfHighlight";
-import PDFHighlight from "./PDFHighlight";
+import { convertToSVGRect } from "../primitives/createPDFHighlight";
 import styles from "./PDFHighlightLayer.module.css";
 
 type PDFHighlightLayerProps = {
@@ -22,14 +21,15 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 				{(annotation) => (
 					<For each={annotation.rects}>
 						{(r) => {
-							const rect = PDFHighlights.convertToSVGRect(r, props.height);
+							const rect = convertToSVGRect(r, props.height);
 							return (
-								<PDFHighlight
+								<rect
 									x={rect.x}
 									y={rect.y}
 									width={rect.width}
 									height={rect.height}
-									color={annotation.color}
+									fill={annotation.color}
+									fill-opacity="0.3"
 									data-annotation-id={annotation.id}
 								/>
 							);

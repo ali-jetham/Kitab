@@ -4,9 +4,10 @@
   padding: 1rem;
   background-color: var(--popover-bg-color);
   color: var(--popover-fg-color);
+  border-radius: .3rem;
 }
 
-.ColorSwatchRoot {
+.ColorSwatch {
   height: 1rem;
   width: 1rem;
   border-radius: 0.6rem;

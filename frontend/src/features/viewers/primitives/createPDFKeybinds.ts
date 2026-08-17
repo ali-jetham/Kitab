@@ -1,7 +1,8 @@
 import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
+import { onCleanup } from "solid-js";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
 
-function make(pdfSlickStore: PDFSlickState) {
+export function usePDFKeybinds(pdfSlickStore: PDFSlickState) {
 	function register(commandId: CommandId, callback: (pdf: PDFSlick) => void) {
 		return registerCommand(commandId, () => {
 			if (!pdfSlickStore.pdfSlick) return;
@@ -24,13 +25,9 @@ function make(pdfSlickStore: PDFSlickState) {
 		register("pdf.scrollUp", (pdf) => pdf.viewer.container.scrollBy({ top: -100, behavior: "instant" }))
 	];
 
-	return {
-		destroy() {
-			for (const unregister of unregisters) {
-				unregister();
-			}
+	onCleanup(() => {
+		for (const unregister of unregisters) {
+			unregister();
 		}
-	};
+	});
 }
-
-export const PDFKeybinds = { make };

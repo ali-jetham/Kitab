@@ -1,5 +1,5 @@
+import { http } from "../../core/http";
 import type { AnnotationCreate } from "../../stores/createBookStore";
-import { http } from "../../utils/http";
 
 async function addAnnotation(ann: AnnotationCreate) {
 	console.log(JSON.stringify(ann));
