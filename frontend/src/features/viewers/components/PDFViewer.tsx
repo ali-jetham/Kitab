@@ -11,8 +11,6 @@ import styles from "./PDFViewer.module.css";
 
 type PDFViewerProps = { id: string; };
 
-export type ToolbarState = { open: boolean; anchorRef: HTMLElement | undefined; };
-
 export default function PDFViewer(props: PDFViewerProps) {
 	const url = `api/docs/${props.id}/file`;
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
@@ -25,11 +23,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 	});
 
 	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(props.id);
-	const [toolbarState, setToolbarState] = createSignal<ToolbarState>({
-		open: false,
-		anchorRef: undefined
-	});
-
 	const gestures = Gestures.make(pdfSlickStore);
 	const keybinds = PDFKeybinds.make(pdfSlickStore);
 	const highlights = PDFHighlights.make(
@@ -37,7 +30,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 		addAnnotation,
 		props.id,
 		store.primaryColor,
-		setToolbarState
 	);
 
 	function handlePageRendered(e: TEventBusEvent) {
@@ -85,7 +77,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 			<div>
 				<PDFSlickViewer {...{ store: pdfSlickStore, viewerRef }} />
 			</div>
-			<HighlightToolbar {...toolbarState()} setToolbarState={setToolbarState} />
+			<HighlightToolbar {...highlights.toolbarState()} setToolbarState={highlights.setToolbarState} />
 		</div>
 	);
 }

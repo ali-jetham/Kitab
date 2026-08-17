@@ -3,7 +3,7 @@ import { parseColor } from "@kobalte/core/colors";
 import { Popover } from "@kobalte/core/popover";
 import { type Setter } from "solid-js";
 import styles from "./HighlightToolbar.module.css";
-import { ToolbarState } from "./PDFViewer";
+import { ToolbarState } from "../lib/pdfHighlight";
 
 export type HighlightToolbarProps = {
 	open: boolean;

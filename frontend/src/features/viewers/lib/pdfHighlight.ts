@@ -2,20 +2,14 @@ import type { PDFSlickState } from "@pdfslick/solid";
 import { createSignal, Setter } from "solid-js";
 import { v7 as uuid7 } from "uuid";
 import type { AnnotationCreate, PDFRect } from "../../../stores/createBookStore";
-import HighlightToolbar, { HighlightToolbarProps } from "../components/HighlightToolbar";
-import { ToolbarState } from "../components/PDFViewer";
 import { viewerApi } from "../viewerApi";
 
 type SVGRect = { x: number; y: number; width: number; height: number; };
+export type ToolbarState = { open: boolean; anchorRef: HTMLElement | undefined; };
 
-function make(
-	pdfStore: PDFSlickState,
-	addAnnotation: any,
-	docId: string,
-	color: string,
-	setToolbarState: Setter<ToolbarState>
-) {
+function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color: string) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
+	const [toolbarState, setToolbarState] = createSignal<ToolbarState>({ open: false, anchorRef: undefined });
 
 	// TODO: rewrite this
 	function mergeSelectionRects(selectionRects: DOMRect[]): DOMRect[] {
@@ -45,6 +39,8 @@ function make(
 	}
 
 	return {
+		toolbarState,
+		setToolbarState,
 		// TODO: check if modal is active before
 		handlePointerUp(e: PointerEvent) {
 			const selection = document.getSelection();
