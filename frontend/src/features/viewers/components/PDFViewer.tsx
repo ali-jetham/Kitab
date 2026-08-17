@@ -1,14 +1,20 @@
 import { type TEventBusEvent, usePDFSlick } from "@pdfslick/solid";
-import { createEffect, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { render } from "solid-js/web";
 import { createBookStore } from "../../../stores/createBookStore";
 import { Gestures } from "../lib/gestures";
 import { PDFHighlights } from "../lib/pdfHighlight";
 import { PDFKeybinds } from "../lib/pdfKeybinds";
+import HighlightToolbar, { HighlightToolbarProps } from "./HighlightToolbar";
 import PDFHighlightLayer from "./PDFHighlightLayer";
 import styles from "./PDFViewer.module.css";
 
 type PDFViewerProps = { id: string; };
+
+export type ToolbarState = {
+	open: boolean;
+	anchorRef: HTMLElement | undefined;
+};
 
 export default function PDFViewer(props: PDFViewerProps) {
 	const url = `api/docs/${props.id}/file`;
@@ -20,9 +26,15 @@ export default function PDFViewer(props: PDFViewerProps) {
 			disableStream: false,
 		},
 	});
+
 	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(
 		props.id,
 	);
+	const [toolbarState, setToolbarState] = createSignal<ToolbarState>({
+		open: false,
+		anchorRef: undefined,
+	});
+
 	const gestures = Gestures.make(pdfSlickStore);
 	const keybinds = PDFKeybinds.make(pdfSlickStore);
 	const highlights = PDFHighlights.make(
@@ -30,6 +42,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		addAnnotation,
 		props.id,
 		store.primaryColor,
+		setToolbarState,
 	);
 
 	function handlePageRendered(e: TEventBusEvent) {
@@ -68,14 +81,17 @@ export default function PDFViewer(props: PDFViewerProps) {
 			passive: false,
 		});
 		document.addEventListener("touchend", gestures.handleTouchEnd);
-		document.addEventListener("pointerup", highlights.handlePointerUp);
+		document.addEventListener(
+			"pointerup",
+			(e) => highlights.handlePointerUp(e),
+		);
 	});
 
 	onCleanup(() => {
 		document.removeEventListener("touchstart", gestures.handleTouchStart);
 		document.removeEventListener("touchmove", gestures.handleTouchMove);
 		document.removeEventListener("touchend", gestures.handleTouchEnd);
-		document.removeEventListener("pointerup", highlights.handlePointerUp);
+		document.removeEventListener("pointerup", highlights.handlePointerUp); // fix
 
 		keybinds.destroy();
 	});
@@ -85,6 +101,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 			<div>
 				<PDFSlickViewer {...{ store: pdfSlickStore, viewerRef }} />
 			</div>
+			<HighlightToolbar {...toolbarState()} setToolbarState={setToolbarState} />
 		</div>
 	);
 }

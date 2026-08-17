@@ -1,13 +1,20 @@
 import type { PDFSlickState } from "@pdfslick/solid";
-import { PageViewport } from "pdfjs-dist/types/src/display/editor/annotation_editor_layer";
-import type { PDFPageView } from "pdfjs-dist/web/pdf_viewer.mjs";
+import { createSignal, Setter } from "solid-js";
 import { v7 as uuid7 } from "uuid";
 import type { AnnotationCreate, PDFRect } from "../../../stores/createBookStore";
+import HighlightToolbar, { HighlightToolbarProps } from "../components/HighlightToolbar";
+import { ToolbarState } from "../components/PDFViewer";
 import { viewerApi } from "../viewerApi";
 
 type SVGRect = { x: number; y: number; width: number; height: number; };
 
-function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color: string) {
+function make(
+	pdfStore: PDFSlickState,
+	addAnnotation: any,
+	docId: string,
+	color: string,
+	setToolbarState: Setter<ToolbarState>,
+) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
 
 	// TODO: rewrite this
@@ -39,9 +46,13 @@ function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color:
 
 	return {
 		// TODO: check if modal is active before
-		handlePointerUp() {
+		handlePointerUp(e: PointerEvent) {
 			const selection = document.getSelection();
 			if (!selection || selection.isCollapsed) return;
+			const anchorEl =
+				(selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement) as
+					| HTMLElement
+					| undefined;
 
 			const range = selection.getRangeAt(0);
 			const selectionRects: DOMRect[] = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
@@ -67,11 +78,18 @@ function make(pdfStore: PDFSlickState, addAnnotation: any, docId: string, color:
 				text: selection.toString(),
 				rects: pdfRects,
 			};
-			addAnnotation(annotation);
-			const res = viewerApi.addAnnotation(annotation);
-			selection.removeAllRanges();
+
+			const isHighlightFast = e.ctrlKey || e.metaKey;
+			if (isHighlightFast) {
+				addAnnotation(annotation);
+				const res = viewerApi.addAnnotation(annotation);
+				selection.removeAllRanges();
+			} else {
+				setToolbarState((prev) => ({ ...prev, open: true, anchorRef: anchorEl }));
+			}
 		},
-		getPageDimensions(pdfPage: PDFPageView) {
+
+		getPageDimensions(pdfPage: any) {
 			const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1 });
 			return { width, height };
 		},
@@ -91,7 +109,7 @@ function toCanvasRelativeRect(rect: DOMRect, canvasRect: DOMRect): DOMRect {
 	return new DOMRect(rect.left - canvasRect.left, rect.top - canvasRect.top, rect.width, rect.height);
 }
 
-function convertToPDFRect(rect: DOMRect, viewport: PageViewport): PDFRect {
+function convertToPDFRect(rect: DOMRect, viewport: any): PDFRect {
 	const [x1, y1] = viewport.convertToPdfPoint(rect.left, rect.top);
 	const [x2, y2] = viewport.convertToPdfPoint(rect.right, rect.bottom);
 	return [x1, y1, x2, y2];
