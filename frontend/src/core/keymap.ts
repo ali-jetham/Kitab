@@ -22,5 +22,5 @@ export const keymap: readonly Keybind[] = [
 
 	{ key: "ArrowDown", command: "modal.next", context: "modal", isInputAllowed: true },
 	{ key: "ArrowUp", command: "modal.prev", context: "modal", isInputAllowed: true },
-	{ key: "Enter", command: "modal.select", context: "modal", isInputAllowed: true },
+	{ key: "Enter", command: "modal.select", context: "modal", isInputAllowed: true }
 ];

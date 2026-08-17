@@ -13,7 +13,7 @@ function make(
 	addAnnotation: any,
 	docId: string,
 	color: string,
-	setToolbarState: Setter<ToolbarState>,
+	setToolbarState: Setter<ToolbarState>
 ) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
 
@@ -76,7 +76,7 @@ function make(
 				note: "",
 				page: pageNumber,
 				text: selection.toString(),
-				rects: pdfRects,
+				rects: pdfRects
 			};
 
 			const isHighlightFast = e.ctrlKey || e.metaKey;
@@ -92,7 +92,7 @@ function make(
 		getPageDimensions(pdfPage: any) {
 			const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1 });
 			return { width, height };
-		},
+		}
 	};
 }
 
@@ -101,7 +101,7 @@ function convertToSVGRect([llx, lly, urx, ury]: PDFRect, pageHeight: number): SV
 		x: Math.min(llx, urx),
 		y: pageHeight - Math.max(lly, ury),
 		width: Math.abs(urx - llx),
-		height: Math.abs(ury - lly),
+		height: Math.abs(ury - lly)
 	};
 }
 

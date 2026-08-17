@@ -70,7 +70,7 @@ function make(pdfSlickStore: PDFSlickState) {
 				initialDistance = null;
 				midpoint = null;
 			}
-		},
+		}
 	};
 }
 

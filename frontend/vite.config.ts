@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [
 			devtools(),
-			solidPlugin(),
+			solidPlugin()
 			// TODO: enable PWA once complete
 			// VitePWA({
 			// 	registerType: "autoUpdate",
@@ -40,6 +40,6 @@ export default defineConfig(({ mode }) => {
 		],
 		server: { port: 3000, host: true, proxy: { "/api": "http://localhost:8000" } },
 		optimizeDeps: { exclude: ["@pdfslick/core"] },
-		build: { target: "esnext" },
+		build: { target: "esnext" }
 	};
 });

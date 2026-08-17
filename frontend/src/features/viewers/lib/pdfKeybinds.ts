@@ -21,7 +21,7 @@ function make(pdfSlickStore: PDFSlickState) {
 		register("pdf.rotateClockwise", (pdf) => pdf.setRotation(pdfSlickStore.pagesRotation + 90)),
 		register("pdf.rotateAntiClockwise", (pdf) => pdf.setRotation(pdfSlickStore.pagesRotation - 90)),
 		register("pdf.scrollDown", (pdf) => pdf.viewer.container.scrollBy({ top: 100, behavior: "instant" })),
-		register("pdf.scrollUp", (pdf) => pdf.viewer.container.scrollBy({ top: -100, behavior: "instant" })),
+		register("pdf.scrollUp", (pdf) => pdf.viewer.container.scrollBy({ top: -100, behavior: "instant" }))
 	];
 
 	return {
@@ -29,7 +29,7 @@ function make(pdfSlickStore: PDFSlickState) {
 			for (const unregister of unregisters) {
 				unregister();
 			}
-		},
+		}
 	};
 }
 

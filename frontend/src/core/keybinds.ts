@@ -22,7 +22,7 @@ export const COMMANDS = [
 	{ id: "pdf.gotoFirstPage", label: "Go to First Page", hidden: false },
 	{ id: "pdf.gotoLastPage", label: "Go to Last Page", hidden: false },
 	{ id: "pdf.rotateClockwise", label: "Rotate Clockwise", hidden: false },
-	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false },
+	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false }
 ] as const;
 
 export type CommandId = (typeof COMMANDS)[number]["id"];

@@ -8,10 +8,11 @@
     "quoteStyle": "alwaysDouble",
     "newLineKind": "lf",
     "preferSingleLine": true,
+    "trailingCommas": "never",
     "overrides": [
       {
         "files": ["**/*.tsx", "**/*.jsx"],
-        "lineWidth": 80
+        "lineWidth": 90
       }
     ]
   },

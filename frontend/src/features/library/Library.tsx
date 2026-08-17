@@ -13,10 +13,10 @@ export default function Library(): JSX.Element {
 		books()?.filter((book: any) => {
 			return book.title
 				? book.title?.toLowerCase().includes(
-					(searchParams.q as string)?.toLowerCase() ?? "",
+					(searchParams.q as string)?.toLowerCase() ?? ""
 				)
 				: book.fileName?.toLowerCase().includes(
-					(searchParams.q as string)?.toLowerCase() ?? "",
+					(searchParams.q as string)?.toLowerCase() ?? ""
 				);
 		});
 
@@ -40,11 +40,7 @@ export default function Library(): JSX.Element {
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
 						{(book) => (
-							<LibraryItem
-								id={book.id}
-								title={book.title}
-								fileName={book.fileName}
-							/>
+							<LibraryItem id={book.id} title={book.title} fileName={book.fileName} />
 						)}
 					</For>
 				</div>

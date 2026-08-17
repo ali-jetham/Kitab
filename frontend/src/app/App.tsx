@@ -18,7 +18,7 @@ export default function App(props: RouteSectionProps) {
 
 	createEffect(() => {
 		setActiveContexts(
-			isModalVisible() ? ["modal", "viewer", "global"] : ["viewer", "global"],
+			isModalVisible() ? ["modal", "viewer", "global"] : ["viewer", "global"]
 		);
 	});
 

@@ -36,7 +36,7 @@ export function createBookStore(id: string) {
 		primaryColor: "",
 		annotations: [],
 		location: [],
-		isDirty: false,
+		isDirty: false
 	});
 
 	async function init() {
@@ -47,8 +47,8 @@ export function createBookStore(id: string) {
 				primaryColor: doc?.primaryColor,
 				annotations: doc?.annotations ?? [],
 				location: doc?.location ?? [],
-				isDirty: false,
-			}),
+				isDirty: false
+			})
 		);
 	}
 	async function addAnnotation(annotation: AnnotationCreate) {
