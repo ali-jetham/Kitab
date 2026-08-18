@@ -41,3 +41,9 @@ input {
 input {
   border: 1px solid var(--border-color);
 }
+
+#viewerContainer[data-mode="single-page"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

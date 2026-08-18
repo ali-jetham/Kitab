@@ -22,7 +22,10 @@ export const COMMANDS = [
 	{ id: "pdf.gotoFirstPage", label: "Go to First Page", hidden: false },
 	{ id: "pdf.gotoLastPage", label: "Go to Last Page", hidden: false },
 	{ id: "pdf.rotateClockwise", label: "Rotate Clockwise", hidden: false },
-	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false }
+	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false },
+	{ id: "pdf.viewModeScrollV", label: "Vertical Scrolling View", hidden: false },
+	{ id: "pdf.viewModeScrollH", label: "Horizontal Scrolling View", hidden: false },
+	{ id: "pdf.viewModeSinglePage", label: "Single Page View", hidden: false }
 ] as const;
 
 export type CommandId = (typeof COMMANDS)[number]["id"];
@@ -35,7 +38,7 @@ export type Keybind = {
 	isInputAllowed?: boolean;
 };
 
-export type CommandContext = { event?: KeyboardEvent; count?: number; };
+export type CommandContext = { event?: KeyboardEvent; count?: number; arg?: string; };
 export type CommandHandler = (context: CommandContext) => void;
 
 const commandRegistry = new Map<CommandId, CommandHandler>();

@@ -1,23 +1,20 @@
 import { Combobox } from "@kobalte/core/combobox";
-import { createSignal, onCleanup, onMount } from "solid-js";
-import { COMMANDS, executeCommand } from "../../core/keybinds";
+import { createSignal, onCleanup, onMount, Setter } from "solid-js";
+import { Command, COMMANDS, executeCommand } from "../../core/keybinds";
 import styles from "./Modal.module.css";
 
-export default function Modal() {
-	const [currentIndex, setCurrentIndex] = createSignal(0);
-	const modalCommands = COMMANDS.filter((c) => !c.hidden);
+type ModalProps = { setOpen: Setter<boolean>; };
+export default function Modal(props: ModalProps) {
+	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
 	let inputRef: HTMLInputElement | undefined = undefined;
 
 	onMount(() => {
 		inputRef!.focus();
 	});
 
-	onCleanup(() => {
-	});
-
 	return (
 		<Combobox
-			options={modalCommands}
+			options={options()}
 			optionValue="id"
 			optionTextValue="label"
 			optionDisabled="hidden"
@@ -38,16 +35,15 @@ export default function Modal() {
 			onChange={(value) => {
 				if (!value) return;
 				executeCommand(value.id);
+				props.setOpen(false);
 			}}
 		>
 			<Combobox.Control class={styles.combobox__control}>
 				<Combobox.Input ref={inputRef} class={styles.combobox__input} />
 			</Combobox.Control>
-			<Combobox.Portal>
-				<Combobox.Content class={styles.combobox__content}>
-					<Combobox.Listbox class={styles.combobox__listbox} />
-				</Combobox.Content>
-			</Combobox.Portal>
+			<Combobox.Content class={styles.combobox__content}>
+				<Combobox.Listbox class={styles.combobox__listbox} />
+			</Combobox.Content>
 		</Combobox>
 	);
 }

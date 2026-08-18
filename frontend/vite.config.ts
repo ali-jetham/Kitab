@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => {
 			// }),
 		],
 		server: { port: 3000, proxy: { "/api": env.VITE_BACKEND_URL } },
+		// server: { port: 3000, proxy: { "/api": "http://localhost:8000" } },
 		optimizeDeps: { exclude: ["@pdfslick/core"] },
 		build: { target: "esnext" }
 	};

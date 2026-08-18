@@ -2,4 +2,15 @@
   background: var(--headerbar-bg-color);
   color: var(--headerbar-fg-color);
   border-top: 1px solid var(--headerbar-shade-color);
+  transition: opacity 0.3s ease;
+}
+
+.status.hidden {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .status {
+    padding: 0.9rem;
+  }
 }

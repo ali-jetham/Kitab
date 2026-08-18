@@ -22,7 +22,13 @@ export function usePDFKeybinds(pdfSlickStore: PDFSlickState) {
 		register("pdf.rotateClockwise", (pdf) => pdf.setRotation(pdfSlickStore.pagesRotation + 90)),
 		register("pdf.rotateAntiClockwise", (pdf) => pdf.setRotation(pdfSlickStore.pagesRotation - 90)),
 		register("pdf.scrollDown", (pdf) => pdf.viewer.container.scrollBy({ top: 100, behavior: "instant" })),
-		register("pdf.scrollUp", (pdf) => pdf.viewer.container.scrollBy({ top: -100, behavior: "instant" }))
+		register("pdf.scrollUp", (pdf) => pdf.viewer.container.scrollBy({ top: -100, behavior: "instant" })),
+		register("pdf.viewModeScrollV", (pdf) => pdf.viewer.scrollMode = 0),
+		register("pdf.viewModeScrollH", (pdf) => pdf.viewer.scrollMode = 1),
+		register("pdf.viewModeSinglePage", (pdf) => {
+			pdf.viewer.scrollMode = 3;
+			document.getElementById("#viewerContainer")!.dataset.mode = "single-page";
+		})
 	];
 
 	onCleanup(() => {

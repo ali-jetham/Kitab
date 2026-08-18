@@ -11,3 +11,28 @@
   flex-direction: column;
   overflow-y: auto;
 }
+
+.modalButton {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--card-shade-color);
+  bottom: 3rem;
+  right: 3rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.6rem;
+  transition: opacity 0.3s ease;
+}
+
+.modalButton.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .modalButton {
+    display: none;
+  }
+}

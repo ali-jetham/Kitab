@@ -81,9 +81,9 @@ export default function PDFViewer(props: PDFViewerProps) {
 				{...toolbarState()}
 				setToolbarState={setToolbarState}
 				onSelectColor={(color) => {
-					setSelectedColor(color)
-					setToolbarState(() => ({ open: false, anchorRef: undefined }))
-					highlights.commitAnnotation(color)
+					setSelectedColor(color);
+					setToolbarState(() => ({ open: false, anchorRef: undefined }));
+					highlights.commitAnnotation(color);
 				}}
 			/>
 		</div>
