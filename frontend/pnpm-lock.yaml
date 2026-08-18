@@ -17,6 +17,9 @@ importers:
       '@pdfslick/solid':
         specifier: ^4.0.2
         version: 4.0.2(solid-js@1.9.14)
+      '@solid-primitives/pointer':
+        specifier: ^0.3.6
+        version: 0.3.6(solid-js@1.9.14)
       '@solid-primitives/scheduled':
         specifier: ^1.5.3
         version: 1.5.3(solid-js@1.9.14)
@@ -1103,6 +1106,11 @@ packages:
 
   '@solid-primitives/media@2.3.6':
     resolution: {integrity: sha512-pk49gPOq/UMRUJ+pTSrOfBiR8xJjRYHXIf1iR/jSnyQ/KroU+ZXhkZzavC7hvfp2vJeOTW5k2/HN0r3Q1VJ7Pw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/pointer@0.3.6':
+    resolution: {integrity: sha512-307wko5OGb2b7j1pUIRetF58atTP3wDgm+h2o6/OQBgT1z0EwMDuW7ujaqCj3iTzUS7YaWbyVQ7nC/ojXd6rKA==}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -3401,6 +3409,13 @@ snapshots:
       '@solid-primitives/event-listener': 2.4.6(solid-js@1.9.14)
       '@solid-primitives/rootless': 1.5.4(solid-js@1.9.14)
       '@solid-primitives/static-store': 0.1.4(solid-js@1.9.14)
+      '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
+      solid-js: 1.9.14
+
+  '@solid-primitives/pointer@0.3.6(solid-js@1.9.14)':
+    dependencies:
+      '@solid-primitives/event-listener': 2.4.6(solid-js@1.9.14)
+      '@solid-primitives/rootless': 1.5.4(solid-js@1.9.14)
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
       solid-js: 1.9.14
 

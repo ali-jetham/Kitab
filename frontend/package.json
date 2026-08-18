@@ -14,6 +14,7 @@
     "@kobalte/core": "^0.13.13",
     "@pdfslick/core": "^4.0.2",
     "@pdfslick/solid": "^4.0.2",
+    "@solid-primitives/pointer": "^0.3.6",
     "@solid-primitives/scheduled": "^1.5.3",
     "@solid-primitives/timer": "^1.4.4",
     "@solidjs/router": "^0.16.3",

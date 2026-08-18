@@ -1,0 +1,33 @@
+.modalButton {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--card-shade-color);
+  padding: 0.3rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.6rem;
+  touch-action: none;
+  will-change: transform;
+  cursor: move;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.modalButton.dragging {
+  /* Takes your variable, keeps the Red, Green, and Blue channels, but overrides Alpha to 0.9 */
+  background-color: rgba(from var(--popover-shade-color) r g b / 0.6);
+}
+
+.modalButton.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .modalButton {
+    display: none;
+  }
+}
