@@ -1,63 +1,11 @@
-.dialog__overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background-color: var(--popover-shade-color);
-}
-
-.dialog__overlay[data-expanded] {
-  animation: overlayShow 250ms ease-out;
-}
-.dialog__overlay[data-closed] {
-  animation: overlayHide 250ms ease-in forwards;
-}
-
-.dialog__positioner {
-  position: fixed;
-  inset: 0;
-  padding-top: 3rem;
-  z-index: 50;
-  display: flex;
-  justify-content: center;
-}
-
-.dialog__content {
-  z-index: 50;
-  width: min(680px, 100%);
-  box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-
-.dialog__content[data-expanded] {
-  opacity: 1;
-}
-.dialog__content[data-closed] {
-  opacity: 0;
-}
-
-@keyframes overlayShow {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes overlayHide {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
 .combobox {
+  position: fixed;
+  inset: 0;
+  padding: 3rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  background-color: var(--popover-shade-color);
 }
 
 .combobox__control {
@@ -123,7 +71,7 @@
 
 .combobox__listbox {
   overflow-y: auto;
-  max-height: 360px;
+  max-height: 30vh;
   padding: 8px;
 }
 
@@ -154,13 +102,6 @@
 .combobox__item[data-highlighted] {
   outline: none;
   background-color: var(--view-active-color);
-}
-
-.combobox__section {
-  padding: 8px 0 0 8px;
-  font-size: 14px;
-  line-height: 32px;
-  color: hsl(240 4% 46%);
 }
 
 .combobox__itemIndicator {

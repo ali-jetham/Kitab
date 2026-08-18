@@ -38,9 +38,11 @@ export default function App(props: RouteSectionProps) {
 		<div class={styles.app}>
 			<main class={styles.main}>{props.children}</main>
 			<Status />
-			<Modal open={isModalOpen} setOpen={setIsModalOpen} />
 
 			<Portal>
+				<Show when={isModalOpen()}>
+					<Modal open={isModalOpen} setOpen={setIsModalOpen} />
+				</Show>
 				<ModalButton setIsModalOpen={setIsModalOpen} />
 			</Portal>
 		</div>
