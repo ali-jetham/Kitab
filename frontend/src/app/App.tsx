@@ -8,11 +8,11 @@ import Modal from "./components/Modal";
 import Status from "./components/Status";
 
 export default function App(props: RouteSectionProps) {
-	const [isModalVisible, setModalVisible] = createSignal(false);
-	const [showModalButton, setShowModalButton] = createSignal(true);
+	const [isModalOpen, setIsModalOpen] = createSignal<boolean>(false);
+	const [showModalButton, setShowModalButton] = createSignal(false);
 
+	// TODO: use makeTimer() primitive
 	let timer;
-
 	onMount(() => {
 		function touch() {
 			setShowModalButton(true);
@@ -30,15 +30,16 @@ export default function App(props: RouteSectionProps) {
 	});
 
 	const unregisterToggleModal = registerCommand("ui.modal.toggle", () => {
-		setModalVisible((prev) => !prev);
+		setIsModalOpen((prev) => !prev);
+		console.log("toggling modal", isModalOpen());
 	});
 	const unregisterCloseModal = registerCommand("ui.modal.close", () => {
-		setModalVisible(false);
+		setIsModalOpen(false);
 	});
 
 	createEffect(() => {
 		setActiveContexts(
-			isModalVisible() ? ["modal", "viewer", "global"] : ["viewer", "global"]
+			isModalOpen() ? ["modal", "viewer", "global"] : ["viewer", "global"]
 		);
 	});
 
@@ -54,22 +55,16 @@ export default function App(props: RouteSectionProps) {
 	return (
 		<div class={styles.app}>
 			<main class={styles.main}>{props.children}</main>
-
-			{/*<Show when={showModalButton()}>*/}
 			<Status />
-			{/*</Show>*/}
-
+			<Modal open={isModalOpen} setOpen={setIsModalOpen} />
 			<Portal>
 				<button
 					type="button"
 					class={`${styles.modalButton} ${showModalButton() ? "" : styles.hidden}`}
-					onClick={() => setModalVisible((prev) => !prev)}
+					onClick={() => setIsModalOpen((prev) => !prev)}
 				>
 					<Command />
 				</button>
-				<Show when={isModalVisible()}>
-					<Modal setOpen={setModalVisible} />
-				</Show>
 			</Portal>
 		</div>
 	);

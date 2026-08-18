@@ -20,6 +20,9 @@ importers:
       '@solid-primitives/scheduled':
         specifier: ^1.5.3
         version: 1.5.3(solid-js@1.9.14)
+      '@solid-primitives/timer':
+        specifier: ^1.4.4
+        version: 1.4.4(solid-js@1.9.14)
       '@solidjs/router':
         specifier: ^0.16.3
         version: 0.16.3(solid-js@1.9.14)
@@ -1135,6 +1138,11 @@ packages:
 
   '@solid-primitives/styles@0.1.4':
     resolution: {integrity: sha512-siDvuK9mBpswjUdJCpr3ZUhBIHghNjHsBhZ9p3mIH1sDgwVr5gQGfFmESIvtb4Ka4Oq6B6hLOqi4QES/i8u4YA==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/timer@1.4.4':
+    resolution: {integrity: sha512-Ayjyb3+v1hyU92vuLUN0tVHq2mmTCPGxSDLGJMsDydRqx9ZfJIc9xj6cxK4XvdY3pif3ps2mIv52pjgToybEpQ==}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -3432,6 +3440,10 @@ snapshots:
     dependencies:
       '@solid-primitives/rootless': 1.5.4(solid-js@1.9.14)
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
+      solid-js: 1.9.14
+
+  '@solid-primitives/timer@1.4.4(solid-js@1.9.14)':
+    dependencies:
       solid-js: 1.9.14
 
   '@solid-primitives/trigger@1.2.4(solid-js@1.9.14)':
