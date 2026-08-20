@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
-from app.schemas.annotation import AnnotationBase
+from app.schemas.annotation import AnnotationBase, AnnotationRead
 
 
 class DocumentBase(BaseModel):
@@ -18,7 +18,7 @@ class DocumentRead(DocumentBase):
     file_name: str
     id: str
     cover: str
-    annotations: list[AnnotationBase]
+    annotations: list[AnnotationRead]
 
 
 class DocumentUpdate(DocumentBase):

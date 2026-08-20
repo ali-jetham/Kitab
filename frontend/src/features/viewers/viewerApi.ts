@@ -1,9 +1,13 @@
 import { http } from "../../core/http";
-import type { AnnotationCreate } from "../../stores/createBookStore";
+import type { Annotation, AnnotationCreate } from "../../stores/createBookStore";
 
 async function addAnnotation(ann: AnnotationCreate) {
 	console.log(JSON.stringify(ann));
 	return await http.post("/api/annotations", ann);
+}
+
+async function deleteAnnotation(id: string) {
+	return await http.delete("/api/annotations");
 }
 
 async function getDoc(id: string) {

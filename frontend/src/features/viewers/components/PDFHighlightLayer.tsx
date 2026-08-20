@@ -18,6 +18,15 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	console.log(width, height, props.page.viewport.rotation);
 	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH);
 
+	function handleClick(e: MouseEvent) {
+		const target = (e.target as Element).closest("[data-annotation-id]")
+		console.log("highlight clicked")
+		console.log(target)
+		if (target) {
+			console.log(`Annotation with id ${target.getAttribute("data-annotation-id")} clicked`)
+		}
+	}
+
 	return (
 		<svg
 			viewBox={`0 0 ${width} ${height}`}
@@ -28,22 +37,24 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 			<g transform={transform}>
 				<For each={props.annotations()}>
 					{(annotation) => (
-						<For each={annotation.rects}>
-							{(r) => {
-								const rect = convertToSVGRect(r, baseH);
-								return (
-									<rect
-										x={rect.x}
-										y={rect.y}
-										width={rect.width}
-										height={rect.height}
-										fill={annotation.color}
-										fill-opacity="0.3"
-										data-annotation-id={annotation.id}
-									/>
-								);
-							}}
-						</For>
+						<g data-annotation-id={annotation.id}>
+							<For each={annotation.rects}>
+								{(r) => {
+									const rect = convertToSVGRect(r, baseH);
+									return (
+										<rect
+											onClick={handleClick}
+											x={rect.x}
+											y={rect.y}
+											width={rect.width}
+											height={rect.height}
+											fill={annotation.color}
+											fill-opacity="0.3"
+										/>
+									);
+								}}
+							</For>
+						</g>
 					)}
 				</For>
 			</g>
