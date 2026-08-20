@@ -46,12 +46,8 @@ export default function PDFViewer(props: PDFViewerProps) {
 		if (!page) return;
 		if (page.div.querySelector("[data-highlightLayer]")) return;
 
-		const { width, height } = getPageDimensions(page);
 		const annotations = getAnnotationsByPage(e.pageNumber);
-		render(
-			() => <PDFHighlightLayer width={width} height={height} annotations={annotations} />,
-			page.div
-		);
+		render(() => <PDFHighlightLayer page={page} annotations={annotations} />, page.div);
 	}
 
 	createEffect(() => {

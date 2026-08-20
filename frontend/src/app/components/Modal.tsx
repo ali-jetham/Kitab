@@ -6,7 +6,7 @@ import styles from "./Modal.module.css";
 type ModalProps = { open: Accessor<boolean>; setOpen: Setter<boolean>; };
 
 export default function Modal(props: ModalProps) {
-	const options = COMMANDS.filter((c) => !c.hidden);
+	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
 	let inputRef: HTMLInputElement | undefined;
 
 	onMount(() => {
@@ -15,7 +15,7 @@ export default function Modal(props: ModalProps) {
 
 	return (
 		<Combobox
-			options={options}
+			options={options()}
 			optionValue="id"
 			optionTextValue="label"
 			optionDisabled="hidden"
@@ -35,10 +35,12 @@ export default function Modal(props: ModalProps) {
 				</Combobox.Item>
 			)}
 			onChange={(value) => {
-				if (!value) return;
-
+				console.log("onChange called");
+				if (!value) {
+					console.log("onChange value", value);
+					return;
+				}
 				console.log(`Combobox onChange called with value ${value.id}`);
-				props.setOpen(false);
 				executeCommand(value.id);
 			}}
 		>

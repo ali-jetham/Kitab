@@ -106,8 +106,19 @@ export function usePDFHighlights(
 // Pure Utilities
 
 export function getPageDimensions(pdfPage: any) {
-	const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1 });
+	const rotation = pdfPage.viewport.rotation;
+	const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1, rotation });
 	return { width, height };
+}
+
+export function getRotationTransform(rotation: number, width: number, height: number): string {
+	const transforms: Record<number, string> = {
+		0: "",
+		90: `translate(${height}, 0) rotate(90)`,
+		180: `translate(${width}, ${height}) rotate(180)`,
+		270: `translate(0, ${width}) rotate(270)`
+	};
+	return transforms[rotation] ?? "";
 }
 
 export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, pageHeight: number): SVGRect {

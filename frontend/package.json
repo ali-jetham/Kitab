@@ -9,7 +9,6 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest"
-
   },
   "license": "MIT",
   "dependencies": {
