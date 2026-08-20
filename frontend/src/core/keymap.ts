@@ -17,8 +17,10 @@ export const keymap: readonly Keybind[] = [
 	{ key: "r", command: "pdf.rotateClockwise", context: "viewer" },
 	{ key: "R", command: "pdf.rotateAntiClockwise", context: "viewer" },
 
-	{ key: "gg", command: "pdf.gotoFirstPage", context: "viewer" },
+	{ key: "g g", command: "pdf.gotoFirstPage", context: "viewer" },
 	{ key: "G", command: "pdf.gotoLastPage", context: "viewer" },
+
+	{ key: "d h", command: "pdf.deleteHighlight", context: "viewer" },
 
 	{ key: "ArrowDown", command: "modal.next", context: "modal", isInputAllowed: true },
 	{ key: "ArrowUp", command: "modal.prev", context: "modal", isInputAllowed: true },

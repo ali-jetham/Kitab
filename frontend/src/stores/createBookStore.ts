@@ -55,9 +55,13 @@ export function createBookStore(id: string) {
 		setStore("annotations", store.annotations.length, { ...annotation });
 	}
 
+	async function deleteAnnotation(id: string) {
+		setStore("annotations", (list) => list.filter((a) => a.id !== id));
+	}
+
 	function getAnnotationsByPage(page: number): Accessor<Annotation[]> {
 		return () => store.annotations.filter(ann => ann.page === page);
 	}
 
-	return { store, addAnnotation, getAnnotationsByPage };
+	return { store, addAnnotation, deleteAnnotation, getAnnotationsByPage };
 }

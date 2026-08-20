@@ -42,6 +42,9 @@ importers:
       '@types/node':
         specifier: ^26.2.0
         version: 26.2.0
+      dprint:
+        specifier: ^0.56.0
+        version: 0.56.0
       solid-devtools:
         specifier: ^0.34.5
         version: 0.34.5(solid-js@1.9.14)(vite@7.3.6(@types/node@26.2.0)(lightningcss@1.32.0)(terser@5.49.2))
@@ -590,6 +593,90 @@ packages:
     resolution: {integrity: sha512-Ox2kYyxy7NoXdKWdHeDEjZxClwzO4SKM8plAaVwmAJPxHMqA0rLOoAsa+hBDwRLpctf+ZRnAd/ykguuJidnaTA==}
     peerDependencies:
       solid-js: ^1.8
+
+  '@dprint/android-arm64@0.56.0':
+    resolution: {integrity: sha512-aU3FhmOw2BkHOMhrd7EvNtdcvELJsdT8atdmaYT4WuKkADoK7yNkF+FfsJuVPY1fmYICWjptvNbelUEWW0nYcg==}
+    cpu: [arm64]
+    os: [android]
+
+  '@dprint/android-x64@0.56.0':
+    resolution: {integrity: sha512-qlS4YEobmvNAgba/OKddjDeNn8bIN7x23oB88VMAJ40wj/6VWVUCkfF0ZLGuPF+oEmGo9drVECMbcH3bSyrP9Q==}
+    cpu: [x64]
+    os: [android]
+
+  '@dprint/darwin-arm64@0.56.0':
+    resolution: {integrity: sha512-kjDleGXrbUyZzUqoWVsDH8Bcq2UsFwWG2p5bUboq8kKCJ90AOLDCj2P6iC38GxBPtuoqW9/mIlCLb5tV9lg46g==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@dprint/darwin-x64@0.56.0':
+    resolution: {integrity: sha512-lnt950bi/gUlj2YGTjsgmLQnzytf4159yYAvci8hHp+CC89nuoYZubD4GOppZqdqm5wWyzxMrXdTSD1xQYHhyQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@dprint/linux-arm64-glibc@0.56.0':
+    resolution: {integrity: sha512-GFgNPHT25wNcmaBTg2n6Ru7HnmI3ED2t/TRmHBsJBc6OiVmNLA9wlJVkiGu/BOojxSL5lMhUaQ0RU0kg+xfcrQ==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@dprint/linux-arm64-musl@0.56.0':
+    resolution: {integrity: sha512-6hVMfSODwnAGfxSkb0DX9kBrapBxZzzuDIDemcb/QrpvBgbm5bYZEnceiwR1/6El9XeVJBw6ioj1MMxc+YDYwg==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@dprint/linux-loong64-glibc@0.56.0':
+    resolution: {integrity: sha512-Ic+DfTR4sJkcwvOh16PaTnornAm3mXVVfknIAutn75Si31NXHA2ew8ZWA483MDtliTpLmpm+T8ZrhEIHVihNKQ==}
+    cpu: [loong64]
+    os: [linux]
+    libc: [glibc]
+
+  '@dprint/linux-loong64-musl@0.56.0':
+    resolution: {integrity: sha512-HWvT4x3xPybuVjuhgzo8CSHCzUFL7IjbisRaPItPUJ4dhGsRyw5n5pvDPbTbcXylfjTq2payHLXYCVOeXzEvMA==}
+    cpu: [loong64]
+    os: [linux]
+    libc: [musl]
+
+  '@dprint/linux-ppc64-glibc@0.56.0':
+    resolution: {integrity: sha512-cc1dawp5bKdBXZ9FQ/i0fMVlFf8wZjdWrdhYLSRHO9L0j1n5hl3U9wOnnqiZIBJmIoRD1jsZZgjhvOhWgRy1Ew==}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [glibc]
+
+  '@dprint/linux-ppc64-musl@0.56.0':
+    resolution: {integrity: sha512-BCOCakrLCTzFcEcvZaY9XHeLg/sqexRHXrwyShu133s0gx1Wd/AbQhJ+AuG5Y3BQwxora9zdLSEui1y4p/u0jA==}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [musl]
+
+  '@dprint/linux-riscv64-glibc@0.56.0':
+    resolution: {integrity: sha512-SJ58SYFbVdYRsFPV6JfqT2QmGqfFKH7c6FeRQliGmpjAuxthyuoL5GS/bCjcalRwB1trvhYnZqIvOQCctq9gHQ==}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
+  '@dprint/linux-x64-glibc@0.56.0':
+    resolution: {integrity: sha512-k8iBOsIznLuQ/NWtj1mZEZU8+vlOpkRK4OTa84iuZwjrPsAQAMUJTviWjceWwC85jCf7jbTxEb8fuzEBQqARkg==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@dprint/linux-x64-musl@0.56.0':
+    resolution: {integrity: sha512-cpXRl1qGcL+knYW6OZKG6guMy0uUrHnzZH4LSKucYvScHHDodup3J1CxFN/mGIU5w/D4xhjPt8SVItbfMl3V3A==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@dprint/win32-arm64@0.56.0':
+    resolution: {integrity: sha512-DVeS3VWud4EO+fOZFxND38/rg8bF9GxB9m4vAlEz+sHHGfKKO84a8tdUSyyYdL+s+B9syJJ6RzpilIBcUrphmQ==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@dprint/win32-x64@0.56.0':
+    resolution: {integrity: sha512-goIeNrok/Fev/ae4OFdt7beuT6v1/myr8SzlSL7352tK0ldCsNzCGMyZzM3VT88jNf7f87bBsLgLkSXeiGXurQ==}
+    cpu: [x64]
+    os: [win32]
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -1412,6 +1499,10 @@ packages:
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
+
+  dprint@0.56.0:
+    resolution: {integrity: sha512-PdRT491Wmp7IcVRdwdz/Qc7wtm646tO1QnfWhMz7J039+yA+TQWomJkvqos8Nzox2PhFFCStJXdIsgOBVeHLmA==}
+    hasBin: true
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -3147,6 +3238,51 @@ snapshots:
       '@floating-ui/dom': 1.8.0
       solid-js: 1.9.14
 
+  '@dprint/android-arm64@0.56.0':
+    optional: true
+
+  '@dprint/android-x64@0.56.0':
+    optional: true
+
+  '@dprint/darwin-arm64@0.56.0':
+    optional: true
+
+  '@dprint/darwin-x64@0.56.0':
+    optional: true
+
+  '@dprint/linux-arm64-glibc@0.56.0':
+    optional: true
+
+  '@dprint/linux-arm64-musl@0.56.0':
+    optional: true
+
+  '@dprint/linux-loong64-glibc@0.56.0':
+    optional: true
+
+  '@dprint/linux-loong64-musl@0.56.0':
+    optional: true
+
+  '@dprint/linux-ppc64-glibc@0.56.0':
+    optional: true
+
+  '@dprint/linux-ppc64-musl@0.56.0':
+    optional: true
+
+  '@dprint/linux-riscv64-glibc@0.56.0':
+    optional: true
+
+  '@dprint/linux-x64-glibc@0.56.0':
+    optional: true
+
+  '@dprint/linux-x64-musl@0.56.0':
+    optional: true
+
+  '@dprint/win32-arm64@0.56.0':
+    optional: true
+
+  '@dprint/win32-x64@0.56.0':
+    optional: true
+
   '@esbuild/aix-ppc64@0.28.2':
     optional: true
 
@@ -3877,6 +4013,24 @@ snapshots:
 
   detect-libc@2.1.2:
     optional: true
+
+  dprint@0.56.0:
+    optionalDependencies:
+      '@dprint/android-arm64': 0.56.0
+      '@dprint/android-x64': 0.56.0
+      '@dprint/darwin-arm64': 0.56.0
+      '@dprint/darwin-x64': 0.56.0
+      '@dprint/linux-arm64-glibc': 0.56.0
+      '@dprint/linux-arm64-musl': 0.56.0
+      '@dprint/linux-loong64-glibc': 0.56.0
+      '@dprint/linux-loong64-musl': 0.56.0
+      '@dprint/linux-ppc64-glibc': 0.56.0
+      '@dprint/linux-ppc64-musl': 0.56.0
+      '@dprint/linux-riscv64-glibc': 0.56.0
+      '@dprint/linux-x64-glibc': 0.56.0
+      '@dprint/linux-x64-musl': 0.56.0
+      '@dprint/win32-arm64': 0.56.0
+      '@dprint/win32-x64': 0.56.0
 
   dunder-proto@1.0.1:
     dependencies:

@@ -25,7 +25,8 @@ export const COMMANDS = [
 	{ id: "pdf.rotateAntiClockwise", label: "Rotate Counter-Clockwise", hidden: false },
 	{ id: "pdf.viewModeScrollV", label: "Vertical Scrolling View", hidden: false },
 	{ id: "pdf.viewModeScrollH", label: "Horizontal Scrolling View", hidden: false },
-	{ id: "pdf.viewModeSinglePage", label: "Single Page View", hidden: false }
+	{ id: "pdf.viewModeSinglePage", label: "Single Page View", hidden: false },
+	{ id: "pdf.deleteHighlight", label: "Delete selected highlight", hidden: true }
 ] as const;
 
 export type CommandId = (typeof COMMANDS)[number]["id"];
@@ -49,15 +50,6 @@ let activeContexts: Context[] = ["global"];
 let pendingCount = "";
 let pendingSequence = "";
 let sequenceResetTimer: ReturnType<typeof setTimeout> | null = null;
-
-function resetSequenceState() {
-	pendingCount = "";
-	pendingSequence = "";
-	if (sequenceResetTimer !== null) {
-		clearTimeout(sequenceResetTimer);
-		sequenceResetTimer = null;
-	}
-}
 
 function scheduleSequenceReset() {
 	if (sequenceResetTimer !== null) {
@@ -149,55 +141,88 @@ function isDigitKey(key: string): boolean {
 	return key.length === 1 && key >= "0" && key <= "9";
 }
 
+type SequenceNode = {
+	command?: CommandId;
+	children: Map<string, SequenceNode>;
+};
+
+const sequenceTrieCache = new Map<Context, SequenceNode>();
+
+function buildSequenceTrie(context: Context): SequenceNode {
+	const root: SequenceNode = { children: new Map() };
+
+	for (const binding of keymap) {
+		if (binding.context !== context) continue;
+		if (!binding.key.includes(" ")) continue; // only multi-key sequences
+
+		const keys = binding.key.split(" ");
+		let node = root;
+		for (const k of keys) {
+			let next = node.children.get(k);
+			if (!next) {
+				next = { children: new Map() };
+				node.children.set(k, next);
+			}
+			node = next;
+		}
+		node.command = binding.command;
+	}
+
+	return root;
+}
+
+function getSequenceTrie(context: Context): SequenceNode {
+	let trie = sequenceTrieCache.get(context);
+	if (!trie) {
+		trie = buildSequenceTrie(context);
+		sequenceTrieCache.set(context, trie);
+	}
+	return trie;
+}
+
+let pendingNode: SequenceNode | null = null;
+
+function resetSequenceState() {
+	pendingCount = "";
+	pendingNode = null;
+	if (sequenceResetTimer !== null) {
+		clearTimeout(sequenceResetTimer);
+		sequenceResetTimer = null;
+	}
+}
+
 function dispatchSequence(event: KeyboardEvent, key: string, isTyping: boolean): boolean {
 	const isViewerActive = activeContexts.includes("viewer");
 	if (!isViewerActive || isTyping || key.includes("+")) {
-		if (pendingCount !== "" || pendingSequence !== "") {
+		if (pendingCount !== "" || pendingNode !== null) resetSequenceState();
+		return false;
+	}
+
+	// Digits accumulate into a count only when we haven't started walking a sequence yet.
+	if (pendingNode === null && isDigitKey(key)) {
+		pendingCount += key;
+		scheduleSequenceReset();
+		return true;
+	}
+
+	for (const context of activeContexts) {
+		const startNode = pendingNode ?? getSequenceTrie(context);
+		const next = startNode.children.get(key);
+		if (!next) continue;
+
+		if (next.command) {
+			const count = pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
+			const handler = commandRegistry.get(next.command);
 			resetSequenceState();
-		}
-		return false;
-	}
-
-	const hasPendingInput = pendingCount !== "" || pendingSequence !== "";
-	const isDigit = isDigitKey(key);
-
-	if (!hasPendingInput) {
-		if (isDigit) {
-			pendingCount = key;
-			scheduleSequenceReset();
+			if (!handler) return false;
+			if (event) event.preventDefault();
+			handler({ event, count });
 			return true;
 		}
 
-		if (key === "g") {
-			pendingSequence = "g";
-			scheduleSequenceReset();
-			return true;
-		}
-
-		return false;
-	}
-
-	if (pendingSequence === "") {
-		if (isDigit) {
-			pendingCount += key;
-			scheduleSequenceReset();
-			return true;
-		}
-
-		if (key === "g") {
-			pendingSequence = "g";
-			scheduleSequenceReset();
-			return true;
-		}
-
-		resetSequenceState();
-		return false;
-	}
-
-	if (pendingSequence === "g" && key === "g") {
-		const count = pendingCount === "" ? undefined : Number.parseInt(pendingCount, 10);
-		resetSequenceState();
-		return dispatchBinding("gg", event, isTyping, count);
+		pendingNode = next;
+		scheduleSequenceReset();
+		return true;
 	}
 
 	resetSequenceState();

@@ -7,7 +7,7 @@ import {
 } from "../primitives/createPDFHighlight";
 import styles from "./PDFHighlightLayer.module.css";
 
-type PDFHighlightLayerProps = { page: any; annotations: Accessor<Annotation[]>; };
+type PDFHighlightLayerProps = { onHighlightDelete: (id: string) => void, page: any; annotations: Accessor<Annotation[]>; };
 
 export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	const { width: baseW, height: baseH } = props.page.pdfPage.getViewport({
@@ -22,8 +22,9 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 		const target = (e.target as Element).closest("[data-annotation-id]")
 		console.log("highlight clicked")
 		console.log(target)
-		if (target) {
-			console.log(`Annotation with id ${target.getAttribute("data-annotation-id")} clicked`)
+		const annotationId = target?.getAttribute("data-annotation-id");
+		if (annotationId) {
+			props.onHighlightDelete(annotationId)
 		}
 	}
 
@@ -34,7 +35,9 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 			preserveAspectRatio="none"
 			data-highlightLayer="true"
 		>
-			<g transform={transform}>
+			<g transform={transform}
+				style={{"pointer-events": "auto"}}
+			>
 				<For each={props.annotations()}>
 					{(annotation) => (
 						<g data-annotation-id={annotation.id}>

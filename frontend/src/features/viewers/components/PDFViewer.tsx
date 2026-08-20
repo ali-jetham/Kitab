@@ -30,7 +30,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	});
 	const [selectedColor, setSelectedColor] = createSignal("#ffd400");
 
-	const { store, addAnnotation, getAnnotationsByPage } = createBookStore(props.id);
+	const { store, addAnnotation, deleteAnnotation, getAnnotationsByPage } = createBookStore(props.id);
 	usePDFGestures(pdfSlickStore, () => containerRef);
 	usePDFKeybinds(pdfSlickStore);
 	const highlights = usePDFHighlights(
@@ -47,7 +47,11 @@ export default function PDFViewer(props: PDFViewerProps) {
 		if (page.div.querySelector("[data-highlightLayer]")) return;
 
 		const annotations = getAnnotationsByPage(e.pageNumber);
-		render(() => <PDFHighlightLayer page={page} annotations={annotations} />, page.div);
+		render(() => <PDFHighlightLayer onHighlightDelete={onHighlightDelete} page={page} annotations={annotations} />, page.div);
+	}
+
+	function onHighlightDelete(id: string) {
+		deleteAnnotation(id)
 	}
 
 	createEffect(() => {

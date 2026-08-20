@@ -19,5 +19,5 @@ async def add(
 
 
 @router.delete("/{id}")
-async def delete(id: int, service: AnnotationService = Depends(get_annotation_service)):
+async def delete(id: str, service: AnnotationService = Depends(get_annotation_service)):
     await service.delete_annotation(id)

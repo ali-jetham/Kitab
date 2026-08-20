@@ -28,7 +28,8 @@ export function usePDFKeybinds(pdfSlickStore: PDFSlickState) {
 		register("pdf.viewModeSinglePage", (pdf) => {
 			pdf.viewer.scrollMode = 3;
 			document.getElementById("#viewerContainer")!.dataset.mode = "single-page";
-		})
+		}),
+		register("pdf.deleteHighlight", () => console.log("dh pressed"))
 	];
 
 	onCleanup(() => {
