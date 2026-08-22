@@ -1,20 +1,23 @@
-import type { PDFSlickState } from "@pdfslick/solid";
-import { Accessor, createSignal, Setter } from "solid-js";
+import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid";
+import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { SetStoreFunction } from "solid-js/store";
+import { createComponent, render } from "solid-js/web";
 import { v7 as uuid7 } from "uuid";
-import type { AnnotationCreate, PDFRect } from "../../../stores/createBookStore";
-import { ToolbarState } from "../components/PDFViewer";
+import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore";
+import PDFHighlightLayer from "../components/PDFHighlightLayer";
+import { ViewerStore } from "../components/PDFViewer";
 import { viewerApi } from "../viewerApi";
 
 export type SVGRect = { x: number; y: number; width: number; height: number; };
 
 type PendingAnnotation = { pageNumber: number; text: string; pdfRects: PDFRect[]; };
 
-export function usePDFHighlights(
-	pdfStore: PDFSlickState,
-	addAnnotation: (annotation: AnnotationCreate) => void,
+export function createPDFHighlights(
+	pdfSlickStore: PDFSlickState,
 	docId: string,
-	selectedColor: Accessor<string>,
-	setToolbarState: Setter<ToolbarState>
+	actions: any,
+	selectedColor: string,
+	setViewerStore: SetStoreFunction<ViewerStore>
 ) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
 	const [pendingAnnotation, setPendingAnnotation] = createSignal<PendingAnnotation | null>(null);
@@ -23,7 +26,7 @@ export function usePDFHighlights(
 		const pending = pendingAnnotation();
 		if (!pending) return;
 
-		const activeColor = color ?? selectedColor() ?? DEFAULT_HIGHLIGHT_COLOR;
+		const activeColor = color ?? selectedColor ?? DEFAULT_HIGHLIGHT_COLOR;
 
 		const annotation: AnnotationCreate = {
 			id: uuid7(),
@@ -36,7 +39,7 @@ export function usePDFHighlights(
 			rects: pending.pdfRects
 		};
 
-		addAnnotation(annotation);
+		actions.addAnnotation(annotation);
 		viewerApi.addAnnotation(annotation);
 		window.getSelection()?.removeAllRanges();
 		setPendingAnnotation(null);
@@ -81,8 +84,8 @@ export function usePDFHighlights(
 		const selectionRects: DOMRect[] = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
 		const mergedRects = mergeSelectionRects(selectionRects);
 
-		const pageNumber = pdfStore.pdfSlick?.viewer.currentPageNumber;
-		const page = pageNumber ? pdfStore.pdfSlick?.getPageView(pageNumber - 1) : undefined;
+		const pageNumber = pdfSlickStore.pdfSlick?.viewer.currentPageNumber;
+		const page = pageNumber ? pdfSlickStore.pdfSlick?.getPageView(pageNumber - 1) : undefined;
 		if (!page?.canvas || !page.viewport || !pageNumber) return;
 
 		const canvasRect = (page.canvas as HTMLCanvasElement).getBoundingClientRect();
@@ -96,9 +99,38 @@ export function usePDFHighlights(
 		if (isHighlightFast) {
 			commitAnnotation();
 		} else {
-			setToolbarState(() => ({ open: true, anchorRef: anchorEl }));
+			setViewerStore((prev) => ({ ...prev, showToolbar: true, anchorRef: anchorEl }));
 		}
 	}
+
+	function handlePageRendered(e: TEventBusEvent) {
+		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1);
+		if (!page) return;
+		if (page.div.querySelector("[data-highlightLayer]")) return;
+		const annotations = actions.getAnnotationsByPage(e.pageNumber);
+		render(() => createComponent(PDFHighlightLayer, { page, annotations, onSelectAnnotation }), page.div);
+	}
+
+	function onSelectAnnotation(id: string) {
+		setViewerStore("annotationId", id);
+	}
+
+	onMount(() => {
+		document.addEventListener("pointerup", handlePointerUp);
+	});
+
+	onCleanup(() => {
+		document.removeEventListener("pointerup", handlePointerUp);
+	});
+
+	createEffect(() => {
+		if (!pdfSlickStore.pdfSlick) return;
+		pdfSlickStore.pdfSlick.eventBus.on("pagerendered", handlePageRendered);
+
+		onCleanup(() => {
+			pdfSlickStore.pdfSlick?.eventBus.off("pagerendered", handlePageRendered);
+		});
+	});
 
 	return { handlePointerUp, commitAnnotation };
 }

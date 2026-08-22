@@ -1,7 +1,7 @@
 import type { PDFSlickState } from "@pdfslick/core";
 import { createEffect, onCleanup } from "solid-js";
 
-export function usePDFGestures(pdfSlickStore: PDFSlickState, containerRef: () => HTMLElement | null | undefined) {
+export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: () => HTMLElement | null | undefined) {
 	let initialDistance: number | null = null;
 	let initialScale: number = pdfSlickStore.scale;
 	let newScale: number = pdfSlickStore.scale;

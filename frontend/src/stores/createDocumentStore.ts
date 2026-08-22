@@ -1,6 +1,5 @@
 import { Accessor, onMount } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
-import { viewerApi } from "../features/viewers/viewerApi";
 export type PDFRect = [llx: number, lly: number, urx: number, ury: number];
 
 export type Annotation = {
@@ -17,40 +16,38 @@ export type Annotation = {
 };
 export type AnnotationCreate = Omit<Annotation, "createdAt" | "updatedAt">;
 
-export type BookStore = {
+export type Doc = {
 	id: string;
 	primaryColor: string;
 	annotations: Annotation[];
 	location: [];
 	isDirty: boolean;
+	annotationId: string | null;
 };
 
-export function createBookStore(id: string) {
-	onMount(() => {
-		console.log("createBookStore Mounted");
-		init();
-	});
-
-	const [store, setStore] = createStore<BookStore>({
+export function createDocumentStore(id: string) {
+	const [store, setStore] = createStore<Doc>({
 		id: id,
 		primaryColor: "",
 		annotations: [],
 		location: [],
-		isDirty: false
+		isDirty: false,
+		annotationId: null
 	});
 
-	async function init() {
-		const doc = await viewerApi.getDoc(id);
+	async function init(doc: Doc) {
 		setStore(
 			reconcile({
 				id,
-				primaryColor: doc?.primaryColor,
-				annotations: doc?.annotations ?? [],
-				location: doc?.location ?? [],
-				isDirty: false
+				primaryColor: doc.primaryColor,
+				annotations: doc.annotations ?? [],
+				location: doc.location ?? [],
+				isDirty: false,
+				annotationId: null
 			})
 		);
 	}
+
 	async function addAnnotation(annotation: AnnotationCreate) {
 		setStore("annotations", store.annotations.length, { ...annotation });
 	}
@@ -63,5 +60,5 @@ export function createBookStore(id: string) {
 		return () => store.annotations.filter(ann => ann.page === page);
 	}
 
-	return { store, addAnnotation, deleteAnnotation, getAnnotationsByPage };
+	return { store, actions: { init, addAnnotation, deleteAnnotation, getAnnotationsByPage } };
 }

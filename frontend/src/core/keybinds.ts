@@ -141,10 +141,7 @@ function isDigitKey(key: string): boolean {
 	return key.length === 1 && key >= "0" && key <= "9";
 }
 
-type SequenceNode = {
-	command?: CommandId;
-	children: Map<string, SequenceNode>;
-};
+type SequenceNode = { command?: CommandId; children: Map<string, SequenceNode>; };
 
 const sequenceTrieCache = new Map<Context, SequenceNode>();
 

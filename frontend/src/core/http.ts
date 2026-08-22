@@ -15,7 +15,7 @@ export async function http(url: string, method: Method, body?: any) {
 				});
 				break;
 			case "DELETE":
-				response = await fetch(url);
+				response = await fetch(url, { method: "DELETE" });
 				break;
 		}
 		if (!response.ok) {

@@ -1,8 +1,10 @@
 import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
 import { onCleanup } from "solid-js";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
+import { ViewerStore } from "../components/PDFViewer";
+import { viewerApi } from "../viewerApi";
 
-export function usePDFKeybinds(pdfSlickStore: PDFSlickState) {
+export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: ViewerStore, actions: any) {
 	function register(commandId: CommandId, callback: (pdf: PDFSlick) => void) {
 		return registerCommand(commandId, () => {
 			if (!pdfSlickStore.pdfSlick) return;
@@ -29,7 +31,15 @@ export function usePDFKeybinds(pdfSlickStore: PDFSlickState) {
 			pdf.viewer.scrollMode = 3;
 			document.getElementById("#viewerContainer")!.dataset.mode = "single-page";
 		}),
-		register("pdf.deleteHighlight", () => console.log("dh pressed"))
+		register("pdf.deleteHighlight", () => {
+			if (!viewerStore.annotationId) {
+				console.log("Please select an annotation first");
+				return;
+			}
+			console.log("Deleting annotation", viewerStore.annotationId);
+			actions.deleteAnnotation(viewerStore.annotationId);
+			viewerApi.deleteAnnotation(viewerStore.annotationId);
+		})
 	];
 
 	onCleanup(() => {

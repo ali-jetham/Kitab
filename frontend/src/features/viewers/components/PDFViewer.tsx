@@ -1,20 +1,25 @@
-import { type TEventBusEvent, usePDFSlick } from "@pdfslick/solid";
-import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
-import { render } from "solid-js/web";
-import { createBookStore } from "../../../stores/createBookStore";
-import { usePDFGestures } from "../primitives/createPDFGestures";
-import { getPageDimensions, usePDFHighlights } from "../primitives/createPDFHighlight";
-import { usePDFKeybinds } from "../primitives/createPDFKeybinds";
-import HighlightToolbar, { HighlightToolbarProps } from "./HighlightToolbar";
-import PDFHighlightLayer from "./PDFHighlightLayer";
+import { usePDFSlick } from "@pdfslick/solid";
+import { createStore } from "solid-js/store";
+import { createDocumentStore } from "../../../stores/createDocumentStore";
+import { createDocumentSync } from "../primitives/createDocumentSync";
+import { createPDFGestures } from "../primitives/createPDFGestures";
+import { createPDFHighlights } from "../primitives/createPDFHighlight";
+import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
+import HighlightToolbar from "./HighlightToolbar";
+
+export type ViewerStore = {
+	showToolbar: boolean;
+	anchorRef: HTMLElement | undefined;
+	selectedColor: string;
+	annotationId: string | null;
+};
 
 type PDFViewerProps = { id: string; };
-export type ToolbarState = { open: boolean; anchorRef: HTMLElement | undefined; };
 
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement;
-
 	const url = `api/docs/${props.id}/file`;
+
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
 		scaleValue: "page-fit",
 		getDocumentParams: {
@@ -24,52 +29,25 @@ export default function PDFViewer(props: PDFViewerProps) {
 		}
 	});
 
-	const [toolbarState, setToolbarState] = createSignal<ToolbarState>({
-		open: false,
-		anchorRef: undefined
+	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
+		annotationId: null,
+		anchorRef: undefined,
+		selectedColor: "#ffd400",
+		showToolbar: false
 	});
-	const [selectedColor, setSelectedColor] = createSignal("#ffd400");
 
-	const { store, addAnnotation, deleteAnnotation, getAnnotationsByPage } = createBookStore(props.id);
-	usePDFGestures(pdfSlickStore, () => containerRef);
-	usePDFKeybinds(pdfSlickStore);
-	const highlights = usePDFHighlights(
+	const { actions } = createDocumentStore(props.id);
+	createDocumentSync(props.id, actions);
+	createPDFGestures(pdfSlickStore, () => containerRef);
+	createPDFKeybinds(pdfSlickStore, viewerStore, actions);
+
+	const highlights = createPDFHighlights(
 		pdfSlickStore,
-		addAnnotation,
 		props.id,
-		selectedColor,
-		setToolbarState
+		actions,
+		viewerStore.selectedColor,
+		setViewerStore
 	);
-
-	function handlePageRendered(e: TEventBusEvent) {
-		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1);
-		if (!page) return;
-		if (page.div.querySelector("[data-highlightLayer]")) return;
-
-		const annotations = getAnnotationsByPage(e.pageNumber);
-		render(() => <PDFHighlightLayer onHighlightDelete={onHighlightDelete} page={page} annotations={annotations} />, page.div);
-	}
-
-	function onHighlightDelete(id: string) {
-		deleteAnnotation(id)
-	}
-
-	createEffect(() => {
-		if (!pdfSlickStore.pdfSlick) return;
-		pdfSlickStore.pdfSlick.eventBus.on("pagerendered", handlePageRendered);
-
-		onCleanup(() => {
-			pdfSlickStore.pdfSlick?.eventBus.off("pagerendered", handlePageRendered);
-		});
-	});
-
-	onMount(() => {
-		document.addEventListener("pointerup", (e) => highlights.handlePointerUp(e));
-	});
-
-	onCleanup(() => {
-		document.removeEventListener("pointerup", highlights.handlePointerUp); // fix
-	});
 
 	return (
 		<div ref={containerRef} class="pdfslick-container pdfSlick">
@@ -78,11 +56,16 @@ export default function PDFViewer(props: PDFViewerProps) {
 			</div>
 
 			<HighlightToolbar
-				{...toolbarState()}
-				setToolbarState={setToolbarState}
+				open={viewerStore.showToolbar}
+				anchorRef={viewerStore.anchorRef}
+				setViewerStore={setViewerStore}
 				onSelectColor={(color) => {
-					setSelectedColor(color);
-					setToolbarState(() => ({ open: false, anchorRef: undefined }));
+					setViewerStore("selectedColor", color);
+					setViewerStore((prev) => ({
+						...prev,
+						showToolbar: false,
+						anchorRef: undefined
+					}));
 					highlights.commitAnnotation(color);
 				}}
 			/>

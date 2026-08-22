@@ -2,13 +2,14 @@ import { ColorSwatch } from "@kobalte/core/color-swatch";
 import { parseColor } from "@kobalte/core/colors";
 import { Popover } from "@kobalte/core/popover";
 import { For, type Setter } from "solid-js";
+import { SetStoreFunction } from "solid-js/store";
 import styles from "./HighlightToolbar.module.css";
-import { ToolbarState } from "./PDFViewer";
+import { ToolbarState, ViewerStore } from "./PDFViewer";
 
 export type HighlightToolbarProps = {
 	open: boolean;
 	anchorRef: HTMLElement | undefined;
-	setToolbarState: Setter<ToolbarState>;
+	setViewerStore: SetStoreFunction<ViewerStore>;
 	onSelectColor: (color: string) => void;
 };
 
@@ -18,8 +19,9 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 	return (
 		<Popover
 			open={props.open}
-			onOpenChange={(open) => props.setToolbarState((prev) => ({ ...prev, open }))}
 			anchorRef={() => props.anchorRef}
+			onOpenChange={(open) =>
+				props.setViewerStore((prev) => ({ ...prev, showToolbar: open }))}
 			preventScroll={true}
 		>
 			<Popover.Portal>

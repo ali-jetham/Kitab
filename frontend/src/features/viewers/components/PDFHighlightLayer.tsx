@@ -1,5 +1,5 @@
 import { Accessor, For } from "solid-js";
-import { type Annotation } from "../../../stores/createBookStore";
+import { type Annotation } from "../../../stores/createDocumentStore";
 import {
 	convertToSVGRect,
 	getPageDimensions,
@@ -7,7 +7,11 @@ import {
 } from "../primitives/createPDFHighlight";
 import styles from "./PDFHighlightLayer.module.css";
 
-type PDFHighlightLayerProps = { onHighlightDelete: (id: string) => void, page: any; annotations: Accessor<Annotation[]>; };
+type PDFHighlightLayerProps = {
+	page: any;
+	annotations: Accessor<Annotation[]>;
+	onSelectAnnotation: (id: string) => void;
+};
 
 export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	const { width: baseW, height: baseH } = props.page.pdfPage.getViewport({
@@ -19,12 +23,10 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH);
 
 	function handleClick(e: MouseEvent) {
-		const target = (e.target as Element).closest("[data-annotation-id]")
-		console.log("highlight clicked")
-		console.log(target)
+		const target = (e.target as Element).closest("[data-annotation-id]");
 		const annotationId = target?.getAttribute("data-annotation-id");
 		if (annotationId) {
-			props.onHighlightDelete(annotationId)
+			props.onSelectAnnotation(annotationId);
 		}
 	}
 
@@ -35,9 +37,7 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 			preserveAspectRatio="none"
 			data-highlightLayer="true"
 		>
-			<g transform={transform}
-				style={{"pointer-events": "auto"}}
-			>
+			<g transform={transform} style={{ "pointer-events": "auto" }}>
 				<For each={props.annotations()}>
 					{(annotation) => (
 						<g data-annotation-id={annotation.id}>

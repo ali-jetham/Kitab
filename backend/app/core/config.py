@@ -8,8 +8,6 @@ class Settings(BaseSettings):
     LIBRARY_PATH: Path = Path("/app/library")
     model_config = SettingsConfigDict(env_file=".env")
 
-    # DB_PATH: str = rf"sqlite:///{LIBRARY_PATH}/library.db"
-
     @property
     def DB_PATH(self) -> str:
         return f"sqlite:///{self.LIBRARY_PATH / 'library.db'}"
