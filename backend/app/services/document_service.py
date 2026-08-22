@@ -1,9 +1,9 @@
-import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pikepdf
 import pymupdf
+import xxhash
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session, selectinload
 
@@ -47,11 +47,16 @@ class DocumentService:
         self.db.commit()
 
     def _scan(self):
-        """Scan library_root for PDFs."""
-        docs = []
+        """Scan library_path for PDFs."""
+        docs = list(self.db.scalars(select(Document)).all())
+        new_docs = []
 
         for path in self.library_path.rglob("*.pdf"):
-            id = secrets.token_hex(4)
+            id = self._generate_content_hash(path)
+            exists = any(doc.id for doc in docs)
+            if exists:
+                continue
+
             with pikepdf.open(path) as pdf:
                 meta = pdf.open_metadata()
                 title = normalize_pikepdf_value(meta.get("dc:title")) if meta else None
@@ -70,8 +75,8 @@ class DocumentService:
                 cover=cover,
                 created_at=datetime.now(timezone.utc),
             )
-            docs.append(doc)
-        self.db.add_all(docs)
+            new_docs.append(doc)
+        self.db.add_all(new_docs)
         self.db.commit()
 
     def _generate_cover(self, id: str, book_path: Path) -> str:
@@ -90,5 +95,15 @@ class DocumentService:
 
         return str(cover_path)
 
-    def _generate_content_hash(self, filepath: Path):
-        pass
+    def _generate_content_hash(self, filepath: Path) -> str:
+        """
+        Generate a xxHash of the PDF file.
+        """
+
+        x = xxhash.xxh3_128()
+
+        with open(filepath, "rb") as file:
+            while chunk := file.read(1024 * 1024):
+                x.update(chunk)
+
+        return x.hexdigest()
