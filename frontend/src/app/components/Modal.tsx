@@ -45,7 +45,7 @@ export default function Modal(props: ModalProps) {
 			}}
 		>
 			<Combobox.Control class={styles.combobox__control}>
-				<Combobox.Input ref={inputRef} autofocus class={styles.combobox__input} />
+				<Combobox.Input ref={inputRef} class={styles.combobox__input} />
 			</Combobox.Control>
 			<Combobox.Portal>
 				<Combobox.Content class={styles.combobox__content}>

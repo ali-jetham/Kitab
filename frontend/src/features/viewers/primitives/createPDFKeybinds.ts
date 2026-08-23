@@ -29,7 +29,7 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 		register("pdf.viewModeScrollH", (pdf) => pdf.viewer.scrollMode = 1),
 		register("pdf.viewModeSinglePage", (pdf) => {
 			pdf.viewer.scrollMode = 3;
-			document.getElementById("#viewerContainer")!.dataset.mode = "single-page";
+			document.getElementById("viewerContainer")!.dataset.mode = "single-page";
 		}),
 		register("pdf.deleteHighlight", () => {
 			if (!viewerStore.annotationId) {

@@ -23,16 +23,16 @@ export default function Library(): JSX.Element {
 	return (
 		<div class={styles.library}>
 			{/*<div class={styles.headerBar}>*/}
-				<TextField class={styles.textField}>
-					<TextField.Label />
-					<TextField.Input
-						class={styles.input}
-						placeholder="Search for books"
-						onChange={(e) => setSearchParams({ q: e.target.value })}
-					/>
-					<TextField.Description />
-					<TextField.ErrorMessage />
-				</TextField>
+			<TextField class={styles.textField}>
+				<TextField.Label />
+				<TextField.Input
+					class={styles.input}
+					placeholder="Search for books"
+					onChange={(e) => setSearchParams({ q: e.target.value })}
+				/>
+				<TextField.Description />
+				<TextField.ErrorMessage />
+			</TextField>
 			{/*</div>*/}
 
 			<Suspense fallback={<div>Loading books...</div>}>

@@ -1,15 +1,15 @@
 import type { RouteSectionProps } from "@solidjs/router";
-import { Command } from "lucide-solid";
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, Show } from "solid-js/web";
 import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
 import styles from "./App.module.css";
+import ActionBar from "./components/ActionBar";
 import Modal from "./components/Modal";
-import ModalButton from "./components/ModalButton";
-import Status from "./components/Status";
+import StatusBar from "./components/StatusBar";
 
 export default function App(props: RouteSectionProps) {
 	const [isModalOpen, setIsModalOpen] = createSignal<boolean>(false);
+	const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
 	const unregisterToggleModal = registerCommand("ui.modal.toggle", () => {
 		setIsModalOpen((prev) => !prev);
@@ -27,6 +27,9 @@ export default function App(props: RouteSectionProps) {
 
 	onMount(() => {
 		document.addEventListener("keydown", dispatch);
+		document.addEventListener("contextmenu", (e) => {
+			e.preventDefault();
+		});
 	});
 
 	onCleanup(() => {
@@ -37,13 +40,18 @@ export default function App(props: RouteSectionProps) {
 	return (
 		<div class={styles.app}>
 			<main class={styles.main}>{props.children}</main>
-			<Status />
+
+			<Show when={!isMobile}>
+				<StatusBar />
+			</Show>
+			<Show when={isMobile && !isModalOpen()}>
+				<ActionBar setModal={setIsModalOpen} />
+			</Show>
 
 			<Portal>
 				<Show when={isModalOpen()}>
 					<Modal open={isModalOpen} setOpen={setIsModalOpen} />
 				</Show>
-				<ModalButton setIsModalOpen={setIsModalOpen} />
 			</Portal>
 		</div>
 	);

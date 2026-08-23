@@ -8,9 +8,3 @@
 .status.hidden {
   opacity: 0;
 }
-
-@media (max-width: 768px) {
-  .status {
-    padding: 0.9rem;
-  }
-}
