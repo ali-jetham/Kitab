@@ -5,9 +5,14 @@ async function libraryScan() {
 	const res = http("api/docs/scan", "GET");
 }
 
+async function refreshCovers() {
+	const res = http("api/docs/refresh", "GET");
+}
+
 // TODO
 async function setPrimaryColor(id: string, color: string) {
 	const res = http(`/api/docs/{id}`, "POST", { primary_color: color });
 }
 
 registerCommand("library.scan", libraryScan);
+registerCommand("library.refreshCovers", refreshCovers);

@@ -4,7 +4,7 @@ export type Context = "global" | "viewer" | "modal";
 export type Command = { id: string; label: string; hidden: boolean; };
 
 export const COMMANDS = [
-	{ id: "library.refreshCovers", label: "Library: Refersh Covers", hidden: false },
+	{ id: "library.refreshCovers", label: "Library: Refresh Covers", hidden: false },
 	{ id: "library.scan", label: "Library: Scan", hidden: false },
 	{ id: "ui.modal.toggle", label: "Toggle Command Palette", hidden: true },
 	{ id: "ui.modal.close", label: "Close Command Palette", hidden: true },

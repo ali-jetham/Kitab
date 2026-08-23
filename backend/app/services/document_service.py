@@ -99,11 +99,27 @@ class DocumentService:
         """
         Generate a xxHash of the PDF file.
         """
-
         x = xxhash.xxh3_128()
 
         with open(filepath, "rb") as file:
             while chunk := file.read(1024 * 1024):
                 x.update(chunk)
-
         return x.hexdigest()
+
+    def _refresh_covers(self):
+        """
+        Refresh covers for all documents.
+        """
+        for file in self.library_path.iterdir():
+            if file.is_file():
+                file.unlink()
+
+        docs = list(self.db.scalars(select(Document)).all())
+        for doc in docs:
+            path = Path(doc.file_path)
+            if not path.is_file():
+                continue
+            cover = self._generate_cover(doc.id, path)
+            stmt = update(Document).where(Document.id == doc.id).values(cover=cover)
+            self.db.execute(stmt)
+        self.db.commit()

@@ -1,6 +1,6 @@
 import { TextField } from "@kobalte/core/text-field";
 import { useSearchParams } from "@solidjs/router";
-import { createResource, For, type JSX, Show, Suspense } from "solid-js";
+import { createResource, For, type JSX, Suspense } from "solid-js";
 import LibraryItem from "./components/LibraryItem";
 import styles from "./Library.module.css";
 import { libraryApi as api } from "./libraryApi";
@@ -22,8 +22,8 @@ export default function Library(): JSX.Element {
 
 	return (
 		<div class={styles.library}>
-			<div class={styles.headerBar}>
-				<TextField>
+			{/*<div class={styles.headerBar}>*/}
+				<TextField class={styles.textField}>
 					<TextField.Label />
 					<TextField.Input
 						class={styles.input}
@@ -33,7 +33,7 @@ export default function Library(): JSX.Element {
 					<TextField.Description />
 					<TextField.ErrorMessage />
 				</TextField>
-			</div>
+			{/*</div>*/}
 
 			<Suspense fallback={<div>Loading books...</div>}>
 				{/* FIXME: show when no books found*/}

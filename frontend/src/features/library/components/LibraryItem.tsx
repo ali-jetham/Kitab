@@ -14,9 +14,15 @@ export default function LibraryItem(props: LibraryItemProps): JSX.Element {
 	}
 
 	return (
-		<div class={styles.libraryItem} onclick={handleClick}>
-			<Image>
-				<Image.Img src={`api/docs/${props.id}/cover`} alt="cover" />
+		<div class={styles.libraryItem} onClick={handleClick}>
+			<Image onLoadingStatusChange={(status) => console.log(status)}>
+				<Image.Img src={`/api/docs/${props.id}/cover`} alt="cover" />
+				<Image.Fallback>
+					<img
+						src="https://placehold.co/400x566?text=Cover+Not+Found\nConsider+Refreshing+Covers"
+						alt="cover placeholder"
+					/>
+				</Image.Fallback>
 			</Image>
 			<p>{props.title ?? props.fileName}</p>
 		</div>

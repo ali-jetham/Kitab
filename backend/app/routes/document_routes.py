@@ -22,6 +22,9 @@ async def get_docs(
 async def scan_docs(service: DocumentService = Depends(get_document_service)):
     service._scan()
 
+@router.get("/refresh")
+async def refresh_covers(service: DocumentService = Depends(get_document_service)):
+    service._refresh_covers()
 
 @router.get("/{id}")
 async def get_doc(
