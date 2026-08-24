@@ -37,13 +37,17 @@ input {
   border-radius: 6px;
 }
 
-.frame,
 input {
   border: 1px solid var(--border-color);
 }
 
-#viewerContainer[data-mode="single-page"] {
+#viewerContainer[data-page-mode="single"] {
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+#viewerContainer[data-page-mode="scrollHorizontal"] {
+  display: flex;
   align-items: center;
 }

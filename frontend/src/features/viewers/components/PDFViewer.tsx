@@ -22,6 +22,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
 		scaleValue: "page-fit",
+		removePageBorders: true,
 		getDocumentParams: {
 			rangeChunkSize: 65536,
 			disableAutoFetch: true,
