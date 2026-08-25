@@ -1,3 +1,4 @@
+import { createTimer, makeTimer } from "@solid-primitives/timer";
 import type { RouteSectionProps } from "@solidjs/router";
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, Show } from "solid-js/web";
@@ -9,7 +10,10 @@ import StatusBar from "./components/StatusBar";
 
 export default function App(props: RouteSectionProps) {
 	const [isModalOpen, setIsModalOpen] = createSignal<boolean>(false);
+	const [isActionOpen, setIsActionOpen] = createSignal<boolean>(false);
+	const [trigger, setTrigger] = createSignal(0);
 	const isMobile = window.matchMedia("(max-width: 768px)").matches;
+	let startX = 0, startY = 0, moved = false;
 
 	const unregisterToggleModal = registerCommand("ui.modal.toggle", () => {
 		setIsModalOpen((prev) => !prev);
@@ -27,9 +31,35 @@ export default function App(props: RouteSectionProps) {
 
 	onMount(() => {
 		document.addEventListener("keydown", dispatch);
-		document.addEventListener("contextmenu", (e) => {
-			e.preventDefault();
+		document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+		document.addEventListener("touchstart", (e) => {
+			if (e.touches.length > 1) return;
+			const t = e.touches[0];
+			[startX, startY, moved] = [t.clientX, t.clientY, false]
 		});
+
+		document.addEventListener("touchmove", (e) => {
+			const t = e.touches[0];
+			if (Math.abs(t.clientX - startX) > 10 || Math.abs(t.clientY - startY) > 10) {
+				moved = true;
+			}
+		});
+
+		document.addEventListener("touchend", () => {
+			if (!moved) {
+				setIsActionOpen(true);
+				setTrigger((prev) => prev + 1);
+			}
+		});
+	});
+
+	createEffect(() => {
+		trigger();
+		if (!isActionOpen()) return;
+
+		const timer = setTimeout(() => setIsActionOpen(false), 3000);
+		onCleanup(() => clearTimeout(timer));
 	});
 
 	onCleanup(() => {
@@ -44,7 +74,8 @@ export default function App(props: RouteSectionProps) {
 			<Show when={!isMobile}>
 				<StatusBar />
 			</Show>
-			<Show when={isMobile && !isModalOpen()}>
+
+			<Show when={isActionOpen() && !isModalOpen()}>
 				<ActionBar setModal={setIsModalOpen} />
 			</Show>
 

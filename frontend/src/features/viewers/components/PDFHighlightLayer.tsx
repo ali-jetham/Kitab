@@ -19,10 +19,10 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 		rotation: 0
 	});
 	const { width, height } = getPageDimensions(props.page);
-	console.log(width, height, props.page.viewport.rotation);
 	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH);
 
 	function handleClick(e: MouseEvent) {
+		e.stopPropagation();
 		const target = (e.target as Element).closest("[data-annotation-id]");
 		const annotationId = target?.getAttribute("data-annotation-id");
 		if (annotationId) {

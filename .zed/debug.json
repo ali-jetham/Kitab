@@ -9,4 +9,10 @@
 		"args": ["app.main:app", "--reload"],
 		"jinja": true,
 	},
+
+	{
+		"adapter": "JavaScript",
+		"label": "JS",
+
+	}
 ]

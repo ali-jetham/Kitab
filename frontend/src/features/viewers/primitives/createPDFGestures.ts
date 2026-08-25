@@ -33,6 +33,11 @@ export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: ()
 			const zoomFactor = currentDistance / initialDistance;
 			newScale = initialScale * zoomFactor;
 
+			if (newScale < 0.3) {
+				newScale = 0.3;
+				return;
+			}
+
 			const viewer = document.getElementById("viewer");
 			const viewerContainer = pdfSlickStore.pdfSlick?.viewer.container;
 			if (viewer == null || viewerContainer == null) return;

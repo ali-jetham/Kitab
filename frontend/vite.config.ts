@@ -12,24 +12,26 @@ export default defineConfig(({ mode }) => {
 			solidPlugin(),
 			VitePWA({
 				registerType: "autoUpdate",
+				strategies: "generateSW",
+				devOptions: { enabled: true, type: "classic" },
 				manifest: {
 					name: "Kitab",
 					short_name: "Kitab",
 					start_url: "/",
-					display: "standalone",
+					display: "fullscreen",
 					description: "Self Hosted Peronsal Library",
-					theme_color: "#ffffff",
+					theme_color: "#ff0000",
 					icons: [{ src: "/book-192.png", sizes: "192x192", type: "image/png" }, {
-						src: "book-512.png",
+						src: "/book-512.png",
 						sizes: "512x512",
 						type: "image/png"
 					}]
-				},
-				devOptions: { enabled: true }
+				}
 			})
 		],
 		// server: { port: 3000, proxy: { "/api": env.VITE_BACKEND_URL } },
 		server: { port: 3000, proxy: { "/api": "http://localhost:8000" } },
+		preview: { port: 3000 },
 		optimizeDeps: { exclude: ["@pdfslick/core"] },
 		build: { target: "esnext" }
 	};

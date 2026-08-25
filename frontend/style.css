@@ -16,7 +16,7 @@ button {
 
 body {
   height: 100%;
-  background: var(--window-bg-color);
+  background-color: var(--window-bg-color);
   font-family: "Inter", sans-serif;
   font-style: normal;
   color: var(--window-fg-color);
@@ -39,15 +39,4 @@ input {
 
 input {
   border: 1px solid var(--border-color);
-}
-
-#viewerContainer[data-page-mode="single"] {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#viewerContainer[data-page-mode="scrollHorizontal"] {
-  display: flex;
-  align-items: center;
 }

@@ -1,10 +1,34 @@
 import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
-import { onCleanup } from "solid-js";
+import { createElementSize } from "@solid-primitives/resize-observer";
+import { createEffect, onCleanup } from "solid-js";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
 import { ViewerStore } from "../components/PDFViewer";
 import { viewerApi } from "../viewerApi";
 
 export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: ViewerStore, actions: any) {
+	const viewerContainerSize = createElementSize(() => pdfSlickStore.pdfSlick?.viewer.container);
+
+	const activePageSize = createElementSize(() => {
+		if (pdfSlickStore.scrollMode !== 3) return;
+		return pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1)?.div;
+	});
+
+	createEffect(() => {
+		if (pdfSlickStore.scrollMode !== 3) return;
+
+		const page = pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1);
+		const containerHeight = viewerContainerSize.clientHeight;
+		const pageHeight = activePageSize.clientHeight;
+		if (!page || containerHeight == null || pageHeight == null) return;
+		page.div.style.marginTop = `${Math.max(0, (containerHeight - pageHeight) / 2)}px`;
+		page.div.style.marginBottom = "0";
+
+		onCleanup(() => {
+			page.div.style.marginTop = "";
+			page.div.style.marginBottom = "";
+		});
+	});
+
 	function register(commandId: CommandId, callback: (pdf: PDFSlick) => void) {
 		return registerCommand(commandId, () => {
 			if (!pdfSlickStore.pdfSlick) return;
@@ -32,17 +56,13 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 		register("pdf.scrollDown", (pdfSlick) => pdfSlick.viewer.container.scrollBy({ top: 100, behavior: "instant" })),
 		register("pdf.scrollUp", (pdfSlick) => pdfSlick.viewer.container.scrollBy({ top: -100, behavior: "instant" })),
 		register("pdf.viewModeScrollV", (pdfSlick) => {
-			pdfSlick.viewer.scrollMode = 0;
-			document.getElementById("viewerContainer")?.removeAttribute("data-page-mode");
+			pdfSlick.setScrollMode(0);
 		}),
 		register("pdf.viewModeScrollH", (pdfSlick) => {
-			pdfSlick.viewer.scrollMode = 1;
-			document.getElementById("viewerContainer")?.removeAttribute("data-page-mode");
-			document.getElementById("viewerContainer")?.setAttribute("data-page-mode", "scrollHorizontal");
+			pdfSlick.setScrollMode(1);
 		}),
 		register("pdf.viewModeSinglePage", (pdfSlick) => {
-			pdfSlick.viewer.scrollMode = 3;
-			document.getElementById("viewerContainer")?.setAttribute("data-page-mode", "single");
+			pdfSlick.setScrollMode(3);
 		}),
 		register("pdf.deleteHighlight", () => {
 			if (!viewerStore.annotationId) {

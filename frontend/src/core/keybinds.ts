@@ -9,8 +9,8 @@ export const COMMANDS = [
 
 	{ id: "pdf.fitHeight", label: "Viewer: Fit to Page Height", hidden: false },
 	{ id: "pdf.fitWidth", label: "Viewer: Fit to Page Width", hidden: false },
-	{ id: "pdf.nextPage", label: "Go to Next Page", hidden: false },
-	{ id: "pdf.prevPage", label: "Go to Previous Page", hidden: false },
+	{ id: "pdf.nextPage", label: "Viewer: Go to Next Page", hidden: false },
+	{ id: "pdf.prevPage", label: "Viewer: Go to Previous Page", hidden: false },
 	{ id: "pdf.gotoFirstPage", label: "Viewer: Go to First Page", hidden: false },
 	{ id: "pdf.gotoLastPage", label: "Viewer: Go to Last Page", hidden: false },
 	{ id: "pdf.rotateClockwise", label: "Viewer: Rotate Clockwise", hidden: false },
