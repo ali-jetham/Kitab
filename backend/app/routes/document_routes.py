@@ -8,29 +8,21 @@ from app.core.dependencies import get_document_service
 from app.schemas.document import DocumentRead, DocumentUpdate
 from app.services.document_service import DocumentService
 
-router = APIRouter(prefix="/api/docs", tags=["docs"])
+router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
 @router.get("/")
-async def get_docs(
+async def get_documents(
     service: DocumentService = Depends(get_document_service),
 ) -> list[DocumentRead]:
-    return service.get_docs()
+    return service.get_documents()
 
-
-@router.get("/scan")
-async def scan_docs(service: DocumentService = Depends(get_document_service)):
-    service._scan()
-
-@router.get("/refresh")
-async def refresh_covers(service: DocumentService = Depends(get_document_service)):
-    service._refresh_covers()
 
 @router.get("/{id}")
-async def get_doc(
+async def get_document(
     id: str, service: DocumentService = Depends(get_document_service)
 ) -> DocumentRead:
-    result = service.get_doc(id)
+    result = service.get_document(id)
     if result is None:
         raise HTTPException(
             status_code=404, detail=f"Document with {id} does not exist "
@@ -39,14 +31,14 @@ async def get_doc(
 
 
 @router.get("/{id}/file")
-async def get_doc_file(
+async def get_document_file(
     id: str, service: DocumentService = Depends(get_document_service)
 ):
-    book_path = service.get_doc_file(id)
-    if book_path is None:
+    document_path = service.get_document_file(id)
+    if document_path is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return FileResponse(
-        path=book_path,
+        path=document_path,
         media_type="application/pdf",
         headers={"Cache-Control": "private, max-age=3600"},
     )
@@ -54,7 +46,7 @@ async def get_doc_file(
 
 # TODO: add validation for id
 @router.get("/{id}/cover")
-async def get_doc_cover(id: str):
+async def get_document_cover(id: str):
     file_path = Path(settings.LIBRARY_PATH / ".covers") / f"{id}.jpg"
 
     if not file_path.exists():
@@ -67,10 +59,21 @@ async def get_doc_cover(id: str):
     )
 
 
+# TODO: use a job and return the job_id
+@router.post("/scan")
+async def scan_documents(service: DocumentService = Depends(get_document_service)):
+    service._scan()
+
+# TODO: check if this should even be exposed to the user
+@router.post("/refresh")
+async def refresh_covers(service: DocumentService = Depends(get_document_service)):
+    service._refresh_covers()
+
+
 @router.post(f"/{id}")
-async def update_doc(
+async def update_document(
     id: str,
     document: DocumentUpdate,
     service: DocumentService = Depends(get_document_service),
 ):
-    service.update_doc(id, document)
+    service.update_document(id, document)

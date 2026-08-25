@@ -1,17 +1,12 @@
-import { http } from "./http";
+import { documentApi } from "../api/documentApi";
 import { registerCommand } from "./keybinds";
 
 async function libraryScan() {
-	const res = http("api/docs/scan", "GET");
+	const res = await documentApi.scanDocs();
 }
 
 async function refreshCovers() {
-	const res = http("api/docs/refresh", "GET");
-}
-
-// TODO
-async function setPrimaryColor(id: string, color: string) {
-	const res = http(`/api/docs/{id}`, "POST", { primary_color: color });
+	const res = documentApi.refreshCovers();
 }
 
 registerCommand("library.scan", libraryScan);

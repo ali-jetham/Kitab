@@ -1,5 +1,6 @@
 import { usePDFSlick } from "@pdfslick/solid";
 import { createStore } from "solid-js/store";
+import { documentApi } from "../../../api/documentApi";
 import { createDocumentStore } from "../../../stores/createDocumentStore";
 import { createDocumentSync } from "../primitives/createDocumentSync";
 import { createPDFGestures } from "../primitives/createPDFGestures";
@@ -18,7 +19,7 @@ type PDFViewerProps = { id: string; };
 
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement;
-	const url = `api/docs/${props.id}/file`;
+	const url = documentApi.getFileUrl(props.id);
 
 	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
 		scaleValue: "page-fit",

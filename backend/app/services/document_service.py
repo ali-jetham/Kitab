@@ -18,29 +18,29 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    def get_docs(self) -> list[DocumentRead]:
+    def get_documents(self) -> list[DocumentRead]:
         documents = list(self.db.scalars(select(Document)).all())
-        return [DocumentRead.model_validate(doc) for doc in documents]
+        return [DocumentRead.model_validate(d) for d in documents]
 
     # TODO: write a version which does NOT return with all the annotations for Library.tsx page
-    def get_doc(self, id: str) -> DocumentRead | None:
-        doc = self.db.scalar(
+    def get_document(self, id: str) -> DocumentRead | None:
+        document = self.db.scalar(
             select(Document)
             .where(Document.id == id)
             .options(selectinload(Document.annotations))
         )
-        if doc is None:
+        if document is None:
             return None
-        return DocumentRead.model_validate(doc)
+        return DocumentRead.model_validate(document)
 
-    def get_doc_file(self, id: str) -> Path | None:
-        doc: Document | None = self.db.get(Document, id)
-        if doc is None:
+    def get_document_file(self, id: str) -> Path | None:
+        document: Document | None = self.db.get(Document, id)
+        if document is None:
             return None
-        path = Path(doc.file_path)
+        path = Path(document.file_path)
         return path if path.is_file() else None
 
-    def update_doc(self, id: str, document: DocumentUpdate):
+    def update_document(self, id: str, document: DocumentUpdate):
         update_data = document.model_dump(exclude_unset=True)
         stmt = update(Document).where(Document.id == id).values(**update_data)
         self.db.execute(stmt)
@@ -48,12 +48,12 @@ class DocumentService:
 
     def _scan(self):
         """Scan library_path for PDFs."""
-        docs = list(self.db.scalars(select(Document)).all())
-        new_docs = []
+        documents = list(self.db.scalars(select(Document)).all())
+        new_documents = []
 
         for path in self.library_path.rglob("*.pdf"):
             id = self._generate_content_hash(path)
-            exists = any(doc.id for doc in docs)
+            exists = any(d.id for d in documents)
             if exists:
                 continue
 
@@ -66,7 +66,7 @@ class DocumentService:
 
             cover = self._generate_cover(id, path)
 
-            doc = Document(
+            document = Document(
                 id=id,
                 file_path=str(path),
                 file_name=path.stem,
@@ -75,19 +75,19 @@ class DocumentService:
                 cover=cover,
                 created_at=datetime.now(timezone.utc),
             )
-            new_docs.append(doc)
-        self.db.add_all(new_docs)
+            new_documents.append(document)
+        self.db.add_all(new_documents)
         self.db.commit()
 
-    def _generate_cover(self, id: str, book_path: Path) -> str:
+    def _generate_cover(self, id: str, document_path: Path) -> str:
         cover_folder = self.library_path / ".covers"
         cover_folder.mkdir(parents=True, exist_ok=True)
         cover_path = cover_folder / f"{id}.jpg"
 
         target_w, target_h = 400, 566
 
-        with pymupdf.open(book_path) as doc:
-            page = doc[0]
+        with pymupdf.open(document_path) as d:
+            page = d[0]
             rect = page.rect
             matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
             pix = page.get_pixmap(matrix=matrix, alpha=False)
@@ -114,12 +114,12 @@ class DocumentService:
             if file.is_file():
                 file.unlink()
 
-        docs = list(self.db.scalars(select(Document)).all())
-        for doc in docs:
-            path = Path(doc.file_path)
+        documents = list(self.db.scalars(select(Document)).all())
+        for d in documents:
+            path = Path(d.file_path)
             if not path.is_file():
                 continue
-            cover = self._generate_cover(doc.id, path)
-            stmt = update(Document).where(Document.id == doc.id).values(cover=cover)
+            cover = self._generate_cover(d.id, path)
+            stmt = update(Document).where(Document.id == d.id).values(cover=cover)
             self.db.execute(stmt)
         self.db.commit()

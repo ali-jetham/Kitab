@@ -5,9 +5,10 @@
 		"label": "debugpy: FastAPI",
 		"request": "launch",
 		"module": "uvicorn",
-		"cwd": "$ZED_WORKTREE_ROOT\\backend",
+		"python": "$ZED_WORKTREE_ROOT/backend/.venv/bin/python",
+		"cwd": "$ZED_WORKTREE_ROOT/backend",
 		"args": ["app.main:app", "--reload"],
-		"jinja": true,
+		"jinja": true
 	},
 
 	{

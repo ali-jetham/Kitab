@@ -1,13 +1,13 @@
 import { TextField } from "@kobalte/core/text-field";
 import { useSearchParams } from "@solidjs/router";
 import { createResource, For, type JSX, Suspense } from "solid-js";
+import { documentApi } from "../../api/documentApi";
 import LibraryItem from "./components/LibraryItem";
 import styles from "./Library.module.css";
-import { libraryApi as api } from "./libraryApi";
 
 export default function Library(): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [books] = createResource(api.fetchDocs);
+	const [books] = createResource(documentApi.getDocs);
 
 	const filteredBooks = () =>
 		books()?.filter((book: any) => {

@@ -36,7 +36,7 @@ export default function App(props: RouteSectionProps) {
 		document.addEventListener("touchstart", (e) => {
 			if (e.touches.length > 1) return;
 			const t = e.touches[0];
-			[startX, startY, moved] = [t.clientX, t.clientY, false]
+			[startX, startY, moved] = [t.clientX, t.clientY, false];
 		});
 
 		document.addEventListener("touchmove", (e) => {

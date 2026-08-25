@@ -3,10 +3,10 @@ import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
 import { createComponent, render } from "solid-js/web";
 import { v7 as uuid7 } from "uuid";
+import { annotationApi } from "../../../api/annotationApi";
 import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore";
 import PDFHighlightLayer from "../components/PDFHighlightLayer";
 import { ViewerStore } from "../components/PDFViewer";
-import { viewerApi } from "../viewerApi";
 
 export type SVGRect = { x: number; y: number; width: number; height: number; };
 
@@ -40,7 +40,7 @@ export function createPDFHighlights(
 		};
 
 		actions.addAnnotation(annotation);
-		viewerApi.addAnnotation(annotation);
+		annotationApi.addAnnotation(annotation);
 		window.getSelection()?.removeAllRanges();
 		setPendingAnnotation(null);
 	}

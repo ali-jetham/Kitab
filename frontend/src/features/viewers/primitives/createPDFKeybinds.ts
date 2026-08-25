@@ -1,9 +1,9 @@
 import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
 import { createElementSize } from "@solid-primitives/resize-observer";
 import { createEffect, onCleanup } from "solid-js";
+import { annotationApi } from "../../../api/annotationApi";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
 import { ViewerStore } from "../components/PDFViewer";
-import { viewerApi } from "../viewerApi";
 
 export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: ViewerStore, actions: any) {
 	const viewerContainerSize = createElementSize(() => pdfSlickStore.pdfSlick?.viewer.container);
@@ -71,7 +71,7 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 			}
 			console.log("Deleting annotation", viewerStore.annotationId);
 			actions.deleteAnnotation(viewerStore.annotationId);
-			viewerApi.deleteAnnotation(viewerStore.annotationId);
+			annotationApi.deleteAnnotation(viewerStore.annotationId);
 		})
 	];
 
