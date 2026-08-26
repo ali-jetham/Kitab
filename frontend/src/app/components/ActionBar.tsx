@@ -2,9 +2,11 @@ import { Button } from "@kobalte/core/button";
 import { Slider } from "@kobalte/core/slider";
 import { Bookmark, Command, Menu } from "lucide-solid";
 import { Setter } from "solid-js";
+import { SetStoreFunction } from "solid-js/store";
+import { AppStore } from "../App";
 import styles from "./ActionBar.module.css";
 
-type ActionBarProps = { setModal: Setter<boolean>; };
+type ActionBarProps = { setAppStore: SetStoreFunction<AppStore>; };
 
 export default function ActionBar(props: ActionBarProps) {
 	return (
@@ -20,11 +22,11 @@ export default function ActionBar(props: ActionBarProps) {
 			</Slider>
 
 			<div class={styles.actionButtons}>
-				<Button>
+				<Button onClick={() => props.setAppStore("isSideBarOpen", (prev) => !prev)}>
 					<Menu />
 				</Button>
 
-				<Button onClick={() => props.setModal((prev) => !prev)}>
+				<Button onClick={() => props.setAppStore("isModalOpen", (prev) => !prev)}>
 					<Command />
 				</Button>
 				<Button>

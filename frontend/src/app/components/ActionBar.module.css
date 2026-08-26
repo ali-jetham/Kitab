@@ -1,4 +1,5 @@
 .actionBar {
+  grid-area: bottombar;
   position: absolute;
   right: 0;
   bottom: 0;

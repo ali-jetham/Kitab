@@ -26,6 +26,8 @@ export const COMMANDS = [
 
 	{ id: "ui.modal.toggle", label: "", hidden: true },
 	{ id: "ui.modal.close", label: "", hidden: true },
+	{ id: "ui.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false },
+
 	{ id: "modal.next", label: "", hidden: true },
 	{ id: "modal.prev", label: "", hidden: true },
 	{ id: "modal.select", label: "", hidden: true }

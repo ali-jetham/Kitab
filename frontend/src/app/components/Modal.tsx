@@ -1,9 +1,11 @@
 import { Combobox } from "@kobalte/core/combobox";
 import { Accessor, createSignal, onMount, Setter } from "solid-js";
+import { SetStoreFunction } from "solid-js/store";
 import { COMMANDS, executeCommand } from "../../core/keybinds";
+import { AppStore } from "../App";
 import styles from "./Modal.module.css";
 
-type ModalProps = { open: Accessor<boolean>; setOpen: Setter<boolean>; };
+type ModalProps = { open: boolean; setAppStore: SetStoreFunction<AppStore>; };
 
 export default function Modal(props: ModalProps) {
 	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
@@ -23,8 +25,8 @@ export default function Modal(props: ModalProps) {
 			class={styles.combobox}
 			gutter={0}
 			preventScroll={true}
-			open={props.open()}
-			onOpenChange={(open) => props.setOpen(open)}
+			open={props.open}
+			onOpenChange={(open) => props.setAppStore("isModalOpen", open)}
 			shouldFocusWrap={true}
 			allowsEmptyCollection={true}
 			itemComponent={props => (

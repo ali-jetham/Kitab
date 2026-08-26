@@ -1,4 +1,5 @@
 .status {
+  grid-area: bottombar;
   background: var(--headerbar-bg-color);
   color: var(--headerbar-fg-color);
   border-top: 1px solid var(--headerbar-shade-color);

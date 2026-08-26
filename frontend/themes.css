@@ -19,6 +19,9 @@
     currentColor 17%,
     transparent
   );
+
+  --accent-bg-color: #3584e4;
+  --accent-fg-color: #ffffff;
 }
 
 html[data-theme="light"] {
@@ -58,6 +61,8 @@ html[data-theme="light"] {
   --popover-bg-color: #ffffff;
   --popover-fg-color: rgba(0, 0, 6, 0.8);
   --popover-shade-color: rgba(0, 0, 6, 0.07);
+
+  --accent-color: #0461be;
 
   --destructive-bg-color: #e01b24;
   --destructive-fg-color: #ffffff;
@@ -105,6 +110,8 @@ html[data-theme="dark"] {
   --popover-bg-color: #36363a;
   --popover-fg-color: #ffffff;
   --popover-shade-color: rgba(0, 0, 6, 0.25);
+
+  --accent-color: #81d0ff;
 
   --destructive-bg-color: #c01c28;
   --destructive-fg-color: #ffffff;
