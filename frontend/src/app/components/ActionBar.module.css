@@ -101,9 +101,7 @@
 
 .slideEnterActive,
 .slideExitActive {
-  transition:
-    transform 300ms ease-out,
-    opacity 300ms ease-out;
+  transition: transform 300ms ease-out, opacity 300ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
