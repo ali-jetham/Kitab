@@ -37,20 +37,76 @@ export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: ()
 		}
 	}
 
+	function onPinchStart(e: TouchEvent) {
+		if (e.touches.length !== 2) return;
+
+		e.preventDefault();
+		initialScale = pdfSlickStore.scale;
+		initialDistance = getDistanceBetweenTouches(e);
+	}
+
+	function onPinchMove(e: TouchEvent) {
+		if (e.touches.length !== 2) return;
+
+		e.preventDefault();
+		if (initialDistance == null) return;
+
+		const currentDistance = getDistanceBetweenTouches(e);
+		midpoint = getMidpoint(e);
+		const zoomFactor = currentDistance / initialDistance;
+		newScale = initialScale * zoomFactor;
+
+		if (newScale < 0.3) {
+			newScale = 0.3;
+			return;
+		}
+
+		const viewer = document.getElementById("viewer");
+		const viewerContainer = pdfSlickStore.pdfSlick?.viewer.container;
+		if (viewer == null || viewerContainer == null) return;
+
+		// Anchor the zoom at the pinch midpoint, in #viewer local coords
+		const rect = viewerContainer.getBoundingClientRect();
+		const originX = midpoint[0] - rect.left + viewerContainer.scrollLeft;
+		const originY = midpoint[1] - rect.top + viewerContainer.scrollTop;
+		viewer.style.transformOrigin = `${originX}px ${originY}px`;
+		viewer.style.transform = `scale(${zoomFactor})`;
+	}
+
+	function onPinchEnd(e: TouchEvent) {
+		if (e.touches.length >= 2 || !pdfSlickStore.pdfSlick || initialDistance == null || midpoint == null) return;
+
+		const zoomFactor = newScale / initialScale;
+		const viewerContainer = pdfSlickStore.pdfSlick.viewer.container;
+		const rect = viewerContainer.getBoundingClientRect();
+
+		const mx = midpoint[0] - rect.left;
+		const my = midpoint[1] - rect.top;
+		const scrollLeft = viewerContainer.scrollLeft;
+		const scrollTop = viewerContainer.scrollTop;
+
+		pdfSlickStore.pdfSlick.currentScale = newScale;
+
+		// Keep the pinch midpoint fixed after pdf.js re-layouts at the real scale
+		viewerContainer.scrollLeft = (scrollLeft + mx) * zoomFactor - mx;
+		viewerContainer.scrollTop = (scrollTop + my) * zoomFactor - my;
+
+		const viewer = document.getElementById("viewer");
+		if (viewer != null) viewer.style.transform = "";
+		initialDistance = null;
+		midpoint = null;
+	}
+
 	function handleTouchStart(e: TouchEvent) {
 		if (e.touches.length === 1) {
 			const touch = e.touches[0];
 			tapStart = { x: touch.clientX, y: touch.clientY };
-			isMultiTouch = false;
-			tapCancelled = false;
 		}
 
 		if (e.touches.length === 2) {
 			isMultiTouch = true;
 			tapCancelled = true;
-			e.preventDefault();
-			initialScale = pdfSlickStore.scale;
-			initialDistance = getDistanceBetweenTouches(e);
+			onPinchStart(e);
 		}
 	}
 
@@ -65,63 +121,18 @@ export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: ()
 		if (e.touches.length === 2) {
 			isMultiTouch = true;
 			tapCancelled = true;
-			e.preventDefault();
-			if (initialDistance == null) return;
-
-			const currentDistance = getDistanceBetweenTouches(e);
-			midpoint = getMidpoint(e);
-			const zoomFactor = currentDistance / initialDistance;
-			newScale = initialScale * zoomFactor;
-
-			if (newScale < 0.3) {
-				newScale = 0.3;
-				return;
-			}
-
-			const viewer = document.getElementById("viewer");
-			const viewerContainer = pdfSlickStore.pdfSlick?.viewer.container;
-			if (viewer == null || viewerContainer == null) return;
-
-			// Anchor the zoom at the pinch midpoint, in #viewer local coords
-			const rect = viewerContainer.getBoundingClientRect();
-			const originX = midpoint[0] - rect.left + viewerContainer.scrollLeft;
-			const originY = midpoint[1] - rect.top + viewerContainer.scrollTop;
-			viewer.style.transformOrigin = `${originX}px ${originY}px`;
-			viewer.style.transform = `scale(${zoomFactor})`;
+			onPinchMove(e);
 		}
 	}
 
 	function handleTouchEnd(e: TouchEvent) {
 		onTapNavigation(e);
+		onPinchEnd(e);
 
 		if (e.touches.length === 0) {
 			tapStart = null;
 			isMultiTouch = false;
 			tapCancelled = false;
-		}
-
-		if (e.touches.length < 2) {
-			if (!pdfSlickStore.pdfSlick) return;
-			if (initialDistance == null || midpoint == null) return;
-
-			const zoomFactor = newScale / initialScale;
-			const viewerContainer = pdfSlickStore.pdfSlick.viewer.container;
-			const rect = viewerContainer.getBoundingClientRect();
-
-			const mx = midpoint[0] - rect.left;
-			const my = midpoint[1] - rect.top;
-			const scrollLeft = viewerContainer.scrollLeft;
-			const scrollTop = viewerContainer.scrollTop;
-
-			pdfSlickStore.pdfSlick.currentScale = newScale;
-
-			// Keep the pinch midpoint fixed after pdf.js re-layouts at the real scale
-			viewerContainer.scrollLeft = (scrollLeft + mx) * zoomFactor - mx;
-			viewerContainer.scrollTop = (scrollTop + my) * zoomFactor - my;
-
-			const viewer = document.getElementById("viewer")!.style.transform = "";
-			initialDistance = null;
-			midpoint = null;
 		}
 	}
 
