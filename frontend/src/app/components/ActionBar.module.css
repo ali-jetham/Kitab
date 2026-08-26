@@ -1,8 +1,14 @@
 .actionBar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
   align-items: stretch;
+  background-color: var(--window-bg-color);
   padding: 1.5rem;
   border-top: solid 0.1rem var(--border-color);
 }
@@ -81,4 +87,28 @@
 
 [data-theme*="dark"] .SliderTrack {
   background-color: hsl(240 5% 26%);
+}
+
+.slideEnter,
+.slideExitTo {
+  transform: translateY(100%);
+}
+
+.slideEnterTo,
+.slideExit {
+  transform: translateY(0);
+}
+
+.slideEnterActive,
+.slideExitActive {
+  transition:
+    transform 300ms ease-out,
+    opacity 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideEnterActive,
+  .slideExitActive {
+    transition: none;
+  }
 }

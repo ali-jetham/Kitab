@@ -1,5 +1,6 @@
 .app {
   height: 100dvh;
+  position: relative;
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;

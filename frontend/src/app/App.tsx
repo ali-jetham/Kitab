@@ -1,12 +1,13 @@
-import { createTimer, makeTimer } from "@solid-primitives/timer";
 import type { RouteSectionProps } from "@solidjs/router";
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, Show } from "solid-js/web";
 import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
 import styles from "./App.module.css";
+import actionBarStyles from "./components/ActionBar.module.css";
 import ActionBar from "./components/ActionBar";
 import Modal from "./components/Modal";
 import StatusBar from "./components/StatusBar";
+import { Transition } from "solid-transition-group";
 
 export default function App(props: RouteSectionProps) {
 	const [isModalOpen, setIsModalOpen] = createSignal<boolean>(false);
@@ -75,9 +76,19 @@ export default function App(props: RouteSectionProps) {
 				<StatusBar />
 			</Show>
 
-			<Show when={isActionOpen() && !isModalOpen()}>
-				<ActionBar setModal={setIsModalOpen} />
-			</Show>
+			<Transition
+				enterClass={actionBarStyles.slideEnter}
+				enterActiveClass={actionBarStyles.slideEnterActive}
+				enterToClass={actionBarStyles.slideEnterTo}
+				exitClass={actionBarStyles.slideExit}
+				exitActiveClass={actionBarStyles.slideExitActive}
+				exitToClass={actionBarStyles.slideExitTo}
+			>
+				<Show when={isActionOpen() && !isModalOpen()}>
+					<ActionBar setModal={setIsModalOpen} />
+				</Show>
+			</Transition>
+
 
 			<Portal>
 				<Show when={isModalOpen()}>
