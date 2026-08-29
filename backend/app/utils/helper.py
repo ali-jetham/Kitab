@@ -5,8 +5,7 @@ def normalize_pikepdf_value(value):
             return None
         return list(value)
 
-    if isinstance(value, list):
-        if all(x is None for x in value):
-            return None
+    if isinstance(value, list) and all(x is None for x in value):
+        return None
 
     return value

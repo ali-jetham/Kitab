@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pikepdf
@@ -73,7 +73,7 @@ class DocumentService:
                 title=title,
                 author=author,
                 cover=cover,
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
             )
             new_documents.append(document)
         self.db.add_all(new_documents)

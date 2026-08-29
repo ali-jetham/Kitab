@@ -5,16 +5,21 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "fastapi[standard]>=0.138.2",
-    "pikepdf>=10.7.0",
-    "pymupdf>=1.27.2.3",
-    "scalar-fastapi>=1.8.2",
-    "sqlalchemy>=2.0.51",
-    "xxhash>=3.7.0",
+  "fastapi[standard]>=0.138.2",
+  "pikepdf>=10.7.0",
+  "pymupdf>=1.27.2.3",
+  "scalar-fastapi>=1.8.2",
+  "sqlalchemy>=2.0.51",
+  "xxhash>=3.7.0"
 ]
 
 [tool.pyrefly]
-project-includes = [
-    "**/*.py*",
-    "**/*.ipynb",
+project-includes = [ "**/*.py*", "**/*.ipynb" ]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.Query",
+  "fastapi.Path",
+  "fastapi.Body"
 ]

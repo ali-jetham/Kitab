@@ -23,4 +23,4 @@ class Document(Base):
         default=lambda: datetime.now(UTC),
     )
 
-    annotations: Mapped[list["Annotation"]] = relationship()
+    annotations: Mapped[list["Annotation"]] = relationship() #noqa: UP037
