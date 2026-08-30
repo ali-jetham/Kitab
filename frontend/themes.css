@@ -5,6 +5,7 @@
     transparent
   );
   --border-opacity: 15%;
+  --disabled-opacity: 50%;
 
   --view-hover-color: color-mix(in srgb, currentColor 4%, transparent);
   --view-active-color: color-mix(in srgb, currentColor 8%, transparent);

@@ -23,7 +23,7 @@
 
 .combobox__control[data-invalid] {
   border-color: var(0 72% 51%);
-  color: hsl(0 72% 51%);
+  color: var(--destructive-fg-color);
 }
 
 .combobox__input {
@@ -36,12 +36,8 @@
   border: none;
 }
 
-.combobox__input::placeholder {
-  color: hsl(240 4% 46%);
-}
-
 .combobox__error-message {
-  color: hsl(0 72% 51%);
+  color: var(--destructive-fg-color);
   font-size: 0.9rem;
   user-select: none;
 }
@@ -77,8 +73,8 @@
 }
 
 .combobox__item[data-disabled] {
-  color: hsl(240 5% 65%);
-  opacity: 0.5;
+  color: var(--popover-fg-color);
+  opacity: var(--disabled-opacity);
   pointer-events: none;
 }
 

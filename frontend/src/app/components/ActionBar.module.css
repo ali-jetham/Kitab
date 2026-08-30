@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 0.9rem;
   align-items: stretch;
-  background-color: var(--window-bg-color);
+  background-color: var(--headerbar-bg-color);
   padding: 1.5rem;
   border-top: solid 0.1rem var(--border-color);
 }
@@ -33,7 +33,7 @@
 }
 
 .SliderTrack {
-  background-color: hsl(240 6% 90%);
+  background-color: var(--view-bg-color);
   position: relative;
   border-radius: 9999px;
   height: 8px;
@@ -47,7 +47,7 @@
 
 .SliderRange {
   position: absolute;
-  background-color: hsl(200 98% 39%);
+  background-color: var(--accent-bg-color);
   border-radius: 9999px;
   height: 100%;
 }
@@ -61,7 +61,7 @@
   display: block;
   width: 16px;
   height: 16px;
-  background-color: hsl(200 98% 39%);
+  background-color: var(--accent-bg-color);
   border-radius: 9999px;
   top: -4px;
 }
@@ -72,22 +72,18 @@
 }
 
 .SliderThumb:hover {
-  box-shadow: 0 0 0 5px #2a91fe98;
+  box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
 .SliderThumb:focus {
   outline: none;
-  box-shadow: 0 0 0 5px #2a91fe98;
+  box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
 .SliderLabel {
   width: 100%;
   display: flex;
   justify-content: space-between;
-}
-
-[data-theme*="dark"] .SliderTrack {
-  background-color: hsl(240 5% 26%);
 }
 
 .slideEnter,
