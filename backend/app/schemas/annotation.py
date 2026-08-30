@@ -1,12 +1,15 @@
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
+from pydantic.alias_generators import to_camel
 
 from app.models.annotation import Style
 
 
 class AnnotationBase(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True, alias_generator=to_camel, populate_by_name=True
+    )
     color: str
     style: Style
     page: int
@@ -17,7 +20,7 @@ class AnnotationBase(BaseModel):
 
 class AnnotationCreate(AnnotationBase):
     id: str
-    docId: str
+    doc_id: str
 
 
 class AnnotationRead(AnnotationCreate):

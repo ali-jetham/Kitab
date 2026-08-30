@@ -1,5 +1,7 @@
 .tabs {
+  grid-area: sidebar;
   width: 100%;
+  background-color: var(--sidebar-bg-color);
 }
 
 .tabs[data-orientation="vertical"] {

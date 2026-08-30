@@ -18,16 +18,18 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    def get_documents(self) -> list[DocumentRead]:
+    async def get_documents(self) -> list[DocumentRead]:
         documents = list(self.db.scalars(select(Document)).all())
         return [DocumentRead.model_validate(d) for d in documents]
 
     # TODO: write a version which does NOT return with all the annotations for Library.tsx page
-    def get_document(self, id: str) -> DocumentRead | None:
+    async def get_document(self, id: str) -> DocumentRead | None:
         document = self.db.scalar(
             select(Document)
             .where(Document.id == id)
-            .options(selectinload(Document.annotations))
+            .options(
+                selectinload(Document.annotations), selectinload(Document.bookmarks)
+            )
         )
         if document is None:
             return None

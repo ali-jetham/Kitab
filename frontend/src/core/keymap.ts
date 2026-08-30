@@ -21,6 +21,7 @@ export const keymap: readonly Keybind[] = [
 	{ key: "G", command: "pdf.gotoLastPage", context: "viewer" },
 
 	{ key: "d h", command: "pdf.deleteHighlight", context: "viewer" },
+	{ key: "b a", command: "pdf.addBookmark", context: "viewer" },
 
 	{ key: "ArrowDown", command: "modal.next", context: "modal", isInputAllowed: true },
 	{ key: "ArrowUp", command: "modal.prev", context: "modal", isInputAllowed: true },

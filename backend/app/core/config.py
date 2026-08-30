@@ -13,5 +13,4 @@ class Settings(BaseSettings):
         return f"sqlite:///{self.LIBRARY_PATH / 'library.db'}"
 
 
-
 settings = Settings()

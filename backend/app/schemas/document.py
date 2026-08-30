@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
 from app.schemas.annotation import AnnotationRead
+from app.schemas.bookmark import BookmarkRead
 
 
 class DocumentBase(BaseModel):
@@ -19,6 +20,7 @@ class DocumentRead(DocumentBase):
     id: str
     cover: str
     annotations: list[AnnotationRead]
+    bookmarks: list[BookmarkRead]
 
 
 class DocumentUpdate(DocumentBase):

@@ -15,14 +15,14 @@ router = APIRouter(prefix="/api/documents", tags=["documents"])
 async def get_documents(
     service: DocumentService = Depends(get_document_service),
 ) -> list[DocumentRead]:
-    return service.get_documents()
+    return await service.get_documents()
 
 
 @router.get("/{id}")
 async def get_document(
     id: str, service: DocumentService = Depends(get_document_service)
 ) -> DocumentRead:
-    result = service.get_document(id)
+    result = await service.get_document(id)
     if result is None:
         raise HTTPException(
             status_code=404, detail=f"Document with {id} does not exist "
@@ -63,6 +63,7 @@ async def get_document_cover(id: str):
 @router.post("/scan")
 async def scan_documents(service: DocumentService = Depends(get_document_service)):
     service._scan()
+
 
 # TODO: check if this should even be exposed to the user
 @router.post("/refresh")

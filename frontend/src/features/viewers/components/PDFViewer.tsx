@@ -7,8 +7,12 @@ import { createPDFGestures } from "../primitives/createPDFGestures";
 import { createPDFHighlights } from "../primitives/createPDFHighlight";
 import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
 import HighlightToolbar from "./HighlightToolbar";
+import styles from "./PDFViewer.module.css";
+import { Bookmark } from "lucide-solid";
+import { Show } from "solid-js";
 
 export type ViewerStore = {
+	docId: string;
 	showToolbar: boolean;
 	anchorRef: HTMLElement | undefined;
 	selectedColor: string;
@@ -32,13 +36,14 @@ export default function PDFViewer(props: PDFViewerProps) {
 	});
 
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
+		docId: props.id,
 		annotationId: null,
 		anchorRef: undefined,
 		selectedColor: "#ffd400",
 		showToolbar: false
 	});
 
-	const { actions } = createDocumentStore(props.id);
+	const {store: documentStore, actions } = createDocumentStore(props.id);
 	createDocumentSync(props.id, actions);
 	createPDFGestures(pdfSlickStore, () => containerRef);
 	createPDFKeybinds(pdfSlickStore, viewerStore, actions);
@@ -50,6 +55,12 @@ export default function PDFViewer(props: PDFViewerProps) {
 		viewerStore.selectedColor,
 		setViewerStore
 	);
+
+	const hasBookmark = () => {
+		const currentPage = pdfSlickStore.pageNumber;
+		if (!currentPage) return false;
+		return documentStore.bookmarks.some(bm => bm.page === currentPage);
+	};
 
 	return (
 		<div ref={containerRef} class="pdfslick-container pdfSlick">
@@ -71,6 +82,14 @@ export default function PDFViewer(props: PDFViewerProps) {
 					highlights.commitAnnotation(color);
 				}}
 			/>
+
+			<Show when={hasBookmark()}>
+				<div class={styles.bookmark}>
+					<Bookmark fill="red" stroke="red"/>
+				</div>
+			</Show>
+
+
 		</div>
 	);
 }

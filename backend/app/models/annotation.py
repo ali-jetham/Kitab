@@ -1,7 +1,7 @@
 import enum
-from datetime import UTC, datetime
+from datetime import datetime
 
-from sqlalchemy import JSON, Enum, ForeignKey
+from sqlalchemy import JSON, DateTime, Enum, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
@@ -16,19 +16,16 @@ class Annotation(Base):
     __tablename__ = "annotations"
 
     id: Mapped[str] = mapped_column(primary_key=True)
-    docId: Mapped[str] = mapped_column(ForeignKey("documents.id"))
+    doc_id: Mapped[str] = mapped_column(ForeignKey("documents.id"))
     color: Mapped[str] = mapped_column()
     style: Mapped[Style] = mapped_column(Enum(Style, name="style"))
     page: Mapped[int] = mapped_column()
     text: Mapped[str] = mapped_column()
     note: Mapped[str] = mapped_column()
     rects: Mapped[list] = mapped_column(JSON)
-    created_at: Mapped[datetime] = mapped_column(
-        default=lambda: datetime.now(UTC)
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+        DateTime, server_default=func.now(), onupdate=func.now()
     )
 
 

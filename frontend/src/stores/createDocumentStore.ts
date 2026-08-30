@@ -16,34 +16,37 @@ export type Annotation = {
 };
 export type AnnotationCreate = Omit<Annotation, "createdAt" | "updatedAt">;
 
-export type Doc = {
+export type Bookmark = { id: number; docId: string; page: number; note: string; createdAt: string; updatedAt: string; };
+export type BookmarkCreate = Omit<Bookmark, "id" | "createdAt" | "updatedAt">;
+
+export type Document = {
 	id: string;
 	primaryColor: string;
 	annotations: Annotation[];
+	bookmarks: Bookmark[];
 	location: [];
 	isDirty: boolean;
-	annotationId: string | null;
 };
 
 export function createDocumentStore(id: string) {
-	const [store, setStore] = createStore<Doc>({
+	const [store, setStore] = createStore<Document>({
 		id: id,
 		primaryColor: "",
 		annotations: [],
+		bookmarks: [],
 		location: [],
-		isDirty: false,
-		annotationId: null
+		isDirty: false
 	});
 
-	async function init(doc: Doc) {
+	async function init(doc: Document) {
 		setStore(
 			reconcile({
 				id,
 				primaryColor: doc.primaryColor,
 				annotations: doc.annotations ?? [],
+				bookmarks: doc.bookmarks ?? [],
 				location: doc.location ?? [],
-				isDirty: false,
-				annotationId: null
+				isDirty: false
 			})
 		);
 	}
@@ -60,5 +63,9 @@ export function createDocumentStore(id: string) {
 		return () => store.annotations.filter(ann => ann.page === page);
 	}
 
-	return { store, actions: { init, addAnnotation, deleteAnnotation, getAnnotationsByPage } };
+	function addBookmark(bookmark: BookmarkCreate) {
+		setStore("bookmarks", store.bookmarks.length, { ...bookmark });
+	}
+
+	return { store, actions: { init, addAnnotation, deleteAnnotation, getAnnotationsByPage, addBookmark } };
 }

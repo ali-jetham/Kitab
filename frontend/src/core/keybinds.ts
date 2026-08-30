@@ -19,6 +19,8 @@ export const COMMANDS = [
 	{ id: "pdf.viewModeScrollH", label: "Viewer: Horizontal Scrolling View", hidden: false },
 	{ id: "pdf.viewModeSinglePage", label: "Viewer: Single Page View", hidden: false },
 	{ id: "pdf.deleteHighlight", label: "Delete selected highlight", hidden: true },
+	{ id: "pdf.addBookmark", label: "Add Bookmark", hidden: true },
+
 	{ id: "pdf.zoomIn", label: "Zoom In", hidden: true },
 	{ id: "pdf.zoomOut", label: "Zoom Out", hidden: true },
 	{ id: "pdf.scrollDown", label: "Scroll Document Down", hidden: true },

@@ -2,6 +2,7 @@ import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
 import { createElementSize } from "@solid-primitives/resize-observer";
 import { createEffect, onCleanup } from "solid-js";
 import { annotationApi } from "../../../api/annotationApi";
+import { bookmarkApi } from "../../../api/bookmarkApi";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
 import { ViewerStore } from "../components/PDFViewer";
 
@@ -72,6 +73,11 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 			console.log("Deleting annotation", viewerStore.annotationId);
 			actions.deleteAnnotation(viewerStore.annotationId);
 			annotationApi.deleteAnnotation(viewerStore.annotationId);
+		}),
+		register("pdf.addBookmark", (pdfslick) => {
+			console.log("Adding bookmark", pdfslick.viewer.currentPageNumber);
+			actions.addBookmark(pdfslick.viewer.currentPageNumber);
+			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfslick.viewer.currentPageNumber });
 		})
 	];
 
