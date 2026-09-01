@@ -6,6 +6,7 @@ from app.db.database import SessionLocal
 from app.services.annotation_service import AnnotationService
 from app.services.bookmark_service import BookmarkService
 from app.services.document_service import DocumentService
+from app.services.tts.tts_service import TTSService
 
 
 def get_db():
@@ -35,3 +36,9 @@ def get_bookmark_service(
     db: Session = Depends(get_db),
 ):
     return BookmarkService(db)
+
+
+def get_tts_service(
+    db: Session = Depends(get_db),
+):
+    return TTSService(db)

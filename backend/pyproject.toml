@@ -1,16 +1,26 @@
 [project]
 name = "backend"
 version = "0.0.0"
-description = "Add your description here"
+description = "A self-hosted eBook server"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
   "fastapi[standard]>=0.138.2",
   "pikepdf>=10.7.0",
   "pymupdf>=1.27.2.3",
-  "scalar-fastapi>=1.8.2",
+  "soundfile>=0.14.0",
   "sqlalchemy>=2.0.51",
-  "xxhash>=3.7.0"
+  "xxhash>=3.7.0",
+]
+
+[project.optional-dependencies]
+tts-kokoro = [
+    "kokoro-onnx>=0.6.1",
+]
+
+[dependency-groups]
+dev = [
+    "scalar-fastapi>=1.9.0",
 ]
 
 [tool.ruff.lint.flake8-bugbear]

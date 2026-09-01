@@ -14,6 +14,7 @@ from app.routes import (
     bookmark_routes,
     document_routes,
     settings_routes,
+    tts_routes,
 )
 
 
@@ -31,6 +32,7 @@ app.include_router(document_routes.router)
 app.include_router(settings_routes.router)
 app.include_router(annotation_routes.router)
 app.include_router(bookmark_routes.router)
+app.include_router(tts_routes.router)
 
 
 @app.exception_handler(DatabaseError)

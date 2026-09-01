@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     ENVIRONMENT: str = "prod"
     LIBRARY_PATH: Path = Path("/app/library")
+    MODEL_PATH: Path = Path("/app/models")
     model_config = SettingsConfigDict(env_file=".env")
 
     @property
