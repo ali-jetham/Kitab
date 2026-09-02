@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from app.core.constants import ModelId
+
 
 class TTSRequest(BaseModel):
     engine: str = "kokoro"
@@ -7,3 +9,12 @@ class TTSRequest(BaseModel):
     voice: str = "af_heart"
     speed: float = Field(default=1.0, ge=0.5, le=2.0)
     lang: str = "en-us"
+
+
+class TTSRegistryResponse(BaseModel):
+    quality: str
+    id: str
+
+
+class TTSRegistryRequest(BaseModel):
+    id: ModelId
