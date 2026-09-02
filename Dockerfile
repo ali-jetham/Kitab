@@ -1,9 +1,10 @@
 FROM node:26-alpine3.22 AS frontend-builder
 WORKDIR /build
-COPY frontend/package.json ./
-RUN npm install
+RUN npm install -g pnpm
+COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY frontend/ .
-RUN npm run build
+RUN pnpm run build
 
 FROM python:3.14-slim-trixie
 WORKDIR /src

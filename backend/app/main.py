@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from scalar_fastapi import get_scalar_api_reference
 from sqlalchemy.exc import DatabaseError, IntegrityError
 
 from app.core.config import settings
@@ -60,10 +59,10 @@ if settings.ENVIRONMENT == "dev":
         allow_headers=["*"],
         expose_headers=["*"],
     )
+    from scalar_fastapi import get_scalar_api_reference
 
-
-@app.get("/scalar", include_in_schema=False)
-async def scalar_html():
-    return get_scalar_api_reference(
-        openapi_url=app.openapi_url,
-    )
+    @app.get("/scalar", include_in_schema=False)
+    async def scalar_html():
+        return get_scalar_api_reference(
+            openapi_url=app.openapi_url,
+        )
