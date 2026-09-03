@@ -3,13 +3,14 @@ import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal, Show } from "solid-js/web";
 import { Transition } from "solid-transition-group";
-import { dispatch, registerCommand, setActiveContexts } from "../core/keybinds";
+import { dispatch, setActiveContexts } from "../core/keybinds";
 import styles from "./App.module.css";
 import ActionBar from "./components/ActionBar";
 import actionBarStyles from "./components/ActionBar.module.css";
 import Modal from "./components/Modal";
 import SideBar from "./components/SideBar";
 import StatusBar from "./components/StatusBar";
+import { createAppCommands } from "./primitives/createAppCommands";
 
 export type AppStore = {
 	isModalOpen: boolean;
@@ -25,21 +26,12 @@ export default function App(props: RouteSectionProps) {
 		isSideBarOpen: false,
 		trigger: 0
 	});
+	createAppCommands(setAppStore)
 
 	const [trigger, setTrigger] = createSignal(0);
 	const isMobile = window.matchMedia("(max-width: 768px)").matches;
 	let startX = 0, startY = 0, moved = false;
 
-	const unregisterToggleModal = registerCommand("ui.modal.toggle", () => {
-		setAppStore("isModalOpen", (prev) => !prev);
-	});
-	const unregisterCloseModal = registerCommand("ui.modal.close", () => {
-		setAppStore("isModalOpen", false);
-	});
-
-	const unregisterToggleSideBar = registerCommand("ui.sidebar.toggle", () => {
-		setAppStore("isSideBarOpen", (prev) => !prev);
-	});
 
 	createEffect(() => {
 		setActiveContexts(
@@ -82,9 +74,6 @@ export default function App(props: RouteSectionProps) {
 
 	onCleanup(() => {
 		document.removeEventListener("keydown", dispatch);
-		unregisterToggleModal();
-		unregisterCloseModal();
-		unregisterToggleSideBar();
 	});
 
 	return (

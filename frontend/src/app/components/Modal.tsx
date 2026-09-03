@@ -1,14 +1,20 @@
 import { Combobox } from "@kobalte/core/combobox";
 import { Accessor, createSignal, onMount, Setter } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
-import { COMMANDS, executeCommand } from "../../core/keybinds";
+import { executeCommand } from "../../core/keybinds";
 import { AppStore } from "../App";
 import styles from "./Modal.module.css";
+import { COMMANDS } from "../../core/commands";
 
-type ModalProps = { open: boolean; setAppStore: SetStoreFunction<AppStore>; };
+type ModalProps = { open: boolean; setAppStore: SetStoreFunction<AppStore> };
 
 export default function Modal(props: ModalProps) {
 	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
+	const [aruguments, setArguments] = createSignal<string[]>([]);
+	const [selectedCommand, setSelectedCommand] = createSignal<string | null>(
+		null,
+	);
+
 	let inputRef: HTMLInputElement | undefined;
 
 	onMount(() => {
@@ -29,20 +35,17 @@ export default function Modal(props: ModalProps) {
 			onOpenChange={(open) => props.setAppStore("isModalOpen", open)}
 			shouldFocusWrap={true}
 			allowsEmptyCollection={true}
-			itemComponent={props => (
+			itemComponent={(props) => (
 				<Combobox.Item item={props.item} class={styles.combobox__item}>
 					<Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
-					<Combobox.ItemIndicator class={styles.combobox__itemIndicator}>
-					</Combobox.ItemIndicator>
+					<Combobox.ItemIndicator
+						class={styles.combobox__itemIndicator}
+					></Combobox.ItemIndicator>
 				</Combobox.Item>
 			)}
 			onChange={(value) => {
-				console.log("onChange called");
-				if (!value) {
-					console.log("onChange value", value);
-					return;
-				}
-				console.log(`Combobox onChange called with value ${value.id}`);
+				if (!value) return;
+				setSelectedCommand(value.id);
 				executeCommand(value.id);
 			}}
 		>

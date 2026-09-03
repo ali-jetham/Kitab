@@ -1,8 +1,8 @@
 import type { Keybind } from "./keybinds";
 
 export const keymap: readonly Keybind[] = [
-	{ key: ":", command: "ui.modal.toggle", context: "global" },
-	{ key: "escape", command: "ui.modal.close", context: "modal", isInputAllowed: true },
+	{ key: ":", command: "app.modal.toggle", context: "global" },
+	{ key: "escape", command: "app.modal.close", context: "modal", isInputAllowed: true },
 
 	{ key: "a", command: "pdf.fitHeight", context: "viewer" },
 	{ key: "s", command: "pdf.fitWidth", context: "viewer" },
