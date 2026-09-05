@@ -1,8 +1,16 @@
 import { http } from "../core/http";
 
-function downloadModel(id: string) {
+interface TTSResponse {
+	quality: string;
+	id: string;
 }
 
-function getModels() {
-	http("/api/tts/registry", "GET");
+async function downloadModel(id: string) {
+	return await http(`/api/tts/registry`, "POST", { id });
 }
+
+async function getModels(): Promise<TTSResponse[]> {
+	return await http("/api/tts/registry", "GET");
+}
+
+export const TTSApi = { getModels, downloadModel };

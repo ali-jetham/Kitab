@@ -9,7 +9,7 @@ import { createLibraryCommands } from "./primitives/createLibraryCommands";
 export default function Library(): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [books] = createResource(documentApi.getDocs);
-	createLibraryCommands()
+	createLibraryCommands();
 
 	const filteredBooks = () =>
 		books()?.filter((book: any) => {

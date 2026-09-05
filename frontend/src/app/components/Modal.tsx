@@ -1,20 +1,16 @@
 import { Combobox } from "@kobalte/core/combobox";
-import { Accessor, createSignal, onMount, Setter } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
-import { executeCommand } from "../../core/keybinds";
+import { COMMANDS } from "../../core/commands";
+import { Command, executeCommand } from "../../core/keybinds";
 import { AppStore } from "../App";
 import styles from "./Modal.module.css";
-import { COMMANDS } from "../../core/commands";
 
-type ModalProps = { open: boolean; setAppStore: SetStoreFunction<AppStore> };
+type ModalProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore>; };
 
-export default function Modal(props: ModalProps) {
+export default function CommandPallete(props: ModalProps) {
 	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
-	const [aruguments, setArguments] = createSignal<string[]>([]);
-	const [selectedCommand, setSelectedCommand] = createSignal<string | null>(
-		null,
-	);
-
+	const [value, setValue] = createSignal<Command | null>();
 	let inputRef: HTMLInputElement | undefined;
 
 	onMount(() => {
@@ -23,30 +19,51 @@ export default function Modal(props: ModalProps) {
 
 	return (
 		<Combobox
-			options={options()}
+			value={value()}
+			options={props.appStore.modalArgs ?? options()}
 			optionValue="id"
 			optionTextValue="label"
+			optionLabel="label"
 			optionDisabled="hidden"
 			placeholder="Execute a command..."
+			closeOnSelection={false}
 			class={styles.combobox}
 			gutter={0}
 			preventScroll={true}
-			open={props.open}
-			onOpenChange={(open) => props.setAppStore("isModalOpen", open)}
+			open={props.appStore.isModalOpen}
+			onOpenChange={(open) => {
+				props.setAppStore("isModalOpen", open);
+				props.setAppStore("modalSelectedCommand", null);
+				props.setAppStore("modalArgs", null);
+			}}
 			shouldFocusWrap={true}
 			allowsEmptyCollection={true}
 			itemComponent={(props) => (
 				<Combobox.Item item={props.item} class={styles.combobox__item}>
 					<Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
-					<Combobox.ItemIndicator
-						class={styles.combobox__itemIndicator}
-					></Combobox.ItemIndicator>
+					<Combobox.ItemIndicator class={styles.combobox__itemIndicator}>
+					</Combobox.ItemIndicator>
 				</Combobox.Item>
 			)}
 			onChange={(value) => {
 				if (!value) return;
-				setSelectedCommand(value.id);
+				setValue(value);
+
+				if (props.appStore.modalSelectedCommand) {
+					executeCommand(props.appStore.modalSelectedCommand, { arg: value.id });
+					props.setAppStore("modalSelectedCommand", null);
+					props.setAppStore("modalArgs", null);
+					props.setAppStore("isModalOpen", false);
+					return;
+				}
+				if (value.withArgs) {
+					props.setAppStore("modalSelectedCommand", value.id);
+					executeCommand(value.id);
+					setValue(null);
+					return;
+				}
 				executeCommand(value.id);
+				props.setAppStore("isModalOpen", false);
 			}}
 		>
 			<Combobox.Control class={styles.combobox__control}>

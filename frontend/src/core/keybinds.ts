@@ -2,9 +2,8 @@ import { COMMANDS } from "./commands";
 import { keymap } from "./keymap";
 
 export type Context = "global" | "viewer" | "modal";
-export type Command = { id: string; label: string; hidden: boolean; };
-
 export type CommandId = (typeof COMMANDS)[number]["id"];
+export type Command = { id: CommandId; label: string; hidden: boolean; withArgs: boolean; };
 
 export type Keybind = {
 	key: string;

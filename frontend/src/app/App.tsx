@@ -3,7 +3,7 @@ import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Portal, Show } from "solid-js/web";
 import { Transition } from "solid-transition-group";
-import { dispatch, setActiveContexts } from "../core/keybinds";
+import { CommandId, dispatch, setActiveContexts } from "../core/keybinds";
 import styles from "./App.module.css";
 import ActionBar from "./components/ActionBar";
 import actionBarStyles from "./components/ActionBar.module.css";
@@ -16,6 +16,8 @@ export type AppStore = {
 	isModalOpen: boolean;
 	isActionOpen: boolean;
 	isSideBarOpen: boolean;
+	modalArgs: { id: string; label: string; hidden: boolean; }[] | null;
+	modalSelectedCommand: CommandId | null;
 	trigger: number;
 };
 
@@ -24,14 +26,15 @@ export default function App(props: RouteSectionProps) {
 		isModalOpen: false,
 		isActionOpen: false,
 		isSideBarOpen: false,
+		modalArgs: null,
+		modalSelectedCommand: null,
 		trigger: 0
 	});
-	createAppCommands(setAppStore)
+	createAppCommands(appStore, setAppStore);
 
 	const [trigger, setTrigger] = createSignal(0);
 	const isMobile = window.matchMedia("(max-width: 768px)").matches;
 	let startX = 0, startY = 0, moved = false;
-
 
 	createEffect(() => {
 		setActiveContexts(
@@ -102,7 +105,7 @@ export default function App(props: RouteSectionProps) {
 
 			<Portal>
 				<Show when={appStore.isModalOpen}>
-					<Modal open={appStore.isModalOpen} setAppStore={setAppStore} />
+					<Modal appStore={appStore} setAppStore={setAppStore} />
 				</Show>
 			</Portal>
 		</div>

@@ -1,4 +1,6 @@
 import { usePDFSlick } from "@pdfslick/solid";
+import { Bookmark } from "lucide-solid";
+import { Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { documentApi } from "../../../api/documentApi";
 import { createDocumentStore } from "../../../stores/createDocumentStore";
@@ -8,8 +10,6 @@ import { createPDFHighlights } from "../primitives/createPDFHighlight";
 import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
 import HighlightToolbar from "./HighlightToolbar";
 import styles from "./PDFViewer.module.css";
-import { Bookmark } from "lucide-solid";
-import { Show } from "solid-js";
 
 export type ViewerStore = {
 	docId: string;
@@ -43,7 +43,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		showToolbar: false
 	});
 
-	const {store: documentStore, actions } = createDocumentStore(props.id);
+	const { store: documentStore, actions } = createDocumentStore(props.id);
 	createDocumentSync(props.id, actions);
 	createPDFGestures(pdfSlickStore, () => containerRef);
 	createPDFKeybinds(pdfSlickStore, viewerStore, actions);
@@ -85,11 +85,9 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 			<Show when={hasBookmark()}>
 				<div class={styles.bookmark}>
-					<Bookmark fill="red" stroke="red"/>
+					<Bookmark fill="red" stroke="red" />
 				</div>
 			</Show>
-
-
 		</div>
 	);
 }
