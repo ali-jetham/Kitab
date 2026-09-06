@@ -11,12 +11,12 @@ from app.services.tts.base import TTSEngine
 
 
 class KokoroEngine(TTSEngine):
-    def __init__(self):
+    def __init__(self, model: str):
         self.library_path: Path = settings.LIBRARY_PATH
         self.model_path: Path = settings.MODEL_PATH
         self.tokenizer: Tokenizer = Tokenizer()
         self.kokoro: Kokoro = Kokoro(
-            f"{self.model_path!s}/kokoro-v1.0.int8.onnx",
+            f"{self.model_path!s}/{model}.onnx",
             f"{self.model_path!s}/voices-v1.0.bin",
         )
 
