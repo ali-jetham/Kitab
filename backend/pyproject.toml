@@ -8,6 +8,7 @@ dependencies = [
   "fastapi[standard]>=0.138.2",
   "pikepdf>=10.7.0",
   "pymupdf>=1.27.2.3",
+  "pymupdf4llm>=1.28.0",
   "requests>=2.34.2",
   "soundfile>=0.14.0",
   "sqlalchemy>=2.0.51",
