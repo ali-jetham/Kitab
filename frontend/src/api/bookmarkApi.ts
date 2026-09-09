@@ -3,7 +3,7 @@ import { BookmarkCreate } from "../stores/createDocumentStore";
 const BASE_URL = "/api/bookmarks";
 
 async function addBookmark(bookmark: BookmarkCreate) {
-	return await http(BASE_URL, "POST", bookmark);
+	return await http(BASE_URL, { method: "POST", body: bookmark });
 }
 
 async function getBookmark() {

@@ -15,6 +15,7 @@ export const COMMANDS = [
 	{ id: "pdf.viewModeSinglePage", label: "Viewer: Single Page View", hidden: false, withArgs: false },
 	{ id: "pdf.deleteHighlight", label: "Delete selected highlight", hidden: true, withArgs: false },
 	{ id: "pdf.addBookmark", label: "Add Bookmark", hidden: true },
+	{ id: "pdf.readAloud", label: "Viewer: Toggle Read Aloud", hidden: false, withArgs: false },
 
 	{ id: "pdf.zoomIn", label: "Zoom In", hidden: true, withArgs: false },
 	{ id: "pdf.zoomOut", label: "Zoom Out", hidden: true, withArgs: false },
@@ -24,7 +25,7 @@ export const COMMANDS = [
 	{ id: "app.modal.toggle", label: "", hidden: true, withArgs: false },
 	{ id: "app.modal.close", label: "", hidden: true, withArgs: false },
 	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },
-	{ id: "app.downloadTTS", label: "App: Setup TTS", hidden: false, withArgs: true },
+	{ id: "app.downloadTTS", label: "App: Setup Read Aloud", hidden: false, withArgs: true },
 
 	{ id: "modal.next", label: "", hidden: true },
 	{ id: "modal.prev", label: "", hidden: true },

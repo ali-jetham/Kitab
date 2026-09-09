@@ -1,4 +1,4 @@
-import { Accessor, For } from "solid-js";
+import { Accessor, For, Show } from "solid-js";
 import { type Annotation } from "../../../stores/createDocumentStore";
 import {
 	convertToSVGRect,
@@ -6,11 +6,14 @@ import {
 	getRotationTransform
 } from "../primitives/createPDFHighlight";
 import styles from "./PDFHighlightLayer.module.css";
+import type { ViewerStore } from "./PDFViewer";
 
 type PDFHighlightLayerProps = {
 	page: any;
+	pageNumber: number;
 	annotations: Accessor<Annotation[]>;
 	onSelectAnnotation: (id: string) => void;
+	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>;
 };
 
 export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
@@ -60,6 +63,27 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 						</g>
 					)}
 				</For>
+				<Show
+					when={props.ttsHighlight()?.page === props.pageNumber
+						? props.ttsHighlight()
+						: null}
+				>
+					{(ttsHighlight) => (
+						<g data-tts-highlight="true" style={{ "pointer-events": "none" }}>
+							<For each={ttsHighlight().rects}>
+								{([x0, y0, x1, y1]) => (
+									<rect
+										x={x0}
+										y={y0}
+										width={x1 - x0}
+										height={y1 - y0}
+										fill-opacity="0.3"
+									/>
+								)}
+							</For>
+						</g>
+					)}
+				</Show>
 			</g>
 		</svg>
 	);

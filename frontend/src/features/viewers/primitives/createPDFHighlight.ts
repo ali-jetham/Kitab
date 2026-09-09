@@ -1,5 +1,5 @@
 import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid";
-import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { type Accessor, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
 import { createComponent, render } from "solid-js/web";
 import { v7 as uuid7 } from "uuid";
@@ -17,7 +17,8 @@ export function createPDFHighlights(
 	docId: string,
 	actions: any,
 	selectedColor: string,
-	setViewerStore: SetStoreFunction<ViewerStore>
+	setViewerStore: SetStoreFunction<ViewerStore>,
+	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 ) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
 	const [pendingAnnotation, setPendingAnnotation] = createSignal<PendingAnnotation | null>(null);
@@ -108,7 +109,17 @@ export function createPDFHighlights(
 		if (!page) return;
 		if (page.div.querySelector("[data-highlightLayer]")) return;
 		const annotations = actions.getAnnotationsByPage(e.pageNumber);
-		render(() => createComponent(PDFHighlightLayer, { page, annotations, onSelectAnnotation }), page.div);
+		render(
+			() =>
+				createComponent(PDFHighlightLayer, {
+					page,
+					pageNumber: e.pageNumber,
+					annotations,
+					onSelectAnnotation,
+					ttsHighlight
+				}),
+			page.div
+		);
 	}
 
 	function onSelectAnnotation(id: string) {

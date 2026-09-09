@@ -5,3 +5,7 @@
   height: 100%;
   pointer-events: none;
 }
+
+g[data-tts-highlight="true"] {
+	fill: var(--accent-color);
+}

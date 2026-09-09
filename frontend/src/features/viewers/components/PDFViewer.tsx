@@ -3,11 +3,12 @@ import { Bookmark } from "lucide-solid";
 import { Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { documentApi } from "../../../api/documentApi";
-import { createDocumentStore } from "../../../stores/createDocumentStore";
+import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore";
 import { createDocumentSync } from "../primitives/createDocumentSync";
 import { createPDFGestures } from "../primitives/createPDFGestures";
 import { createPDFHighlights } from "../primitives/createPDFHighlight";
 import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
+import { createTTS } from "../primitives/createTTS";
 import HighlightToolbar from "./HighlightToolbar";
 import styles from "./PDFViewer.module.css";
 
@@ -17,6 +18,7 @@ export type ViewerStore = {
 	anchorRef: HTMLElement | undefined;
 	selectedColor: string;
 	annotationId: string | null;
+	ttsHighlight: { page: number; rects: PDFRect[]; } | null;
 };
 
 type PDFViewerProps = { id: string; };
@@ -40,20 +42,23 @@ export default function PDFViewer(props: PDFViewerProps) {
 		annotationId: null,
 		anchorRef: undefined,
 		selectedColor: "#ffd400",
-		showToolbar: false
+		showToolbar: false,
+		ttsHighlight: null
 	});
 
 	const { store: documentStore, actions } = createDocumentStore(props.id);
 	createDocumentSync(props.id, actions);
 	createPDFGestures(pdfSlickStore, () => containerRef);
 	createPDFKeybinds(pdfSlickStore, viewerStore, actions);
+	createTTS(setViewerStore, pdfSlickStore, props.id);
 
 	const highlights = createPDFHighlights(
 		pdfSlickStore,
 		props.id,
 		actions,
 		viewerStore.selectedColor,
-		setViewerStore
+		setViewerStore,
+		() => viewerStore.ttsHighlight
 	);
 
 	const hasBookmark = () => {

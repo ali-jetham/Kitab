@@ -44,6 +44,17 @@ async def get_document_file(
     )
 
 
+@router.get("/{id}/{page}/text")
+def get_document_page_text(
+    id: str, page: int, service: DocumentService = Depends(get_document_service)
+):
+    res = service.get_page_text(id, page)
+    if res is None:
+        raise HTTPException(404)
+
+    return res
+
+
 # TODO: add validation for id
 @router.get("/{id}/cover")
 async def get_document_cover(id: str):

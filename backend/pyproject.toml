@@ -11,6 +11,7 @@ dependencies = [
   "pymupdf4llm>=1.28.0",
   "requests>=2.34.2",
   "soundfile>=0.14.0",
+  "spacy>=3.8.16",
   "sqlalchemy>=2.0.51",
   "xxhash>=3.7.0",
 ]

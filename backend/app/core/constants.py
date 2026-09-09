@@ -6,7 +6,7 @@ class ModelId(Enum):
 
 
 class VoiceId(Enum):
-    KOKORO_V1_0 = "kokoro-v1.0"
+    KOKORO_V1_0 = "voices-v1.0"
 
 
 MODEL_URLS = {

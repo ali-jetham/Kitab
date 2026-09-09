@@ -9,3 +9,7 @@ def normalize_pikepdf_value(value):
         return None
 
     return value
+
+
+def normalize_word(word: str) -> str:
+    return "".join(c.lower() for c in word if c.isalnum())

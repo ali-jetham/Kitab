@@ -1,28 +1,25 @@
-type Method = "GET" | "POST" | "DELETE";
+interface RequestOptions extends Omit<RequestInit, "body"> {
+	body?: any;
+}
 
-export async function http(url: string, method: Method, body?: any) {
-	let response;
+export async function http(
+	url: string,
+	options: RequestOptions,
+	parse: (r: Response) => Promise<any> = (r) => r.json()
+) {
 	try {
-		switch (method) {
-			case "GET":
-				response = await fetch(url);
-				break;
-			case "POST":
-				response = await fetch(url, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(body)
-				});
-				break;
-			case "DELETE":
-				response = await fetch(url, { method: "DELETE" });
-				break;
-		}
+		const response = await fetch(url, {
+			...options,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(options.body)
+		});
+
 		if (!response.ok) {
 			throw new Error();
 		}
-		return response.json();
+		return parse(response);
 	} catch (error) {
+		if (error instanceof DOMException && error.name === "AbortError") throw error;
 		console.error(error);
 	}
 }

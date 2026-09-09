@@ -8,7 +8,7 @@ from app.services.tts.tts_service import TTSService
 router = APIRouter(prefix="/api/tts", tags=["tts"])
 
 
-@router.post("/")
+@router.post("/synthesize")
 def synthesize(
     request: TTSRequest,
     service: TTSService = Depends(get_tts_service),
@@ -24,7 +24,7 @@ def synthesize(
 
     return Response(
         content=wav_bytes,
-        media_type="audio/mpeg",
+        media_type="audio/wav",
         headers={"Cache-Control": "no-store"},
     )
 
