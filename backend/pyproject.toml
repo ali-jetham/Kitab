@@ -5,21 +5,17 @@ description = "A self-hosted eBook server"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-  "en-core-web-sm",
   "fastapi[standard]>=0.138.2",
   "pikepdf>=10.7.0",
   "pymupdf>=1.27.2.3",
   "pymupdf4llm>=1.28.0",
   "requests>=2.34.2",
   "soundfile>=0.14.0",
-  "spacy>=3.8.16",
   "sqlalchemy>=2.0.51",
   "xxhash>=3.7.0",
-]
-
-[project.optional-dependencies]
-tts-kokoro = [
-    "kokoro-onnx>=0.6.1",
+  "kokoro-onnx>=0.6.1",
+  "spacy>=3.8.16",
+  "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
 ]
 
 [dependency-groups]
@@ -34,6 +30,3 @@ extend-immutable-calls = [
   "fastapi.Path",
   "fastapi.Body"
 ]
-
-[tool.uv.sources]
-en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
