@@ -6,7 +6,7 @@ interface TTSResponse {
 }
 
 async function downloadModel(id: string) {
-	return await http(`/api/tts/models`, { method: "POST", body: id });
+	return await http(`/api/tts/models`, { method: "POST", body: {id} });
 }
 
 async function getModels(): Promise<TTSResponse[]> {
