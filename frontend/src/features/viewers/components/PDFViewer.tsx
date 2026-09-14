@@ -11,6 +11,7 @@ import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
 import { createTTS } from "../primitives/createTTS";
 import HighlightToolbar from "./HighlightToolbar";
 import styles from "./PDFViewer.module.css";
+import { createPDFLayout } from "../primitives/createPDFLayout";
 
 export type ViewerStore = {
 	docId: string;
@@ -36,7 +37,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 			disableStream: false
 		}
 	});
-
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,
 		annotationId: null,
@@ -45,13 +45,12 @@ export default function PDFViewer(props: PDFViewerProps) {
 		showToolbar: false,
 		ttsHighlight: null
 	});
-
 	const { store: documentStore, actions } = createDocumentStore(props.id);
+	const { minScale, maxScale } = createPDFLayout(pdfSlickStore);
 	createDocumentSync(props.id, actions);
-	createPDFGestures(pdfSlickStore, () => containerRef);
-	createPDFKeybinds(pdfSlickStore, viewerStore, actions);
+	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale);
+	createPDFKeybinds(pdfSlickStore, viewerStore, actions, minScale, maxScale);
 	createTTS(setViewerStore, pdfSlickStore, props.id);
-
 	const highlights = createPDFHighlights(
 		pdfSlickStore,
 		props.id,
@@ -60,7 +59,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 		setViewerStore,
 		() => viewerStore.ttsHighlight
 	);
-
 	const hasBookmark = () => {
 		const currentPage = pdfSlickStore.pageNumber;
 		if (!currentPage) return false;

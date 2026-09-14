@@ -1,7 +1,12 @@
 import type { PDFSlickState } from "@pdfslick/core";
-import { createEffect, onCleanup } from "solid-js";
+import { type Accessor, createEffect, onCleanup } from "solid-js";
 
-export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: () => HTMLElement | null | undefined) {
+export function createPDFGestures(
+	pdfSlickStore: PDFSlickState,
+	containerRef: () => HTMLElement | null | undefined,
+	minScale: Accessor<number>,
+	maxScale: Accessor<number>
+) {
 	let initialDistance: number | null = null;
 	let initialScale: number = pdfSlickStore.scale;
 	let newScale: number = pdfSlickStore.scale;
@@ -47,20 +52,16 @@ export function createPDFGestures(pdfSlickStore: PDFSlickState, containerRef: ()
 
 	function onPinchMove(e: TouchEvent) {
 		if (e.touches.length !== 2) return;
-
 		e.preventDefault();
 		if (initialDistance == null) return;
 
 		const currentDistance = getDistanceBetweenTouches(e);
 		midpoint = getMidpoint(e);
-		const zoomFactor = currentDistance / initialDistance;
-		newScale = initialScale * zoomFactor;
+		newScale = initialScale * (currentDistance / initialDistance);
+		if (newScale < minScale()) newScale = minScale();
+		if (newScale > maxScale()) newScale = maxScale();
 
-		if (newScale < 0.3) {
-			newScale = 0.3;
-			return;
-		}
-
+		const zoomFactor = newScale / initialScale;
 		const viewer = document.getElementById("viewer");
 		const viewerContainer = pdfSlickStore.pdfSlick?.viewer.container;
 		if (viewer == null || viewerContainer == null) return;

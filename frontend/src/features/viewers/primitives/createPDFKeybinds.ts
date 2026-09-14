@@ -1,33 +1,38 @@
-import type { PDFSlick, PDFSlickState } from "@pdfslick/core";
+import { DEFAULT_SCALE_DELTA, type PDFSlick, type PDFSlickState, ScrollMode } from "@pdfslick/core";
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createEffect, onCleanup } from "solid-js";
+import { type Accessor, createEffect, onCleanup } from "solid-js";
 import { annotationApi } from "../../../api/annotationApi";
 import { bookmarkApi } from "../../../api/bookmarkApi";
 import { type CommandId, registerCommand } from "../../../core/keybinds";
 import { ViewerStore } from "../components/PDFViewer";
 
-export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: ViewerStore, actions: any) {
-	const viewerContainerSize = createElementSize(() => pdfSlickStore.pdfSlick?.viewer.container);
-
+export function createPDFKeybinds(
+	pdfSlickStore: PDFSlickState,
+	viewerStore: ViewerStore,
+	actions: any,
+	minScale: Accessor<number>,
+	maxScale: Accessor<number>
+) {
+	const viewerSize = createElementSize(() => pdfSlickStore.pdfSlick?.viewer.container);
 	const activePageSize = createElementSize(() => {
 		if (pdfSlickStore.scrollMode !== 3) return;
 		return pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1)?.div;
 	});
 
 	createEffect(() => {
-		if (pdfSlickStore.scrollMode !== 3) return;
+		if (pdfSlickStore.scrollMode === ScrollMode.PAGE) {
+			const page = pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1);
+			const containerHeight = viewerSize.clientHeight;
+			const pageHeight = activePageSize.clientHeight;
+			if (!page || containerHeight == null || pageHeight == null) return;
+			page.div.style.marginTop = `${Math.max(0, (containerHeight - pageHeight) / 2)}px`;
+			page.div.style.marginBottom = "0";
 
-		const page = pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1);
-		const containerHeight = viewerContainerSize.clientHeight;
-		const pageHeight = activePageSize.clientHeight;
-		if (!page || containerHeight == null || pageHeight == null) return;
-		page.div.style.marginTop = `${Math.max(0, (containerHeight - pageHeight) / 2)}px`;
-		page.div.style.marginBottom = "0";
-
-		onCleanup(() => {
-			page.div.style.marginTop = "";
-			page.div.style.marginBottom = "";
-		});
+			onCleanup(() => {
+				page.div.style.marginTop = "";
+				page.div.style.marginBottom = "";
+			});
+		}
 	});
 
 	function register(commandId: CommandId, callback: (pdf: PDFSlick) => void) {
@@ -39,15 +44,17 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 
 	const unregisters = [
 		register("pdf.fitHeight", (pdfSlick) => pdfSlick.currentScaleValue = "page-fit"),
-		register("pdf.fitWidth", (pdfSlick) => {
-			const page = pdfSlick.viewer.getPageView(pdfSlick.viewer.currentPageNumber - 1);
-			if (!page) return;
-			const containerWidth = pdfSlick.viewer.container.clientWidth;
-			const scale = containerWidth / (page.width / page.scale);
-			pdfSlick.currentScale = scale;
+		register("pdf.fitWidth", (pdfSlick) => pdfSlick.currentScale = minScale()),
+		register("pdf.zoomIn", (pdfSlick) => {
+			let newScale = pdfSlickStore.scale * DEFAULT_SCALE_DELTA;
+			if (newScale > maxScale()) newScale = maxScale();
+			pdfSlick.currentScale = newScale;
 		}),
-		register("pdf.zoomIn", (pdfSlick) => pdfSlick.increaseScale()),
-		register("pdf.zoomOut", (pdfSlick) => pdfSlick.decreaseScale()),
+		register("pdf.zoomOut", (pdfSlick) => {
+			let newScale = pdfSlickStore.scale / DEFAULT_SCALE_DELTA;
+			if (newScale < minScale()) newScale = minScale();
+			pdfSlick.currentScale = newScale;
+		}),
 		register("pdf.nextPage", (pdfSlick) => pdfSlick.viewer.nextPage()),
 		register("pdf.prevPage", (pdfSlick) => pdfSlick.viewer.previousPage()),
 		register("pdf.gotoFirstPage", (pdfSlick) => pdfSlick.viewer.currentPageNumber = 1),
@@ -56,15 +63,9 @@ export function createPDFKeybinds(pdfSlickStore: PDFSlickState, viewerStore: Vie
 		register("pdf.rotateAntiClockwise", (pdfSlick) => pdfSlick.setRotation(pdfSlickStore.pagesRotation - 90)),
 		register("pdf.scrollDown", (pdfSlick) => pdfSlick.viewer.container.scrollBy({ top: 100, behavior: "instant" })),
 		register("pdf.scrollUp", (pdfSlick) => pdfSlick.viewer.container.scrollBy({ top: -100, behavior: "instant" })),
-		register("pdf.viewModeScrollV", (pdfSlick) => {
-			pdfSlick.setScrollMode(0);
-		}),
-		register("pdf.viewModeScrollH", (pdfSlick) => {
-			pdfSlick.setScrollMode(1);
-		}),
-		register("pdf.viewModeSinglePage", (pdfSlick) => {
-			pdfSlick.setScrollMode(3);
-		}),
+		register("pdf.viewModeScrollV", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.VERTICAL)),
+		register("pdf.viewModeScrollH", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.HORIZONTAL)),
+		register("pdf.viewModeSinglePage", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.PAGE)),
 		register("pdf.deleteHighlight", () => {
 			if (!viewerStore.annotationId) {
 				console.log("Please select an annotation first");

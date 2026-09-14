@@ -7,5 +7,5 @@
 }
 
 g[data-tts-highlight="true"] {
-	fill: var(--accent-color);
+  fill: var(--accent-color);
 }
