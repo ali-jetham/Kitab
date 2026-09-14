@@ -18,9 +18,9 @@ export default defineConfig(({ mode }) => {
 					name: "Kitab",
 					short_name: "Kitab",
 					start_url: "/",
-					display: "fullscreen",
+					display: "standalone",
 					description: "Self Hosted Peronsal Library",
-					theme_color: "#ff0000",
+					theme_color: "#222226", // TODO: make this dynamic based on the theme color
 					icons: [{ src: "/book-192.png", sizes: "192x192", type: "image/png" }, {
 						src: "/book-512.png",
 						sizes: "512x512",

@@ -8,10 +8,10 @@ import { createDocumentSync } from "../primitives/createDocumentSync";
 import { createPDFGestures } from "../primitives/createPDFGestures";
 import { createPDFHighlights } from "../primitives/createPDFHighlight";
 import { createPDFKeybinds } from "../primitives/createPDFKeybinds";
+import { createPDFLayout } from "../primitives/createPDFLayout";
 import { createTTS } from "../primitives/createTTS";
 import HighlightToolbar from "./HighlightToolbar";
 import styles from "./PDFViewer.module.css";
-import { createPDFLayout } from "../primitives/createPDFLayout";
 
 export type ViewerStore = {
 	docId: string;
@@ -48,7 +48,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const { store: documentStore, actions } = createDocumentStore(props.id);
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore);
 	createDocumentSync(props.id, actions);
-	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale);
+	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore);
 	createPDFKeybinds(pdfSlickStore, viewerStore, actions, minScale, maxScale);
 	createTTS(setViewerStore, pdfSlickStore, props.id);
 	const highlights = createPDFHighlights(

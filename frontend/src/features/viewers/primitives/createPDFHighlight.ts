@@ -1,4 +1,5 @@
 import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid";
+import { debounce } from "@solid-primitives/scheduled";
 import { type Accessor, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { SetStoreFunction } from "solid-js/store";
 import { createComponent, render } from "solid-js/web";
@@ -21,6 +22,7 @@ export function createPDFHighlights(
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 ) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99";
+	let isMouseDown = false;
 	const [pendingAnnotation, setPendingAnnotation] = createSignal<PendingAnnotation | null>(null);
 
 	function commitAnnotation(color?: string) {
@@ -72,14 +74,16 @@ export function createPDFHighlights(
 		return merged;
 	}
 
-	function handlePointerUp(e: PointerEvent) {
+	function handleSelectionChange(e: Event) {
+		if (isMouseDown) return;
+
 		const selection = window.getSelection();
 		if (!selection || selection.isCollapsed) return;
 
 		const anchorEl =
-			(selection?.focusNode?.nodeType === Node.ELEMENT_NODE
-				? selection.focusNode as HTMLElement
-				: selection?.focusNode?.parentElement) ?? undefined;
+			(selection?.anchorNode?.nodeType === Node.ELEMENT_NODE
+				? selection.anchorNode as HTMLElement
+				: selection?.anchorNode?.parentElement) ?? undefined;
 
 		const range = selection.getRangeAt(0);
 		const selectionRects: DOMRect[] = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
@@ -96,12 +100,7 @@ export function createPDFHighlights(
 		});
 
 		setPendingAnnotation({ pageNumber, text: selection.toString(), pdfRects });
-		const isHighlightFast = e.ctrlKey || e.metaKey;
-		if (isHighlightFast) {
-			commitAnnotation();
-		} else {
-			setViewerStore((prev) => ({ ...prev, showToolbar: true, anchorRef: anchorEl }));
-		}
+		setViewerStore((prev) => ({ ...prev, showToolbar: true, anchorRef: anchorEl }));
 	}
 
 	function handlePageRendered(e: TEventBusEvent) {
@@ -115,23 +114,43 @@ export function createPDFHighlights(
 					page,
 					pageNumber: e.pageNumber,
 					annotations,
-					onSelectAnnotation,
+					onSelectAnnotation: (id: string) => setViewerStore("annotationId", id),
 					ttsHighlight
 				}),
 			page.div
 		);
 	}
 
-	function onSelectAnnotation(id: string) {
-		setViewerStore("annotationId", id);
+	const debouncedHandleSelectionChange = debounce(handleSelectionChange, 100);
+
+	function handleMouseDown(e: MouseEvent) {
+		if (e.button === 0) isMouseDown = true;
+	}
+
+	function handleMouseUp(e: MouseEvent) {
+		if (e.button !== 0 || !isMouseDown) return;
+		isMouseDown = false;
+		debouncedHandleSelectionChange(new Event("selectionchange"));
+	}
+
+	function handleWindowBlur() {
+		isMouseDown = false;
+		debouncedHandleSelectionChange.clear();
 	}
 
 	onMount(() => {
-		document.addEventListener("pointerup", handlePointerUp);
+		document.addEventListener("selectionchange", debouncedHandleSelectionChange);
+		document.addEventListener("mousedown", handleMouseDown, true);
+		document.addEventListener("mouseup", handleMouseUp, true);
+		window.addEventListener("blur", handleWindowBlur);
 	});
 
 	onCleanup(() => {
-		document.removeEventListener("pointerup", handlePointerUp);
+		document.removeEventListener("selectionchange", debouncedHandleSelectionChange);
+		document.removeEventListener("mousedown", handleMouseDown, true);
+		document.removeEventListener("mouseup", handleMouseUp, true);
+		window.removeEventListener("blur", handleWindowBlur);
+		debouncedHandleSelectionChange.clear();
 	});
 
 	createEffect(() => {
@@ -143,10 +162,8 @@ export function createPDFHighlights(
 		});
 	});
 
-	return { handlePointerUp, commitAnnotation };
+	return { commitAnnotation };
 }
-
-// Pure Utilities
 
 export function getPageDimensions(pdfPage: any) {
 	const rotation = pdfPage.viewport.rotation;

@@ -1,11 +1,16 @@
-import type { PDFSlickState } from "@pdfslick/core";
-import { type Accessor, createEffect, onCleanup } from "solid-js";
+import { type PDFSlickState, ScrollMode } from "@pdfslick/core";
+import { createWindowSize } from "@solid-primitives/resize-observer";
+import { type Accessor, createEffect, createSignal, onCleanup, useContext } from "solid-js";
+import { AppContext } from "../../../app/App";
+import { ViewerStore } from "../components/PDFViewer";
+import { createViewerGestures } from "./createViewerGestures";
 
 export function createPDFGestures(
 	pdfSlickStore: PDFSlickState,
 	containerRef: () => HTMLElement | null | undefined,
 	minScale: Accessor<number>,
-	maxScale: Accessor<number>
+	maxScale: Accessor<number>,
+	viewerStore: ViewerStore
 ) {
 	let initialDistance: number | null = null;
 	let initialScale: number = pdfSlickStore.scale;
@@ -15,6 +20,8 @@ export function createPDFGestures(
 	let isMultiTouch = false;
 	let tapCancelled = false;
 	const tapSlop = 10;
+	const [trigger, setTrigger] = createSignal(0);
+	const { appStore, setAppStore } = useContext(AppContext)!;
 
 	function getDistanceBetweenTouches(e: TouchEvent): number {
 		return Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
@@ -25,20 +32,25 @@ export function createPDFGestures(
 	}
 
 	function onTapNavigation(e: TouchEvent) {
-		if (e.type !== "touchend" || isMultiTouch || tapCancelled || !tapStart || e.changedTouches.length !== 1) return;
-		if (pdfSlickStore?.pdfSlick?.viewer.scrollMode !== 3) return;
+		if (
+			e.type !== "touchend" || isMultiTouch || tapCancelled || !tapStart || e.changedTouches.length !== 1
+			|| viewerStore.showToolbar
+		) return;
+		if (pdfSlickStore?.pdfSlick?.viewer.scrollMode !== ScrollMode.PAGE) return;
 
 		const touch = e.changedTouches[0];
 		if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) return;
 
-		const container = pdfSlickStore.pdfSlick?.viewer.container;
-		const bounds = container.getBoundingClientRect();
-		const zoneWidth = bounds.width / 3;
+		const size = createWindowSize();
+		const zoneWidth = size.width / 3;
+		e.stopPropagation();
 
-		if (touch.clientX < bounds.left + zoneWidth) {
+		if (touch.clientX < zoneWidth) {
 			pdfSlickStore.pdfSlick.viewer.previousPage();
-		} else if (touch.clientX >= bounds.left + (zoneWidth * 2)) {
+		} else if (touch.clientX >= zoneWidth * 2) {
 			pdfSlickStore.pdfSlick.viewer.nextPage();
+		} else {
+			setAppStore("isActionOpen", (prev) => !prev);
 		}
 	}
 
@@ -152,5 +164,13 @@ export function createPDFGestures(
 			el.removeEventListener("touchend", handleTouchEnd);
 			el.removeEventListener("touchcancel", handleTouchEnd);
 		});
+	});
+
+	// TODO: move to createViewerGestures
+	createEffect(() => {
+		trigger();
+		if (!appStore.isActionOpen) return;
+		const timer = setTimeout(() => setAppStore("isActionOpen", false), 3000);
+		onCleanup(() => clearTimeout(timer));
 	});
 }
