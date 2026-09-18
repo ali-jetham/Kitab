@@ -1,8 +1,9 @@
 import { usePDFSlick } from "@pdfslick/solid";
 import { Bookmark } from "lucide-solid";
-import { Show } from "solid-js";
+import { createEffect, onCleanup, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { documentApi } from "../../../api/documentApi";
+import { useSideBarContext } from "../../../app/contexts/SideBarContext";
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore";
 import { createDocumentSync } from "../primitives/createDocumentSync";
 import { createPDFGestures } from "../primitives/createPDFGestures";
@@ -27,8 +28,9 @@ type PDFViewerProps = { id: string; };
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement;
 	const url = documentApi.getFileUrl(props.id);
+	const { setTocState, setNavigate } = useSideBarContext();
 
-	const { viewerRef, pdfSlickStore, PDFSlickViewer } = usePDFSlick(url, {
+	const { viewerRef, pdfSlickStore, PDFSlickViewer, error } = usePDFSlick(url, {
 		scaleValue: "page-fit",
 		removePageBorders: true,
 		getDocumentParams: {
@@ -37,6 +39,22 @@ export default function PDFViewer(props: PDFViewerProps) {
 			disableStream: false
 		}
 	});
+
+	createEffect(() => {
+		if (error()) {
+			setTocState({ status: "error", outline: null });
+		} else if (pdfSlickStore.pagesReady) {
+			setTocState({ status: "ready", outline: pdfSlickStore.documentOutline });
+			setNavigate(() => (dest: string | any[]) =>
+				pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
+			);
+			console.log(pdfSlickStore.documentOutline);
+		} else {
+			setTocState({ status: "loading", outline: null });
+		}
+	});
+	onCleanup(() => setTocState({ status: "empty", outline: null }));
+
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,
 		annotationId: null,
@@ -45,6 +63,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		showToolbar: false,
 		ttsHighlight: null
 	});
+
 	const { store: documentStore, actions } = createDocumentStore(props.id);
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore);
 	createDocumentSync(props.id, actions);

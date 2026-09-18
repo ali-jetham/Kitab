@@ -19,6 +19,7 @@ body {
   background-color: var(--window-bg-color);
   font-family: "Inter", sans-serif;
   font-style: normal;
+  font-size: 1rem;
   color: var(--window-fg-color);
 }
 

@@ -1,0 +1,93 @@
+.navlink {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem;
+  border-radius: 0.3rem;
+  color: inherit;
+  cursor: pointer;
+}
+
+.navlink__trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navlink:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.navlink[data-active],
+.navlink__trigger[data-active] {
+  background-color: rgba(34, 139, 230, 0.1);
+  color: #228be6;
+}
+
+.navlink[data-disabled],
+.navlink__trigger[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.navLinkBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.navLinkLabel {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navLinkDescription {
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.navlink__chevron {
+  transition: transform 120ms ease;
+  display: flex;
+  align-items: center;
+}
+
+.navlink__trigger[data-expanded] .navlink__chevron {
+  transform: rotate(180deg);
+}
+
+.navLinkContent {
+  overflow: hidden;
+}
+
+.navLinkContent[data-expanded] {
+  animation: navLinkSlideDown 150ms ease-out;
+}
+
+.navLinkContent[data-closed] {
+  animation: navLinkSlideUp 150ms ease-out;
+}
+
+.navLinkChildren {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-block-start: 2px;
+}
+
+@keyframes navLinkSlideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--kb-collapsible-content-height);
+  }
+}
+
+@keyframes navLinkSlideUp {
+  from {
+    height: var(--kb-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

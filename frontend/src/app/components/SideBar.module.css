@@ -1,7 +1,11 @@
 .tabs {
+  user-select: none;
+  -webkit-user-select: none;
+  font-size: 0.9rem;
   grid-area: sidebar;
   width: 100%;
   background-color: var(--sidebar-bg-color);
+  overflow-y: auto;
 }
 
 .tabs[data-orientation="vertical"] {
@@ -61,3 +65,14 @@
 .tabs__content {
   padding: 16px;
 }
+
+.toc__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+.toc__item {
+  padding: 0.6rem;
+  border-radius: 0.3rem;
+}*/
