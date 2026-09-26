@@ -1,15 +1,15 @@
-import { TextField } from "@kobalte/core/text-field";
-import { useSearchParams } from "@solidjs/router";
-import { createResource, For, type JSX, Suspense } from "solid-js";
-import { documentApi } from "../../api/documentApi";
-import LibraryItem from "./components/LibraryItem";
-import styles from "./Library.module.css";
-import { createLibraryCommands } from "./primitives/createLibraryCommands";
+import { TextField } from "@kobalte/core/text-field"
+import { useSearchParams } from "@solidjs/router"
+import { createResource, For, type JSX, Suspense } from "solid-js"
+import { documentApi } from "../../api/documentApi"
+import LibraryItem from "./components/LibraryItem"
+import styles from "./Library.module.css"
+import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library(): JSX.Element {
-	const [searchParams, setSearchParams] = useSearchParams();
-	const [books] = createResource(documentApi.getDocs);
-	createLibraryCommands();
+	const [searchParams, setSearchParams] = useSearchParams()
+	const [books] = createResource(documentApi.getDocs)
+	createLibraryCommands()
 
 	const filteredBooks = () =>
 		books()?.filter((book: any) => {
@@ -19,8 +19,8 @@ export default function Library(): JSX.Element {
 				)
 				: book.fileName?.toLowerCase().includes(
 					(searchParams.q as string)?.toLowerCase() ?? ""
-				);
-		});
+				)
+		})
 
 	return (
 		<div class={styles.library}>
@@ -48,5 +48,5 @@ export default function Library(): JSX.Element {
 				</div>
 			</Suspense>
 		</div>
-	);
+	)
 }

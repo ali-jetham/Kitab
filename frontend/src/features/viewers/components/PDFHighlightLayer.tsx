@@ -1,35 +1,35 @@
-import { Accessor, For, Show } from "solid-js";
-import { type Annotation } from "../../../stores/createDocumentStore";
+import { Accessor, For, Show } from "solid-js"
+import { type Annotation } from "../../../stores/createDocumentStore"
 import {
 	convertToSVGRect,
 	getPageDimensions,
 	getRotationTransform
-} from "../primitives/createPDFHighlight";
-import styles from "./PDFHighlightLayer.module.css";
-import type { ViewerStore } from "./PDFViewer";
+} from "../primitives/createPDFHighlight"
+import styles from "./PDFHighlightLayer.module.css"
+import type { ViewerStore } from "./PDFViewer"
 
 type PDFHighlightLayerProps = {
-	page: any;
-	pageNumber: number;
-	annotations: Accessor<Annotation[]>;
-	onSelectAnnotation: (id: string) => void;
-	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>;
-};
+	page: any
+	pageNumber: number
+	annotations: Accessor<Annotation[]>
+	onSelectAnnotation: (id: string) => void
+	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
+}
 
 export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	const { width: baseW, height: baseH } = props.page.pdfPage.getViewport({
 		scale: 1,
 		rotation: 0
-	});
-	const { width, height } = getPageDimensions(props.page);
-	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH);
+	})
+	const { width, height } = getPageDimensions(props.page)
+	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH)
 
 	function handleClick(e: MouseEvent) {
-		e.stopPropagation();
-		const target = (e.target as Element).closest("[data-annotation-id]");
-		const annotationId = target?.getAttribute("data-annotation-id");
+		e.stopPropagation()
+		const target = (e.target as Element).closest("[data-annotation-id]")
+		const annotationId = target?.getAttribute("data-annotation-id")
 		if (annotationId) {
-			props.onSelectAnnotation(annotationId);
+			props.onSelectAnnotation(annotationId)
 		}
 	}
 
@@ -46,7 +46,7 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 						<g data-annotation-id={annotation.id}>
 							<For each={annotation.rects}>
 								{(r) => {
-									const rect = convertToSVGRect(r, baseH);
+									const rect = convertToSVGRect(r, baseH)
 									return (
 										<rect
 											onClick={handleClick}
@@ -57,7 +57,7 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 											fill={annotation.color}
 											fill-opacity="0.3"
 										/>
-									);
+									)
 								}}
 							</For>
 						</g>
@@ -86,5 +86,5 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 				</Show>
 			</g>
 		</svg>
-	);
+	)
 }

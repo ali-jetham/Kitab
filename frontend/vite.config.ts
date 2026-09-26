@@ -1,10 +1,10 @@
-import devtools from "solid-devtools/vite";
-import { defineConfig, loadEnv } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
-import solidPlugin from "vite-plugin-solid";
+import devtools from "solid-devtools/vite"
+import { defineConfig, loadEnv } from "vite"
+import { VitePWA } from "vite-plugin-pwa"
+import solidPlugin from "vite-plugin-solid"
 
 export default defineConfig(({ mode }) => {
-	const env = loadEnv(mode, process.cwd(), "");
+	const env = loadEnv(mode, process.cwd(), "")
 
 	return {
 		plugins: [
@@ -33,5 +33,5 @@ export default defineConfig(({ mode }) => {
 		preview: { port: 3000 },
 		optimizeDeps: { exclude: ["@pdfslick/core"] },
 		build: { target: "esnext" }
-	};
-});
+	}
+})

@@ -1,4 +1,4 @@
-import type { Keybind } from "./keybinds";
+import type { Keybind } from "./keybinds"
 
 export const keymap: readonly Keybind[] = [
 	{ key: ":", command: "app.modal.toggle", context: "global" },
@@ -26,4 +26,4 @@ export const keymap: readonly Keybind[] = [
 	{ key: "ArrowDown", command: "modal.next", context: "modal", isInputAllowed: true },
 	{ key: "ArrowUp", command: "modal.prev", context: "modal", isInputAllowed: true },
 	{ key: "Enter", command: "modal.select", context: "modal", isInputAllowed: true }
-];
+]

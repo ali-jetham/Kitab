@@ -30,4 +30,4 @@ export const COMMANDS = [
 	{ id: "modal.next", label: "", hidden: true },
 	{ id: "modal.prev", label: "", hidden: true },
 	{ id: "modal.select", label: "", hidden: true }
-] as const;
+] as const

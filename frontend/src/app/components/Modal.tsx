@@ -1,21 +1,21 @@
-import { Combobox } from "@kobalte/core/combobox";
-import { createSignal, onMount } from "solid-js";
-import { SetStoreFunction } from "solid-js/store";
-import { COMMANDS } from "../../core/commands";
-import { Command, executeCommand } from "../../core/keybinds";
-import { AppStore } from "../App";
-import styles from "./Modal.module.css";
+import { Combobox } from "@kobalte/core/combobox"
+import { createSignal, onMount } from "solid-js"
+import { SetStoreFunction } from "solid-js/store"
+import { COMMANDS } from "../../core/commands"
+import { Command, executeCommand } from "../../core/keybinds"
+import { AppStore } from "../App"
+import styles from "./Modal.module.css"
 
-type ModalProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore>; };
+type ModalProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore> }
 
 export default function CommandPallete(props: ModalProps) {
-	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden));
-	const [value, setValue] = createSignal<Command | null>();
-	let inputRef: HTMLInputElement | undefined;
+	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden))
+	const [value, setValue] = createSignal<Command | null>()
+	let inputRef: HTMLInputElement | undefined
 
 	onMount(() => {
-		inputRef?.focus();
-	});
+		inputRef?.focus()
+	})
 
 	return (
 		<Combobox
@@ -32,9 +32,9 @@ export default function CommandPallete(props: ModalProps) {
 			preventScroll={true}
 			open={props.appStore.isModalOpen}
 			onOpenChange={(open) => {
-				props.setAppStore("isModalOpen", open);
-				props.setAppStore("modalSelectedCommand", null);
-				props.setAppStore("modalArgs", null);
+				props.setAppStore("isModalOpen", open)
+				props.setAppStore("modalSelectedCommand", null)
+				props.setAppStore("modalArgs", null)
 			}}
 			shouldFocusWrap={true}
 			allowsEmptyCollection={true}
@@ -46,24 +46,24 @@ export default function CommandPallete(props: ModalProps) {
 				</Combobox.Item>
 			)}
 			onChange={(value) => {
-				if (!value) return;
-				setValue(value);
+				if (!value) return
+				setValue(value)
 
 				if (props.appStore.modalSelectedCommand) {
-					executeCommand(props.appStore.modalSelectedCommand, { arg: value.id });
-					props.setAppStore("modalSelectedCommand", null);
-					props.setAppStore("modalArgs", null);
-					props.setAppStore("isModalOpen", false);
-					return;
+					executeCommand(props.appStore.modalSelectedCommand, { arg: value.id })
+					props.setAppStore("modalSelectedCommand", null)
+					props.setAppStore("modalArgs", null)
+					props.setAppStore("isModalOpen", false)
+					return
 				}
 				if (value.withArgs) {
-					props.setAppStore("modalSelectedCommand", value.id);
-					executeCommand(value.id);
-					setValue(null);
-					return;
+					props.setAppStore("modalSelectedCommand", value.id)
+					executeCommand(value.id)
+					setValue(null)
+					return
 				}
-				executeCommand(value.id);
-				props.setAppStore("isModalOpen", false);
+				executeCommand(value.id)
+				props.setAppStore("isModalOpen", false)
 			}}
 		>
 			<Combobox.Control class={styles.combobox__control}>
@@ -75,5 +75,5 @@ export default function CommandPallete(props: ModalProps) {
 				</Combobox.Content>
 			</Combobox.Portal>
 		</Combobox>
-	);
+	)
 }

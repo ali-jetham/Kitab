@@ -1,10 +1,9 @@
 {
-  "$schema": "",
   "typescript": {
     "lineWidth": 120,
     "indentWidth": 2,
     "useTabs": true,
-    "semiColons": "always",
+    "semiColons": "asi",
     "quoteStyle": "alwaysDouble",
     "newLineKind": "lf",
     "preferSingleLine": true,

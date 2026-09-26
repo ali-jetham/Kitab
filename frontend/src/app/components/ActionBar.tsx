@@ -1,12 +1,12 @@
-import { Button } from "@kobalte/core/button";
-import { Slider } from "@kobalte/core/slider";
-import { Bookmark, Command, Menu } from "lucide-solid";
-import { Setter } from "solid-js";
-import { SetStoreFunction } from "solid-js/store";
-import { AppStore } from "../App";
-import styles from "./ActionBar.module.css";
+import { Button } from "@kobalte/core/button"
+import { Slider } from "@kobalte/core/slider"
+import { Bookmark, Command, Menu } from "lucide-solid"
+import { Setter } from "solid-js"
+import { SetStoreFunction } from "solid-js/store"
+import { AppStore } from "../App"
+import styles from "./ActionBar.module.css"
 
-type ActionBarProps = { setAppStore: SetStoreFunction<AppStore>; };
+type ActionBarProps = { setAppStore: SetStoreFunction<AppStore> }
 
 export default function ActionBar(props: ActionBarProps) {
 	return (
@@ -34,5 +34,5 @@ export default function ActionBar(props: ActionBarProps) {
 				</Button>
 			</div>
 		</div>
-	);
+	)
 }

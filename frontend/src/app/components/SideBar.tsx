@@ -1,14 +1,13 @@
-import { Tabs } from "@kobalte/core/tabs";
-import { Bookmark, Highlighter, TableOfContents } from "lucide-solid";
-import { createSignal, For, Match, Show, Switch } from "solid-js";
-import { NavLink } from "../../components/NavLink";
-import { useSideBarContext } from "../contexts/SideBarContext";
-import styles from "./SideBar.module.css";
+import { Tabs } from "@kobalte/core/tabs"
+import { Bookmark, Highlighter, TableOfContents } from "lucide-solid"
+import { createSignal, For, Match, Show, Switch } from "solid-js"
+import { NavLink } from "../../components/NavLink"
+import { useSideBarContext } from "../contexts/SideBarContext"
+import styles from "./SideBar.module.css"
 
 export default function SideBar() {
-
-	const { tocState } = useSideBarContext();
-	const [selectedTab, setSelectedTab] = createSignal("annotations");
+	const { tocState } = useSideBarContext()
+	const [selectedTab, setSelectedTab] = createSignal("annotations")
 
 	return (
 		<Tabs class={styles.tabs} value={selectedTab()} onChange={setSelectedTab}>
@@ -44,9 +43,7 @@ export default function SideBar() {
 									>
 										<NavLink label={item.title} dest={item.dest}>
 											<For each={item.items}>
-												{(item) => (
-													<NavLink label={item.title} dest={item.dest} />
-												)}
+												{(item) => <NavLink label={item.title} dest={item.dest} />}
 											</For>
 										</NavLink>
 									</Show>
@@ -55,7 +52,6 @@ export default function SideBar() {
 						</div>
 					</Match>
 				</Switch>
-
 			</Tabs.Content>
 
 			<Tabs.Content class={styles.tabs__content} value="annotations">
@@ -65,5 +61,5 @@ export default function SideBar() {
 				Bookmarks
 			</Tabs.Content>
 		</Tabs>
-	);
+	)
 }
