@@ -19,6 +19,7 @@ export type AppStore = {
 	isModalOpen: boolean
 	isActionOpen: boolean
 	isSideBarOpen: boolean
+	isStatusOpen: boolean
 	modalArgs: { id: string; label: string; hidden: boolean }[] | null
 	modalSelectedCommand: CommandId | null
 	trigger: number
@@ -36,6 +37,7 @@ export default function App(props: RouteSectionProps) {
 		isModalOpen: false,
 		isActionOpen: true,
 		isSideBarOpen: true,
+		isStatusOpen: true,
 		modalArgs: null,
 		modalSelectedCommand: null,
 		trigger: 0
@@ -70,7 +72,7 @@ export default function App(props: RouteSectionProps) {
 					</Show>
 					<main class={styles.main}>{props.children}</main>
 
-					<Show when={!appStore.isMobile()}>
+					<Show when={!appStore.isMobile() && appStore.isStatusOpen}>
 						<StatusBar />
 					</Show>
 

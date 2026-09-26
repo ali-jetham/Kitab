@@ -25,6 +25,7 @@ export const COMMANDS = [
 	{ id: "app.modal.toggle", label: "", hidden: true, withArgs: false },
 	{ id: "app.modal.close", label: "", hidden: true, withArgs: false },
 	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },
+	{ id: "app.statusbar.toggle", label: "App: Toggle Statusbar", hidden: false, withArgs: false },
 	{ id: "app.downloadTTS", label: "App: Setup Read Aloud", hidden: false, withArgs: true },
 
 	{ id: "modal.next", label: "", hidden: true },

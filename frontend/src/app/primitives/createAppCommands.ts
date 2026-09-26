@@ -6,15 +6,10 @@ import { type AppStore } from "../App"
 
 export function createAppCommands(appStore: AppStore, setAppStore: SetStoreFunction<AppStore>) {
 	const unregisters = [
-		registerCommand("app.modal.toggle", () => {
-			setAppStore("isModalOpen", (prev) => !prev)
-		}),
-		registerCommand("app.modal.close", () => {
-			setAppStore("isModalOpen", false)
-		}),
-		registerCommand("app.sidebar.toggle", () => {
-			setAppStore("isSideBarOpen", (prev) => !prev)
-		}),
+		registerCommand("app.modal.toggle", () => setAppStore("isModalOpen", (prev) => !prev)),
+		registerCommand("app.modal.close", () => setAppStore("isModalOpen", false)),
+		registerCommand("app.sidebar.toggle", () => setAppStore("isSideBarOpen", (prev) => !prev)),
+		registerCommand("app.statusbar.toggle", () => setAppStore("isStatusOpen", (prev) => !prev)),
 		registerCommand("app.downloadTTS", async ({ arg }) => {
 			if (!arg) {
 				const models = await TTSApi.getModels()
