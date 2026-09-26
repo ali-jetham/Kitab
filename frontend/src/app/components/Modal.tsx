@@ -1,15 +1,14 @@
 import { Combobox } from "@kobalte/core/combobox"
 import { createSignal, onMount } from "solid-js"
 import { SetStoreFunction } from "solid-js/store"
-import { COMMANDS } from "../../core/commands"
-import { Command, executeCommand } from "../../core/keybinds"
+import { type Command, commands } from "../../core/commands"
 import { AppStore } from "../App"
 import styles from "./Modal.module.css"
 
 type ModalProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore> }
 
 export default function CommandPallete(props: ModalProps) {
-	const [options, setOptions] = createSignal(COMMANDS.filter((c) => !c.hidden))
+	const [options, setOptions] = createSignal(commands.COMMANDS.filter((c) => !c.hidden))
 	const [value, setValue] = createSignal<Command | null>()
 	let inputRef: HTMLInputElement | undefined
 
@@ -50,7 +49,7 @@ export default function CommandPallete(props: ModalProps) {
 				setValue(value)
 
 				if (props.appStore.modalSelectedCommand) {
-					executeCommand(props.appStore.modalSelectedCommand, { arg: value.id })
+					commands.executeCommand(props.appStore.modalSelectedCommand, { arg: value.id })
 					props.setAppStore("modalSelectedCommand", null)
 					props.setAppStore("modalArgs", null)
 					props.setAppStore("isModalOpen", false)
@@ -58,11 +57,11 @@ export default function CommandPallete(props: ModalProps) {
 				}
 				if (value.withArgs) {
 					props.setAppStore("modalSelectedCommand", value.id)
-					executeCommand(value.id)
+					commands.executeCommand(value.id)
 					setValue(null)
 					return
 				}
-				executeCommand(value.id)
+				commands.executeCommand(value.id)
 				props.setAppStore("isModalOpen", false)
 			}}
 		>

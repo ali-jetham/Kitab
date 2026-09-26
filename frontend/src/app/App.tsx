@@ -4,7 +4,10 @@ import { createContext, createEffect, onCleanup, onMount } from "solid-js"
 import { createStore, type SetStoreFunction } from "solid-js/store"
 import { Portal, Show } from "solid-js/web"
 import { Transition } from "solid-transition-group"
-import { type CommandId, dispatch, setActiveContexts } from "../core/keybinds"
+import { tinykeys } from "tinykeys"
+import { CommandId } from "../core/commands"
+import { commands } from "../core/commands"
+import { keymap } from "../core/keymap"
 import styles from "./App.module.css"
 import ActionBar from "./components/ActionBar"
 import actionBarStyles from "./components/ActionBar.module.css"
@@ -42,22 +45,25 @@ export default function App(props: RouteSectionProps) {
 		modalSelectedCommand: null,
 		trigger: 0
 	})
+
+	const bindings: Record<string, (event: KeyboardEvent) => void> = {}
+	for (const binding of keymap) {
+		bindings[binding.key] = (event) => {
+			event.preventDefault()
+			commands.executeCommand(binding.command, { event })
+			console.log(binding.key, "pressed")
+		}
+	}
 	createAppCommands(appStore, setAppStore)
 
-	createEffect(() => {
-		setActiveContexts(
-			appStore.isModalOpen ? ["modal", "viewer", "global"] : ["viewer", "global"]
-		)
-	})
-
 	onMount(() => {
-		document.addEventListener("keydown", dispatch)
+		const unregister = tinykeys(window, bindings)
 		document.addEventListener("contextmenu", (e) => e.preventDefault())
-	})
 
-	onCleanup(() => {
-		document.removeEventListener("keydown", dispatch)
-		document.removeEventListener("contextmenu", (e) => e.preventDefault())
+		onCleanup(() => {
+			unregister()
+			document.removeEventListener("contextmenu", (e) => e.preventDefault())
+		})
 	})
 
 	return (

@@ -3,7 +3,7 @@ import { createEffect, createResource, createSignal, onCleanup } from "solid-js"
 import { SetStoreFunction } from "solid-js/store"
 import { documentApi } from "../../../api/documentApi"
 import { TTSApi } from "../../../api/ttsApi"
-import { registerCommand } from "../../../core/keybinds"
+import { commands } from "../../../core/commands"
 import { PDFRect } from "../../../stores/createDocumentStore"
 import { ViewerStore } from "../components/PDFViewer"
 
@@ -95,7 +95,7 @@ export function createTTS(setViewerStore: SetStoreFunction<ViewerStore>, pdfSlic
 		nextPlay = 0
 	}
 
-	const unregister = registerCommand("pdf.readAloud", () => {
+	const unregister = commands.registerCommand("pdf.readAloud", () => {
 		if (isPlaying()) {
 			stop()
 			return

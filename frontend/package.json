@@ -24,6 +24,7 @@
     "lucide-solid": "^1.45.0",
     "solid-js": "^1.9.15",
     "solid-transition-group": "^0.3.0",
+    "tinykeys": "^4.0.1",
     "uuid": "^14.0.2"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-export const COMMANDS = [
+const COMMANDS = [
 	{ id: "library.refreshCovers", label: "Library: Refresh Covers", hidden: false, withArgs: false },
 	{ id: "library.scan", label: "Library: Scan", hidden: false, withArgs: false },
 
@@ -32,3 +32,31 @@ export const COMMANDS = [
 	{ id: "modal.prev", label: "", hidden: true },
 	{ id: "modal.select", label: "", hidden: true }
 ] as const
+
+export type CommandId = (typeof COMMANDS)[number]["id"]
+export type Command = { id: CommandId; label: string; hidden: boolean; withArgs: boolean }
+export type CommandContext = { event?: KeyboardEvent; count?: number; arg?: string }
+export type CommandHandler = (context: CommandContext) => void
+
+const commandRegistry = new Map<CommandId, CommandHandler>()
+
+function registerCommand(command: CommandId, handler: CommandHandler): () => void {
+	commandRegistry.set(command, handler)
+
+	return function unregister() {
+		const currentHandler = commandRegistry.get(command)
+		if (currentHandler === handler) {
+			commandRegistry.delete(command)
+		}
+	}
+}
+
+function executeCommand(command: CommandId, context: CommandContext = {}): boolean {
+	const handler = commandRegistry.get(command)
+	if (!handler) return false
+
+	handler(context)
+	return true
+}
+
+export const commands = { COMMANDS, registerCommand, executeCommand }

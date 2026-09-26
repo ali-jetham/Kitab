@@ -3,7 +3,7 @@ import { createElementSize } from "@solid-primitives/resize-observer"
 import { type Accessor, createEffect, onCleanup } from "solid-js"
 import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
-import { type CommandId, registerCommand } from "../../../core/keybinds"
+import { CommandId, commands } from "../../../core/commands"
 import { ViewerStore } from "../components/PDFViewer"
 
 export function createPDFKeybinds(
@@ -36,7 +36,7 @@ export function createPDFKeybinds(
 	})
 
 	function register(commandId: CommandId, callback: (pdf: PDFSlick) => void) {
-		return registerCommand(commandId, () => {
+		return commands.registerCommand(commandId, () => {
 			if (!pdfSlickStore.pdfSlick) return
 			callback(pdfSlickStore.pdfSlick)
 		})
@@ -51,7 +51,7 @@ export function createPDFKeybinds(
 			pdfSlick.currentScale = newScale
 		}),
 		register("pdf.zoomOut", (pdfSlick) => {
-			let newScale = pdfSlickStore.scale / DEFAULT_SCALE_DELTA
+			let newScale = pdfSlickStore.scale / DEFAULT_SCALE_DELTA // FIXME: For desktop a different minScale should be used
 			if (newScale < minScale()) newScale = minScale()
 			pdfSlick.currentScale = newScale
 		}),
