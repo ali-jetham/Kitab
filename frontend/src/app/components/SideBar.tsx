@@ -1,12 +1,15 @@
 import { Tabs } from "@kobalte/core/tabs"
 import { Bookmark, Highlighter, TableOfContents } from "lucide-solid"
-import { createSignal, For, Match, Show, Switch } from "solid-js"
+import { createResource, createSignal, For, Match, Show, Switch } from "solid-js"
+import { annotationApi } from "../../api/annotationApi"
+import AnnotationItem from "../../components/AnnotationItem"
 import { NavLink } from "../../components/NavLink"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
+import { useNavigate } from "@solidjs/router"
 
 export default function SideBar() {
-	const { tocState } = useSideBarContext()
+	const { tocState, annotations } = useSideBarContext()
 	const [selectedTab, setSelectedTab] = createSignal("annotations")
 
 	return (
@@ -55,8 +58,13 @@ export default function SideBar() {
 			</Tabs.Content>
 
 			<Tabs.Content class={styles.tabs__content} value="annotations">
-				Annotations
+				<div class={styles.ann__list}>
+					<For each={annotations()}>
+						{(annotation) => <AnnotationItem annotation={annotation} />}
+					</For>
+				</div>
 			</Tabs.Content>
+
 			<Tabs.Content class={styles.tabs__content} value="bookmarks">
 				Bookmarks
 			</Tabs.Content>

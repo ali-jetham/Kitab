@@ -6,6 +6,8 @@ type KeybindContext = "global" | "viewer" | "modal"
 export const keymap: readonly Keybind[] = [
 	{ key: "Shift+:", command: "app.modal.toggle", context: "global" },
 	{ key: "escape", command: "app.modal.close", context: "modal", isInputAllowed: true },
+	{ key: "t h", command: "app.sidebar.toggle", context: "global", isInputAllowed: false },
+	{ key: "t j", command: "app.statusbar.toggle", context: "global", isInputAllowed: false },
 
 	{ key: "h", command: "pdf.fitHeight", context: "viewer" },
 	{ key: "w", command: "pdf.fitWidth", context: "viewer" },

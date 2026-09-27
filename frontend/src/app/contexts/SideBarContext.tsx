@@ -16,11 +16,14 @@ export type TocState =
 	| { status: "error"; outline: null }
 	| { status: "empty"; outline: null }
 
+
 type SideBarContextType = {
 	tocState: Accessor<TocState>
 	setTocState: Setter<TocState>
 	navigate: Accessor<Navigate | null>
 	setNavigate: Setter<Navigate | null>
+	annotations: Accessor<any>
+	setAnnotations: Setter<any>
 }
 
 const SideBarContext = createContext<SideBarContextType>()
@@ -30,10 +33,20 @@ export function SideBarProvider(props: ParentProps) {
 		status: "empty",
 		outline: null
 	})
+	const [annotations, setAnnotations] = createSignal(null)
 	const [navigate, setNavigate] = createSignal<Navigate | null>(null)
 
 	return (
-		<SideBarContext.Provider value={{ tocState, setTocState, navigate, setNavigate }}>
+		<SideBarContext.Provider
+			value={{
+				annotations,
+				setAnnotations,
+				tocState,
+				setTocState,
+				navigate,
+				setNavigate
+			}}
+		>
 			{props.children}
 		</SideBarContext.Provider>
 	)

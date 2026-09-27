@@ -28,7 +28,7 @@ type PDFViewerProps = { id: string }
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement
 	const url = documentApi.getFileUrl(props.id)
-	const { setTocState, setNavigate } = useSideBarContext()
+	const { setTocState, setNavigate, annotations: annotationState, setAnnotations: setAnnotationState } = useSideBarContext()
 
 	const { viewerRef, pdfSlickStore, PDFSlickViewer, error } = usePDFSlick(url, {
 		scaleValue: "page-fit",
@@ -39,21 +39,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 			disableStream: false
 		}
 	})
-
-	createEffect(() => {
-		if (error()) {
-			setTocState({ status: "error", outline: null })
-		} else if (pdfSlickStore.pagesReady) {
-			setTocState({ status: "ready", outline: pdfSlickStore.documentOutline })
-			setNavigate(() => (dest: string | any[]) =>
-				pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
-			)
-			console.log(pdfSlickStore.documentOutline)
-		} else {
-			setTocState({ status: "loading", outline: null })
-		}
-	})
-	onCleanup(() => setTocState({ status: "empty", outline: null }))
 
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,
@@ -83,6 +68,22 @@ export default function PDFViewer(props: PDFViewerProps) {
 		if (!currentPage) return false
 		return documentStore.bookmarks.some(bm => bm.page === currentPage)
 	}
+
+	createEffect(() => {
+		if (error()) {
+			setTocState({ status: "error", outline: null })
+		} else if (pdfSlickStore.pagesReady) {
+			setTocState({ status: "ready", outline: pdfSlickStore.documentOutline })
+			setNavigate(() => (dest: string | any[]) =>
+				pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
+			)
+			setAnnotationState(documentStore.annotations)
+			console.log(pdfSlickStore.documentOutline)
+		} else {
+			setTocState({ status: "loading", outline: null })
+		}
+	})
+	onCleanup(() => setTocState({ status: "empty", outline: null }))
 
 	return (
 		<div ref={containerRef} class="pdfslick-container pdfSlick">

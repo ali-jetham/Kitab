@@ -15,10 +15,10 @@ class AnnotationBase(BaseModel):
     page: int
     text: str
     note: str
-    rects: list
 
 
 class AnnotationCreate(AnnotationBase):
+    rects: list
     id: str
     doc_id: str
 

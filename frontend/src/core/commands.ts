@@ -1,4 +1,10 @@
 const COMMANDS = [
+	{ id: "app.modal.toggle", label: "", hidden: true, withArgs: false },
+	{ id: "app.modal.close", label: "", hidden: true, withArgs: false },
+	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },
+	{ id: "app.statusbar.toggle", label: "App: Toggle Statusbar", hidden: false, withArgs: false },
+	{ id: "app.downloadTTS", label: "App: Setup Read Aloud", hidden: false, withArgs: true },
+
 	{ id: "library.refreshCovers", label: "Library: Refresh Covers", hidden: false, withArgs: false },
 	{ id: "library.scan", label: "Library: Scan", hidden: false, withArgs: false },
 
@@ -20,17 +26,7 @@ const COMMANDS = [
 	{ id: "pdf.zoomIn", label: "Zoom In", hidden: true, withArgs: false },
 	{ id: "pdf.zoomOut", label: "Zoom Out", hidden: true, withArgs: false },
 	{ id: "pdf.scrollDown", label: "Scroll Document Down", hidden: true, withArgs: false },
-	{ id: "pdf.scrollUp", label: "Scroll Document Up", hidden: true, withArgs: false },
-
-	{ id: "app.modal.toggle", label: "", hidden: true, withArgs: false },
-	{ id: "app.modal.close", label: "", hidden: true, withArgs: false },
-	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },
-	{ id: "app.statusbar.toggle", label: "App: Toggle Statusbar", hidden: false, withArgs: false },
-	{ id: "app.downloadTTS", label: "App: Setup Read Aloud", hidden: false, withArgs: true },
-
-	{ id: "modal.next", label: "", hidden: true },
-	{ id: "modal.prev", label: "", hidden: true },
-	{ id: "modal.select", label: "", hidden: true }
+	{ id: "pdf.scrollUp", label: "Scroll Document Up", hidden: true, withArgs: false }
 ] as const
 
 export type CommandId = (typeof COMMANDS)[number]["id"]

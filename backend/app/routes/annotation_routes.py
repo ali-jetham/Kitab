@@ -7,6 +7,11 @@ from app.services.annotation_service import AnnotationService
 router = APIRouter(prefix="/api/annotations", tags=["annotations"])
 
 
+@router.get("/")
+async def get_all(service: AnnotationService = Depends(get_annotation_service)):
+    return await service.get_all_annotations()
+
+
 @router.post("/")
 async def add(
     ann: AnnotationCreate, service: AnnotationService = Depends(get_annotation_service)

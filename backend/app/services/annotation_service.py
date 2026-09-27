@@ -3,13 +3,17 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.annotation import Annotation
-from app.schemas.annotation import AnnotationCreate, AnnotationRead
+from app.schemas.annotation import AnnotationBase, AnnotationCreate, AnnotationRead
 
 
 class AnnotationService:
     def __init__(self, db: Session):
         self.db = db
         self.library_path = settings.LIBRARY_PATH
+
+    async def get_all_annotations(self) -> list[AnnotationBase]:
+        anns = self.db.query(Annotation).all()
+        return [AnnotationBase.model_validate(ann) for ann in anns]
 
     async def add_annotation(self, ann: AnnotationCreate) -> AnnotationRead:
         new_ann = Annotation(**ann.model_dump())

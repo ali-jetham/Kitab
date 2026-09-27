@@ -1,0 +1,26 @@
+.item {
+  display: flex;
+  flex-direction: column;
+  border: solid 1px var(--border-color);
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+}
+
+.item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item__body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.item[data-expanded] .item__body {
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
+}
