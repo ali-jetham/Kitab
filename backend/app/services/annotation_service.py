@@ -22,6 +22,7 @@ class AnnotationService:
         self.db.refresh(new_ann)  # TODO: understand how this works
         return AnnotationRead.model_validate(new_ann)
 
+    # TODO: check what should be returned from here
     async def delete_annotation(self, id: str):
         stmt = delete(Annotation).where(Annotation.id == id)
         self.db.execute(stmt)

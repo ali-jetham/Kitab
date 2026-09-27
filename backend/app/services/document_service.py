@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
 from app.models.document import Document
-from app.schemas.document import DocumentRead, DocumentUpdate
+from app.schemas.document import DocumentBase, DocumentRead, DocumentUpdate
 from app.utils import helper
 from app.utils.helper import normalize_pikepdf_value
 
@@ -22,9 +22,9 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    async def get_documents(self) -> list[DocumentRead]:
+    async def get_documents(self) -> list[DocumentBase]:
         documents = list(self.db.scalars(select(Document)).all())
-        return [DocumentRead.model_validate(d) for d in documents]
+        return [DocumentBase.model_validate(d) for d in documents]
 
     # TODO: write a version which does NOT return with all the annotations for Library.tsx page
     async def get_document(self, id: str) -> DocumentRead | None:
@@ -46,6 +46,7 @@ class DocumentService:
         path = Path(document.file_path)
         return path if path.is_file() else None
 
+    # TODO: clean up, use proper variable names
     def get_page_text(self, id: str, page_number: int):
         document_path = self.get_document_file(id)
 

@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 from app.core.config import settings
 from app.core.dependencies import get_document_service
-from app.schemas.document import DocumentRead, DocumentUpdate
+from app.schemas.document import DocumentBase, DocumentRead, DocumentUpdate
 from app.services.document_service import DocumentService
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/documents", tags=["documents"])
 @router.get("/")
 async def get_documents(
     service: DocumentService = Depends(get_document_service),
-) -> list[DocumentRead]:
+) -> list[DocumentBase]:
     return await service.get_documents()
 
 
@@ -30,6 +30,7 @@ async def get_document(
     return result
 
 
+# TODO: check what should be the return type
 @router.get("/{id}/file")
 async def get_document_file(
     id: str, service: DocumentService = Depends(get_document_service)
@@ -51,7 +52,6 @@ def get_document_page_text(
     res = service.get_page_text(id, page)
     if res is None:
         raise HTTPException(404)
-
     return res
 
 

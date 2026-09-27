@@ -17,7 +17,7 @@ async def get_bookmarks(
 @router.get("/{id}")
 async def get_bookmark(
     id: int, service: BookmarkService = Depends(get_bookmark_service)
-):
+) -> BookmarkRead | None:
     return await service.get_bookmark(id)
 
 
