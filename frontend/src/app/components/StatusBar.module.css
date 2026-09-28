@@ -2,10 +2,16 @@
   grid-area: bottombar;
   display: flex;
   justify-content: space-between;
-  background: var(--headerbar-bg-color);
-  color: var(--headerbar-fg-color);
-  border-top: 1px solid var(--headerbar-shade-color);
+  background: var(--sidebar-bg-color);
+  color: var(--sidebar-fg-color);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--sidebar-border-color);
   transition: opacity 0.3s ease;
+  padding: 0.1rem;
+}
+
+.section {
+  padding: 0 0.1rem;
 }
 
 .status.hidden {

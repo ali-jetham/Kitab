@@ -7,6 +7,7 @@ import {
 	type Setter,
 	useContext
 } from "solid-js"
+import { createStore, SetStoreFunction, Store, StoreSetter } from "solid-js/store"
 
 type Navigate = (dest: string | any[]) => void
 
@@ -16,36 +17,24 @@ export type TocState =
 	| { status: "error"; outline: null }
 	| { status: "empty"; outline: null }
 
+type SideBarStore = { annotations: any; tocState: TocState; navigate: Navigate | null }
+
 type SideBarContextType = {
-	tocState: Accessor<TocState>
-	setTocState: Setter<TocState>
-	navigate: Accessor<Navigate | null>
-	setNavigate: Setter<Navigate | null>
-	annotations: Accessor<any>
-	setAnnotations: Setter<any>
+	sideBarStore: SideBarStore
+	setSideBarStore: SetStoreFunction<SideBarStore>
 }
 
 const SideBarContext = createContext<SideBarContextType>()
 
 export function SideBarProvider(props: ParentProps) {
-	const [tocState, setTocState] = createSignal<TocState>({
-		status: "empty",
-		outline: null
+	const [sideBarStore, setSideBarStore] = createStore<SideBarStore>({
+		annotations: null,
+		navigate: null,
+		tocState: { status: "empty", outline: null }
 	})
-	const [annotations, setAnnotations] = createSignal(null)
-	const [navigate, setNavigate] = createSignal<Navigate | null>(null)
 
 	return (
-		<SideBarContext.Provider
-			value={{
-				annotations,
-				setAnnotations,
-				tocState,
-				setTocState,
-				navigate,
-				setNavigate
-			}}
-		>
+		<SideBarContext.Provider value={{ sideBarStore, setSideBarStore }}>
 			{props.children}
 		</SideBarContext.Provider>
 	)

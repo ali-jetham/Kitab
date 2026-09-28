@@ -24,7 +24,6 @@ export default function Library(): JSX.Element {
 
 	return (
 		<div class={styles.library}>
-			{/*<div class={styles.headerBar}>*/}
 			<TextField class={styles.textField}>
 				<TextField.Label />
 				<TextField.Input
@@ -35,7 +34,6 @@ export default function Library(): JSX.Element {
 				<TextField.Description />
 				<TextField.ErrorMessage />
 			</TextField>
-			{/*</div>*/}
 
 			<Suspense fallback={<div>Loading books...</div>}>
 				{/* FIXME: show when no books found*/}

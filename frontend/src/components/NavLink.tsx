@@ -16,12 +16,12 @@ export interface NavLinkProps {
 }
 
 export function NavLink(props: NavLinkProps) {
-	const { navigate } = useSideBarContext()
+	const { sideBarStore } = useSideBarContext()
 
 	function handleClick(e: MouseEvent) {
 		e.preventDefault()
 		if (props.dest) {
-			navigate()?.(props.dest)
+			sideBarStore.navigate?.(props.dest)
 		}
 	}
 

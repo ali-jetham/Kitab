@@ -23,7 +23,7 @@ export const keymap: readonly Keybind[] = [
 	{ key: "Shift+R", command: "pdf.rotateAntiClockwise", context: "viewer" },
 
 	{ key: "g g", command: "pdf.gotoFirstPage", context: "viewer" },
-	{ key: "G", command: "pdf.gotoLastPage", context: "viewer" },
+	{ key: "Shift+G", command: "pdf.gotoLastPage", context: "viewer" },
 
 	{ key: "d h", command: "pdf.deleteHighlight", context: "viewer" },
 	{ key: "b a", command: "pdf.addBookmark", context: "viewer" }

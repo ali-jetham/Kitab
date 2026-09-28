@@ -1,4 +1,3 @@
-import { useContext } from "solid-js"
 import { useStatusBarContext } from "../contexts/StatusBarContext"
 import styles from "./StatusBar.module.css"
 
@@ -7,10 +6,10 @@ export default function StatusBar() {
 
 	return (
 		<div class={styles.status}>
-			<div>
+			<div class={styles.section}>
 				<div>[ {statusStore.currentPage} / {statusStore.totalPages} ]</div>
 			</div>
-			<div></div>
+			<div class={styles.section}>TTS status</div>
 		</div>
 	)
 }
