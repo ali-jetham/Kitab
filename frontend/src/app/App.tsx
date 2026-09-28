@@ -15,6 +15,7 @@ import Modal from "./components/Modal"
 import SideBar from "./components/SideBar"
 import StatusBar from "./components/StatusBar"
 import { SideBarProvider } from "./contexts/SideBarContext"
+import { StatusBarProvider } from "./contexts/StatusBarContext"
 import { createAppCommands } from "./primitives/createAppCommands"
 
 export type AppStore = {
@@ -69,38 +70,40 @@ export default function App(props: RouteSectionProps) {
 	return (
 		<AppContext.Provider value={{ appStore, setAppStore }}>
 			<SideBarProvider>
-				<div
-					class={styles.app}
-					classList={{ [styles.sidebarClosed]: !appStore.isSideBarOpen }}
-				>
-					<Show when={appStore.isSideBarOpen}>
-						<SideBar />
-					</Show>
-					<main class={styles.main}>{props.children}</main>
-
-					<Show when={!appStore.isMobile() && appStore.isStatusOpen}>
-						<StatusBar />
-					</Show>
-
-					<Transition
-						enterClass={actionBarStyles.slideEnter}
-						enterActiveClass={actionBarStyles.slideEnterActive}
-						enterToClass={actionBarStyles.slideEnterTo}
-						exitClass={actionBarStyles.slideExit}
-						exitActiveClass={actionBarStyles.slideExitActive}
-						exitToClass={actionBarStyles.slideExitTo}
+				<StatusBarProvider>
+					<div
+						class={styles.app}
+						classList={{ [styles.sidebarClosed]: !appStore.isSideBarOpen }}
 					>
-						<Show when={appStore.isActionOpen && appStore.isMobile()}>
-							<ActionBar setAppStore={setAppStore} />
+						<Show when={appStore.isSideBarOpen}>
+							<SideBar />
 						</Show>
-					</Transition>
+						<main class={styles.main}>{props.children}</main>
 
-					<Portal>
-						<Show when={appStore.isModalOpen}>
-							<Modal appStore={appStore} setAppStore={setAppStore} />
+						<Show when={!appStore.isMobile() && appStore.isStatusOpen}>
+							<StatusBar />
 						</Show>
-					</Portal>
-				</div>
+
+						<Transition
+							enterClass={actionBarStyles.slideEnter}
+							enterActiveClass={actionBarStyles.slideEnterActive}
+							enterToClass={actionBarStyles.slideEnterTo}
+							exitClass={actionBarStyles.slideExit}
+							exitActiveClass={actionBarStyles.slideExitActive}
+							exitToClass={actionBarStyles.slideExitTo}
+						>
+							<Show when={appStore.isActionOpen && appStore.isMobile()}>
+								<ActionBar setAppStore={setAppStore} />
+							</Show>
+						</Transition>
+
+						<Portal>
+							<Show when={appStore.isModalOpen}>
+								<Modal appStore={appStore} setAppStore={setAppStore} />
+							</Show>
+						</Portal>
+					</div>
+				</StatusBarProvider>
 			</SideBarProvider>
 		</AppContext.Provider>
 	)

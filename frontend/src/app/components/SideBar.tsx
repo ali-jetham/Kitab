@@ -1,4 +1,5 @@
 import { Tabs } from "@kobalte/core/tabs"
+import { useNavigate } from "@solidjs/router"
 import { Bookmark, Highlighter, TableOfContents } from "lucide-solid"
 import { createResource, createSignal, For, Match, Show, Switch } from "solid-js"
 import { annotationApi } from "../../api/annotationApi"
@@ -6,7 +7,6 @@ import AnnotationItem from "../../components/AnnotationItem"
 import { NavLink } from "../../components/NavLink"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
-import { useNavigate } from "@solidjs/router"
 
 export default function SideBar() {
 	const { tocState, annotations } = useSideBarContext()

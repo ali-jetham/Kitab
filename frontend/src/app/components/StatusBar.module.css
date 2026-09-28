@@ -1,5 +1,7 @@
 .status {
   grid-area: bottombar;
+  display: flex;
+  justify-content: space-between;
   background: var(--headerbar-bg-color);
   color: var(--headerbar-fg-color);
   border-top: 1px solid var(--headerbar-shade-color);

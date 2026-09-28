@@ -1,5 +1,16 @@
+import { useContext } from "solid-js"
+import { useStatusBarContext } from "../contexts/StatusBarContext"
 import styles from "./StatusBar.module.css"
 
 export default function StatusBar() {
-	return <div class={styles.status}>Status</div>
+	const { statusStore } = useStatusBarContext()
+
+	return (
+		<div class={styles.status}>
+			<div>
+				<div>[ {statusStore.currentPage} / {statusStore.totalPages} ]</div>
+			</div>
+			<div></div>
+		</div>
+	)
 }

@@ -4,6 +4,7 @@ import { createEffect, onCleanup, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { documentApi } from "../../../api/documentApi"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
+import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
 import { createDocumentSync } from "../primitives/createDocumentSync"
 import { createPDFGestures } from "../primitives/createPDFGestures"
@@ -28,7 +29,13 @@ type PDFViewerProps = { id: string }
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement
 	const url = documentApi.getFileUrl(props.id)
-	const { setTocState, setNavigate, annotations: annotationState, setAnnotations: setAnnotationState } = useSideBarContext()
+	const {
+		setTocState,
+		setNavigate,
+		annotations: annotationState,
+		setAnnotations: setAnnotationState
+	} = useSideBarContext()
+	const { setStatusStore } = useStatusBarContext()
 
 	const { viewerRef, pdfSlickStore, PDFSlickViewer, error } = usePDFSlick(url, {
 		scaleValue: "page-fit",
@@ -78,12 +85,17 @@ export default function PDFViewer(props: PDFViewerProps) {
 				pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
 			)
 			setAnnotationState(documentStore.annotations)
-			console.log(pdfSlickStore.documentOutline)
+			setStatusStore("currentPage", pdfSlickStore.pageNumber)
+			setStatusStore("totalPages", pdfSlickStore.numPages)
 		} else {
 			setTocState({ status: "loading", outline: null })
 		}
 	})
-	onCleanup(() => setTocState({ status: "empty", outline: null }))
+	onCleanup(() => {
+		setTocState({ status: "empty", outline: null })
+		setStatusStore("currentPage", null)
+		setStatusStore("totalPages", null)
+	})
 
 	return (
 		<div ref={containerRef} class="pdfslick-container pdfSlick">

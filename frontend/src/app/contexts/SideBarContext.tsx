@@ -16,7 +16,6 @@ export type TocState =
 	| { status: "error"; outline: null }
 	| { status: "empty"; outline: null }
 
-
 type SideBarContextType = {
 	tocState: Accessor<TocState>
 	setTocState: Setter<TocState>
