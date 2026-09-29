@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-.sidebarClosed {
+.app[data-sidebar="closed"] {
   grid-template-columns: 0 minmax(0, 1fr);
 }
 
@@ -20,4 +20,10 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr) 0;
+  }
 }

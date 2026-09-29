@@ -16,7 +16,7 @@
 .tabs__list[data-orientation="horizontal"] {
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--sidebar-border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tabs__indicator {

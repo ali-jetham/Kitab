@@ -67,5 +67,12 @@ export function createDocumentStore(id: string) {
 		setStore("bookmarks", store.bookmarks.length, { ...bookmark })
 	}
 
-	return { store, actions: { init, addAnnotation, deleteAnnotation, getAnnotationsByPage, addBookmark } }
+	function deleteBookmark(id: number) {
+		setStore("bookmarks", (list) => list.filter(bm => bm.id !== id))
+	}
+
+	return {
+		store,
+		actions: { init, addAnnotation, deleteAnnotation, getAnnotationsByPage, addBookmark, deleteBookmark }
+	}
 }

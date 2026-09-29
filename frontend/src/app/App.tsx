@@ -73,10 +73,10 @@ export default function App(props: RouteSectionProps) {
 				<StatusBarProvider>
 					<div
 						class={styles.app}
-						classList={{ [styles.sidebarClosed]: !appStore.isSideBarOpen }}
+						data-sidebar={appStore.isSideBarOpen ? "open" : "closed"}
 					>
 						<Show when={appStore.isSideBarOpen}>
-							<SideBar />
+							<SideBar appStore={appStore} setAppStore={setAppStore} />
 						</Show>
 						<main class={styles.main}>{props.children}</main>
 
@@ -92,8 +92,11 @@ export default function App(props: RouteSectionProps) {
 							exitActiveClass={actionBarStyles.slideExitActive}
 							exitToClass={actionBarStyles.slideExitTo}
 						>
-							<Show when={appStore.isActionOpen && appStore.isMobile()}>
-								<ActionBar setAppStore={setAppStore} />
+							<Show
+								when={appStore.isActionOpen && appStore.isMobile()
+									|| appStore.isMobile() && appStore.isSideBarOpen}
+							>
+								<ActionBar appStore={appStore} setAppStore={setAppStore} />
 							</Show>
 						</Transition>
 

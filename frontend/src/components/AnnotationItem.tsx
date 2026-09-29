@@ -9,17 +9,13 @@ type AnnotationItemProps = { annotation: Annotation }
 
 export default function AnnotationItem(props: AnnotationItemProps) {
 	return (
-		<Collapsible class={styles.item}>
-			<Collapsible.Trigger>
+		<Collapsible>
+			<Collapsible.Trigger class={styles.item}>
 				<div class={styles.item__top}>
 					<div>
-						<ColorSwatch
-							class="ColorSwatch"
-							value={parseColor(props.annotation.color)}
-						/>
+						<ColorSwatch class="ColorSwatch" value={parseColor(props.annotation.color)} />
 						<span>Page {props.annotation.page}</span>
 					</div>
-
 					<EllipsisIcon size={16} />
 				</div>
 				<div class={styles.item__body}>{props.annotation.text}</div>

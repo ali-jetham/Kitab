@@ -7,9 +7,9 @@ import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
 import { createDocumentSync } from "../primitives/createDocumentSync"
+import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
 import { createPDFHighlights } from "../primitives/createPDFHighlight"
-import { createPDFKeybinds } from "../primitives/createPDFKeybinds"
 import { createPDFLayout } from "../primitives/createPDFLayout"
 import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
@@ -55,7 +55,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
 	createDocumentSync(props.id, actions)
 	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
-	createPDFKeybinds(pdfSlickStore, viewerStore, actions, minScale, maxScale)
+	createPDFCommands(pdfSlickStore, viewerStore, actions, minScale, maxScale)
 	createTTS(setViewerStore, pdfSlickStore, props.id)
 	const highlights = createPDFHighlights(
 		pdfSlickStore,

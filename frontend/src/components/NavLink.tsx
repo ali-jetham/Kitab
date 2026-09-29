@@ -1,6 +1,8 @@
 import { Collapsible } from "@kobalte/core/collapsible"
 import { ChevronDownIcon } from "lucide-solid"
 import { children as resolveChildren, type JSX, Show, splitProps } from "solid-js"
+import { SetStoreFunction } from "solid-js/store"
+import { AppStore } from "../app/App"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import styles from "./NavLink.module.css"
 
@@ -13,6 +15,8 @@ export interface NavLinkProps {
 	defaultOpened?: boolean
 	onOpenedChange?: (opened: boolean) => void
 	children?: JSX.Element
+	appStore?: AppStore
+	setAppStore?: SetStoreFunction<AppStore>
 }
 
 export function NavLink(props: NavLinkProps) {
@@ -22,6 +26,9 @@ export function NavLink(props: NavLinkProps) {
 		e.preventDefault()
 		if (props.dest) {
 			sideBarStore.navigate?.(props.dest)
+		}
+		if (props.appStore?.isMobile()) {
+			props.setAppStore?.("isSideBarOpen", false)
 		}
 	}
 

@@ -21,6 +21,7 @@ const COMMANDS = [
 	{ id: "pdf.viewModeSinglePage", label: "Viewer: Single Page View", hidden: false, withArgs: false },
 	{ id: "pdf.deleteHighlight", label: "Delete selected highlight", hidden: true, withArgs: false },
 	{ id: "pdf.addBookmark", label: "Add Bookmark", hidden: true },
+	{ id: "pdf.deleteBookmark", label: "Delete Bookmark", hidden: true, withArgs: true },
 	{ id: "pdf.readAloud", label: "Viewer: Toggle Read Aloud", hidden: false, withArgs: false },
 
 	{ id: "pdf.zoomIn", label: "Zoom In", hidden: true, withArgs: false },
@@ -31,7 +32,7 @@ const COMMANDS = [
 
 export type CommandId = (typeof COMMANDS)[number]["id"]
 export type Command = { id: CommandId; label: string; hidden: boolean; withArgs: boolean }
-export type CommandContext = { event?: KeyboardEvent; count?: number; arg?: string }
+export type CommandContext = { event?: KeyboardEvent; count?: number; arg?: string | number }
 export type CommandHandler = (context: CommandContext) => void
 
 const commandRegistry = new Map<CommandId, CommandHandler>()

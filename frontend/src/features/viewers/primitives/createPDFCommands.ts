@@ -6,7 +6,7 @@ import { bookmarkApi } from "../../../api/bookmarkApi"
 import { CommandId, commands } from "../../../core/commands"
 import { ViewerStore } from "../components/PDFViewer"
 
-export function createPDFKeybinds(
+export function createPDFCommands(
 	pdfSlickStore: PDFSlickState,
 	viewerStore: ViewerStore,
 	actions: any,
@@ -75,10 +75,15 @@ export function createPDFKeybinds(
 			actions.deleteAnnotation(viewerStore.annotationId)
 			annotationApi.deleteAnnotation(viewerStore.annotationId)
 		}),
-		register("pdf.addBookmark", (pdfslick) => {
-			console.log("Adding bookmark", pdfslick.viewer.currentPageNumber)
-			actions.addBookmark(pdfslick.viewer.currentPageNumber)
-			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfslick.viewer.currentPageNumber })
+		register("pdf.addBookmark", (pdfSlick) => {
+			console.log("Adding bookmark", pdfSlick.viewer.currentPageNumber)
+			actions.addBookmark(pdfSlick.viewer.currentPageNumber)
+			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick.viewer.currentPageNumber })
+		}),
+		commands.registerCommand("pdf.deleteBookmark", ({ arg }) => {
+			if (typeof arg !== "number") return
+			bookmarkApi.deleteBookmark(arg)
+			actions.deleteBookmark(arg)
 		})
 	]
 
