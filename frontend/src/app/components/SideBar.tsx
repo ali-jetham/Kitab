@@ -2,6 +2,7 @@ import { Tabs } from "@kobalte/core/tabs"
 import { Bookmark, Highlighter, TableOfContents } from "lucide-solid"
 import { createSignal, For, Match, Show, Switch } from "solid-js"
 import AnnotationItem from "../../components/AnnotationItem"
+import BookmarkItem from "../../components/BookmarkItem"
 import { NavLink } from "../../components/NavLink"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
@@ -16,15 +17,12 @@ export default function SideBar() {
 				<Tabs.Trigger class={styles.tabs__trigger} value="toc">
 					<TableOfContents />
 				</Tabs.Trigger>
-
 				<Tabs.Trigger class={styles.tabs__trigger} value="annotations">
 					<Highlighter />
 				</Tabs.Trigger>
-
 				<Tabs.Trigger class={styles.tabs__trigger} value="bookmarks">
 					<Bookmark />
 				</Tabs.Trigger>
-
 				<Tabs.Indicator class={styles.tabs__indicator} />
 			</Tabs.List>
 
@@ -33,9 +31,8 @@ export default function SideBar() {
 					<Match when={sideBarStore.tocState.status === "empty"}>
 						<div>Open a document to see its TOC here</div>
 					</Match>
-
 					<Match when={sideBarStore.tocState.status === "ready"}>
-						<div class={styles.toc__list}>
+						<ol class={styles.tabs__content}>
 							<For each={sideBarStore.tocState.outline}>
 								{(item) => (
 									<Show
@@ -50,21 +47,22 @@ export default function SideBar() {
 									</Show>
 								)}
 							</For>
-						</div>
+						</ol>
 					</Match>
 				</Switch>
 			</Tabs.Content>
 
-			<Tabs.Content class={styles.tabs__content} value="annotations">
-				<div class={styles.ann__list}>
-					<For each={sideBarStore.annotations}>
-						{(annotation) => <AnnotationItem annotation={annotation} />}
-					</For>
-				</div>
+			<Tabs.Content
+				class={`${styles.tabs__content} ${styles.tabs__content__annotations}`}
+				value="annotations"
+			>
+				<For each={sideBarStore.annotations}>
+					{(annotation) => <AnnotationItem annotation={annotation} />}
+				</For>
 			</Tabs.Content>
 
 			<Tabs.Content class={styles.tabs__content} value="bookmarks">
-				Bookmarks
+				<For each={sideBarStore.bookmarks}>{(bm) => <BookmarkItem bookmark={bm} />}</For>
 			</Tabs.Content>
 		</Tabs>
 	)

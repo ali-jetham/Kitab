@@ -8,6 +8,7 @@ import {
 	useContext
 } from "solid-js"
 import { createStore, SetStoreFunction, Store, StoreSetter } from "solid-js/store"
+import { Annotation, Bookmark } from "../../stores/createDocumentStore"
 
 type Navigate = (dest: string | any[]) => void
 
@@ -17,7 +18,12 @@ export type TocState =
 	| { status: "error"; outline: null }
 	| { status: "empty"; outline: null }
 
-type SideBarStore = { annotations: any; tocState: TocState; navigate: Navigate | null }
+type SideBarStore = {
+	annotations: Annotation[] | null
+	bookmarks: Bookmark[] | null
+	tocState: TocState
+	navigate: Navigate | null
+}
 
 type SideBarContextType = {
 	sideBarStore: SideBarStore
@@ -30,6 +36,7 @@ export function SideBarProvider(props: ParentProps) {
 	const [sideBarStore, setSideBarStore] = createStore<SideBarStore>({
 		annotations: null,
 		navigate: null,
+		bookmarks: null,
 		tocState: { status: "empty", outline: null }
 	})
 

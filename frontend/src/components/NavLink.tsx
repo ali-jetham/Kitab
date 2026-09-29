@@ -66,7 +66,7 @@ export function NavLink(props: NavLinkProps) {
 				>
 					{rowContent}
 					<span class={styles.navlink__chevron} aria-hidden="true">
-						<ChevronDownIcon style={{ color: "var(--accent-color)" }} />
+						<ChevronDownIcon style={{ color: "var(--accent-bg-color)" }} />
 					</span>
 				</Collapsible.Trigger>
 

@@ -85,6 +85,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 					pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
 			)
 			setSideBarStore("annotations", documentStore.annotations)
+			setSideBarStore("bookmarks", documentStore.bookmarks)
 			setStatusStore("currentPage", pdfSlickStore.pageNumber)
 			setStatusStore("totalPages", pdfSlickStore.numPages)
 		} else {
@@ -94,6 +95,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	onCleanup(() => {
 		setSideBarStore("tocState", { status: "empty", outline: null })
 		setSideBarStore("annotations", null)
+		setSideBarStore("bookmarks", null)
 		setStatusStore("currentPage", null)
 		setStatusStore("totalPages", null)
 	})

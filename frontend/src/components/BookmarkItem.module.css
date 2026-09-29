@@ -1,0 +1,14 @@
+.bookmarkitem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem;
+}
+
+.bookmarkitem__navigate {
+  flex: 1;
+}
+
+.bookmarkitem:hover {
+  background-color: var(--view-hover-color);
+}
