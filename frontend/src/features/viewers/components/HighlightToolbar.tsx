@@ -34,7 +34,7 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 								type="button"
 								onClick={() => props.onSelectColor(color)}
 							>
-								<ColorSwatch class={styles.ColorSwatch} value={parseColor(color)} />
+								<ColorSwatch class="ColorSwatch" value={parseColor(color)} />
 							</button>
 						)}
 					</For>

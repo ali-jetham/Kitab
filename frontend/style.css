@@ -42,3 +42,9 @@ input {
 input {
   border: 1px solid var(--border-color);
 }
+
+.ColorSwatch {
+  height: 1rem;
+  width: 1rem;
+  border-radius: 0.6rem;
+}

@@ -36,7 +36,7 @@ export default function Library(): JSX.Element {
 			</TextField>
 
 			<Suspense fallback={<div>Loading books...</div>}>
-				{/* FIXME: show when no books found*/}
+				{/* TODO: show when no books found, waiting for Solid 2 */}
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
 						{(book) => (
