@@ -2,16 +2,23 @@
   grid-area: bottombar;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background: var(--sidebar-bg-color);
   color: var(--sidebar-fg-color);
   font-size: 0.9rem;
-  border-top: 1px solid var(--sidebar-border-color);
+  border-top: 0.1rem solid var(--border-color);
   transition: opacity 0.3s ease;
   padding: 0.1rem;
+  opacity: var(--dim-opacity);
 }
 
 .section {
   padding: 0 0.1rem;
+}
+
+.section > button {
+  display: flex;
+  align-items: center;
 }
 
 .status.hidden {

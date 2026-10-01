@@ -81,7 +81,7 @@ export default function App(props: RouteSectionProps) {
 						<main class={styles.main}>{props.children}</main>
 
 						<Show when={!appStore.isMobile() && appStore.isStatusOpen}>
-							<StatusBar />
+							<StatusBar appStore={appStore} setAppStore={setAppStore} />
 						</Show>
 
 						<Transition
