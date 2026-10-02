@@ -77,8 +77,10 @@ export default function SideBar(props: SideBarProps) {
 			</Tabs.Content>
 
 			<Tabs.Content
-				class={`${styles.tabs__content} ${styles.tabs__content__annotations}`}
+				as="ol"
+				class={styles.tabs__content}
 				value="annotations"
+				data-tab="annotations"
 			>
 				<For each={sideBarStore.annotations}>
 					{(annotation) => <AnnotationItem annotation={annotation} />}

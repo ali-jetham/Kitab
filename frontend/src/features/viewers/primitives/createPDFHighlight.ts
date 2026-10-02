@@ -99,7 +99,7 @@ export function createPDFHighlights(
 			return convertToPDFRect(relativeRect, page.viewport)
 		})
 
-		setPendingAnnotation({ pageNumber, text: selection.toString(), pdfRects })
+		setPendingAnnotation({ pageNumber, text: selection.toString().replaceAll("\n", " "), pdfRects })
 		setViewerStore((prev) => ({ ...prev, showToolbar: true, anchorRef: anchorEl }))
 	}
 

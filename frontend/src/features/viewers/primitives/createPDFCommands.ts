@@ -1,6 +1,7 @@
 import { DEFAULT_SCALE_DELTA, type PDFSlick, type PDFSlickState, ScrollMode } from "@pdfslick/core"
 import { createElementSize } from "@solid-primitives/resize-observer"
 import { type Accessor, createEffect, onCleanup } from "solid-js"
+import { SetStoreFunction } from "solid-js/store"
 import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
 import { CommandId, commands } from "../../../core/commands"
@@ -9,6 +10,7 @@ import { ViewerStore } from "../components/PDFViewer"
 export function createPDFCommands(
 	pdfSlickStore: PDFSlickState,
 	viewerStore: ViewerStore,
+	setViewerStore: SetStoreFunction<ViewerStore>,
 	actions: any,
 	minScale: Accessor<number>,
 	maxScale: Accessor<number>
@@ -66,17 +68,17 @@ export function createPDFCommands(
 		register("pdf.viewModeScrollV", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.VERTICAL)),
 		register("pdf.viewModeScrollH", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.HORIZONTAL)),
 		register("pdf.viewModeSinglePage", (pdfSlick) => pdfSlick.setScrollMode(ScrollMode.PAGE)),
-		register("pdf.deleteHighlight", () => {
-			if (!viewerStore.annotationId) {
-				console.log("Please select an annotation first")
-				return
-			}
-			console.log("Deleting annotation", viewerStore.annotationId)
-			actions.deleteAnnotation(viewerStore.annotationId)
-			annotationApi.deleteAnnotation(viewerStore.annotationId)
+
+		commands.registerCommand("pdf.deleteAnnotation", ({ arg }) => {
+			let id
+			if (typeof arg === "string") id = arg
+			else if (viewerStore.annotationId) id = viewerStore.annotationId
+			else return
+			actions.deleteAnnotation(id)
+			annotationApi.deleteAnnotation(id)
+			setViewerStore("annotationId", null)
 		}),
 		register("pdf.addBookmark", (pdfSlick) => {
-			console.log("Adding bookmark", pdfSlick.viewer.currentPageNumber)
 			actions.addBookmark(pdfSlick.viewer.currentPageNumber)
 			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick.viewer.currentPageNumber })
 		}),
@@ -84,6 +86,11 @@ export function createPDFCommands(
 			if (typeof arg !== "number") return
 			bookmarkApi.deleteBookmark(arg)
 			actions.deleteBookmark(arg)
+		}),
+		commands.registerCommand("pdf.updateAnnotation", ({ arg }) => {
+			console.log("updating annotation to", arg.annotation)
+			actions.updateAnnotation(arg.id, arg.annotation)
+			annotationApi.updateAnnotation(arg.id, arg.annotation)
 		})
 	]
 

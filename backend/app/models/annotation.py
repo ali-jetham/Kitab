@@ -9,7 +9,7 @@ from app.db.database import Base
 
 class Style(str, enum.Enum):
     HIGHLIGHT = "highlight"
-    UNDERLINE = "UNDERLINE"
+    UNDERLINE = "underline"
 
 
 class Annotation(Base):

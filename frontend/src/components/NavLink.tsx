@@ -72,9 +72,9 @@ export function NavLink(props: NavLinkProps) {
 					data-active={props.active ? "" : undefined}
 				>
 					{rowContent}
-					<span class={styles.navlink__chevron} aria-hidden="true">
-						<ChevronDownIcon style={{ color: "var(--accent-bg-color)" }} />
-					</span>
+					<button class={styles.navlink__chevron} aria-hidden="true">
+						<ChevronDownIcon />
+					</button>
 				</Collapsible.Trigger>
 
 				<Collapsible.Content class={styles.navLinkContent}>

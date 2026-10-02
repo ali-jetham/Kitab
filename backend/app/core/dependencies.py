@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -42,3 +44,6 @@ def get_tts_service(
     db: Session = Depends(get_db),
 ):
     return TTSService(db)
+
+
+AnnotationServiceDep = Annotated[AnnotationService, Depends(get_annotation_service)]

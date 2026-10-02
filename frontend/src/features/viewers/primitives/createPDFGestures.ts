@@ -3,7 +3,6 @@ import { createWindowSize } from "@solid-primitives/resize-observer"
 import { type Accessor, createEffect, createSignal, onCleanup, useContext } from "solid-js"
 import { AppContext } from "../../../app/App"
 import { ViewerStore } from "../components/PDFViewer"
-import { createViewerGestures } from "./createViewerGestures"
 
 export function createPDFGestures(
 	pdfSlickStore: PDFSlickState,

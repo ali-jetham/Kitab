@@ -9,8 +9,8 @@ export const keymap: readonly Keybind[] = [
 	{ key: "t h", command: "app.sidebar.toggle", context: "global", isInputAllowed: false },
 	{ key: "t j", command: "app.statusbar.toggle", context: "global", isInputAllowed: false },
 
-	{ key: "h", command: "pdf.fitHeight", context: "viewer" },
-	{ key: "w", command: "pdf.fitWidth", context: "viewer" },
+	{ key: "f h", command: "pdf.fitHeight", context: "viewer" },
+	{ key: "f w", command: "pdf.fitWidth", context: "viewer" },
 	{ key: "=", command: "pdf.zoomIn", context: "viewer" },
 	{ key: "-", command: "pdf.zoomOut", context: "viewer" },
 	{ key: "j", command: "pdf.scrollDown", context: "viewer" },
@@ -25,6 +25,6 @@ export const keymap: readonly Keybind[] = [
 	{ key: "g g", command: "pdf.gotoFirstPage", context: "viewer" },
 	{ key: "Shift+G", command: "pdf.gotoLastPage", context: "viewer" },
 
-	{ key: "d h", command: "pdf.deleteHighlight", context: "viewer" },
+	{ key: "d h", command: "pdf.deleteAnnotation", context: "viewer" },
 	{ key: "b a", command: "pdf.addBookmark", context: "viewer" }
 ]

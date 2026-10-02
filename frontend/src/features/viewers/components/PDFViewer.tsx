@@ -55,7 +55,14 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
 	createDocumentSync(props.id, actions)
 	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
-	createPDFCommands(pdfSlickStore, viewerStore, actions, minScale, maxScale)
+	createPDFCommands(
+		pdfSlickStore,
+		viewerStore,
+		setViewerStore,
+		actions,
+		minScale,
+		maxScale
+	)
 	createTTS(setViewerStore, pdfSlickStore, props.id)
 	const highlights = createPDFHighlights(
 		pdfSlickStore,

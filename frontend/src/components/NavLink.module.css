@@ -48,6 +48,10 @@
   align-items: center;
 }
 
+.navlink__chevron > svg {
+  color: var(--accent-bg-color);
+}
+
 .navlink__trigger[data-expanded] .navlink__chevron {
   transform: rotate(180deg);
 }
