@@ -100,7 +100,7 @@ export function createPDFHighlights(
 		})
 
 		setPendingAnnotation({ pageNumber, text: selection.toString().replaceAll("\n", " "), pdfRects })
-		setViewerStore((prev) => ({ ...prev, showToolbar: true, anchorRef: anchorEl }))
+		setViewerStore((prev) => ({ ...prev, showHighlightToolbar: true, anchorRef: anchorEl }))
 	}
 
 	function handlePageRendered(e: TEventBusEvent) {

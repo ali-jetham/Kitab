@@ -22,7 +22,7 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 			anchorRef={() => props.anchorRef}
 			placement="top"
 			onOpenChange={(open) =>
-				props.setViewerStore((prev) => ({ ...prev, showToolbar: open }))}
+				props.setViewerStore((prev) => ({ ...prev, showHighlightToolbar: open }))}
 			preventScroll={true}
 		>
 			<Popover.Portal>

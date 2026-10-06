@@ -17,7 +17,7 @@ import styles from "./PDFViewer.module.css"
 
 export type ViewerStore = {
 	docId: string
-	showToolbar: boolean
+	showHighlightToolbar: boolean
 	anchorRef: HTMLElement | undefined
 	selectedColor: string
 	annotationId: string | null
@@ -47,7 +47,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		annotationId: null,
 		anchorRef: undefined,
 		selectedColor: "#ffd400",
-		showToolbar: false,
+		showHighlightToolbar: false,
 		ttsHighlight: null
 	})
 
@@ -86,6 +86,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 				status: "ready",
 				outline: pdfSlickStore.documentOutline
 			})
+			console.log(pdfSlickStore.documentOutline)
 			setSideBarStore(
 				"navigate",
 				() => (dest: string | any[]) =>
@@ -114,14 +115,14 @@ export default function PDFViewer(props: PDFViewerProps) {
 			</div>
 
 			<HighlightToolbar
-				open={viewerStore.showToolbar}
+				open={viewerStore.showHighlightToolbar}
 				anchorRef={viewerStore.anchorRef}
 				setViewerStore={setViewerStore}
 				onSelectColor={(color) => {
 					setViewerStore("selectedColor", color)
 					setViewerStore((prev) => ({
 						...prev,
-						showToolbar: false,
+						showHighlightToolbar: false,
 						anchorRef: undefined
 					}))
 					highlights.commitAnnotation(color)

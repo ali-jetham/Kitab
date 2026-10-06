@@ -4,7 +4,7 @@ import { createSignal, For, Match, Show, Switch } from "solid-js"
 import { SetStoreFunction } from "solid-js/store"
 import AnnotationItem from "../../components/AnnotationItem"
 import BookmarkItem from "../../components/BookmarkItem"
-import { NavLink } from "../../components/NavLink"
+import { TocItem } from "../../components/TocItem"
 import { AppStore } from "../App"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
@@ -36,39 +36,14 @@ export default function SideBar(props: SideBarProps) {
 						<div>Open a document to see its TOC here</div>
 					</Match>
 					<Match when={sideBarStore.tocState.status === "ready"}>
-						{/*TODO: completely rewrite NavLink component*/}
 						<ol class={styles.tabs__content}>
 							<For each={sideBarStore.tocState.outline}>
 								{(item) => (
-									<Show
-										when={item.items.length > 0}
-										fallback={
-											<NavLink
-												appStore={props.appStore}
-												setAppStore={props.setAppStore}
-												label={item.title}
-												dest={item.dest}
-											/>
-										}
-									>
-										<NavLink
-											appStore={props.appStore}
-											setAppStore={props.setAppStore}
-											label={item.title}
-											dest={item.dest}
-										>
-											<For each={item.items}>
-												{(item) => (
-													<NavLink
-														appStore={props.appStore}
-														setAppStore={props.setAppStore}
-														label={item.title}
-														dest={item.dest}
-													/>
-												)}
-											</For>
-										</NavLink>
-									</Show>
+									<TocItem
+										outline={item}
+										appStore={props.appStore}
+										setAppStore={props.setAppStore}
+									/>
 								)}
 							</For>
 						</ol>

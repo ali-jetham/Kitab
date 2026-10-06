@@ -1,0 +1,66 @@
+.tocitem {
+  padding: 0.6rem;
+  cursor: pointer;
+}
+
+.tocitem__nested {
+  padding-left: 0.9rem;
+}
+
+.tocitem:hover {
+  background-color: var(--view-hover-color);
+}
+
+.tocitem[data-active] {
+  background-color: var(--view-active-color);
+}
+
+.tocitem__container, .tocitem__trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tocitem__chevron {
+  color: var(--accent-bg-color);
+  transition: transform 120ms ease;
+}
+
+.tocitem__trigger[data-expanded] .tocitem__chevron {
+  transform: rotate(180deg);
+}
+
+.tocitem__content {
+  overflow: hidden;
+}
+
+.tocitem__content[data-expanded] {
+  animation: tocitemSlideDown 150ms ease-out;
+}
+
+.tocitem__content[data-closed] {
+  animation: tocitemSlideUp 150ms ease-out;
+}
+
+.tocitem__children {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes tocitemSlideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--kb-collapsible-content-height);
+  }
+}
+
+@keyframes tocitemSlideUp {
+  from {
+    height: var(--kb-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

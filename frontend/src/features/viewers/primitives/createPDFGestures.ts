@@ -33,9 +33,8 @@ export function createPDFGestures(
 	function onTapNavigation(e: TouchEvent) {
 		if (
 			e.type !== "touchend" || isMultiTouch || tapCancelled || !tapStart || e.changedTouches.length !== 1
-			|| viewerStore.showToolbar
+			|| viewerStore.showHighlightToolbar
 		) return
-		if (pdfSlickStore?.pdfSlick?.viewer.scrollMode !== ScrollMode.PAGE) return
 
 		const touch = e.changedTouches[0]
 		if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) return
@@ -44,10 +43,10 @@ export function createPDFGestures(
 		const zoneWidth = size.width / 3
 		e.stopPropagation()
 
-		if (touch.clientX < zoneWidth) {
-			pdfSlickStore.pdfSlick.viewer.previousPage()
-		} else if (touch.clientX >= zoneWidth * 2) {
-			pdfSlickStore.pdfSlick.viewer.nextPage()
+		if (touch.clientX < zoneWidth && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
+			pdfSlickStore?.pdfSlick?.viewer.previousPage()
+		} else if (touch.clientX >= zoneWidth * 2 && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
+			pdfSlickStore?.pdfSlick?.viewer.nextPage()
 		} else {
 			setAppStore("isActionOpen", (prev) => !prev)
 		}
