@@ -181,10 +181,11 @@ export function getRotationTransform(rotation: number, width: number, height: nu
 	return transforms[rotation] ?? ""
 }
 
-export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, pageHeight: number): SVGRect {
+export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, page: any): SVGRect {
+	const [x0, , , y1] = page.viewport.viewBox
 	return {
-		x: Math.min(llx, urx),
-		y: pageHeight - Math.max(lly, ury),
+		x: Math.min(llx, urx) - x0,
+		y: y1 - Math.max(lly, ury),
 		width: Math.abs(urx - llx),
 		height: Math.abs(ury - lly)
 	}

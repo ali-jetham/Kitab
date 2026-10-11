@@ -46,7 +46,7 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 						<g data-annotation-id={annotation.id}>
 							<For each={annotation.rects}>
 								{(r) => {
-									const rect = convertToSVGRect(r, baseH)
+									const rect = convertToSVGRect(r, props.page)
 									return (
 										<rect
 											onClick={handleClick}
