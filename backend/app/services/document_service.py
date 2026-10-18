@@ -93,25 +93,25 @@ class DocumentService:
         self.db.execute(stmt)
         self.db.commit()
 
-    def _scan(self):
+    def scan(self) -> None:
         """Scan library_path for PDFs."""
-        documents = list(self.db.scalars(select(Document)).all())
+        documents_ids = list(self.db.scalars(select(Document.id)).all())
         new_documents = []
 
         for path in self.library_path.rglob("*.pdf"):
             id = self._generate_content_hash(path)
-            exists = any(d.id for d in documents)
+            exists = any(doc_id == id for doc_id in documents_ids)
             if exists:
                 continue
 
-            with pikepdf.open(path) as pdf:
-                meta = pdf.open_metadata()
-                title = normalize_pikepdf_value(meta.get("dc:title")) if meta else None
-                author = (
-                    normalize_pikepdf_value(meta.get("dc:creator")) if meta else None
-                )
+            metadata = self._get_metadata(path)
+            if metadata is None:
+                continue
+            title, author = metadata
 
             cover = self._generate_cover(id, path)
+            if cover is None:
+                continue
 
             document = Document(
                 id=id,
@@ -126,21 +126,34 @@ class DocumentService:
         self.db.add_all(new_documents)
         self.db.commit()
 
-    def _generate_cover(self, id: str, document_path: Path) -> str:
+    def _get_metadata(self, path: Path):
+        try:
+            with pikepdf.open(path) as pdf:
+                meta = pdf.open_metadata()
+                title = normalize_pikepdf_value(meta.get("dc:title")) if meta else None
+                author = (
+                    normalize_pikepdf_value(meta.get("dc:creator")) if meta else None
+                )
+            return title, author
+        except pikepdf.PdfError:
+            return None
+
+    def _generate_cover(self, id: str, document_path: Path) -> str | None:
         cover_folder = self.library_path / ".covers"
         cover_folder.mkdir(parents=True, exist_ok=True)
         cover_path = cover_folder / f"{id}.jpg"
-
         target_w, target_h = 400, 566
 
-        with pymupdf.open(document_path) as d:
-            page = d[0]
-            rect = page.rect
-            matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
-            pix = page.get_pixmap(matrix=matrix, alpha=False)
-            pix.save(cover_path, "jpg", jpg_quality=75)
-
-        return str(cover_path)
+        try:
+            with pymupdf.open(document_path) as d:
+                page = d[0]
+                rect = page.rect
+                matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
+                pix = page.get_pixmap(matrix=matrix, alpha=False)
+                pix.save(cover_path, "jpg", jpg_quality=75)
+                return str(cover_path)
+        except pymupdf.FileDataError:
+            return None
 
     def _generate_content_hash(self, filepath: Path) -> str:
         """

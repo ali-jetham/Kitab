@@ -73,7 +73,7 @@ async def get_document_cover(id: str):
 # TODO: use a job and return the job_id
 @router.post("/scan")
 async def scan_documents(service: DocumentService = Depends(get_document_service)):
-    service._scan()
+    service.scan()
 
 
 # TODO: check if this should even be exposed to the user
