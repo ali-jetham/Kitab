@@ -5,7 +5,7 @@ from typing import cast
 import pikepdf
 import pymupdf
 import pymupdf4llm
-import spacy
+import sentencex
 import xxhash
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session, selectinload
@@ -49,7 +49,6 @@ class DocumentService:
     # TODO: clean up, use proper variable names
     def get_page_text(self, id: str, page_number: int):
         document_path = self.get_document_file(id)
-
         if document_path is None:
             return None
 
@@ -63,29 +62,23 @@ class DocumentService:
                 table_format="plain",
             ),
         )
-        nlp = spacy.load("en_core_web_sm", disable=["tagger", "ner", "lemmatizer"])
-        doc = nlp(text)
-        sentences = [
-            line.strip()
-            for sent in doc.sents
-            for line in sent.text.splitlines()
-            if line.strip()
-        ]
+        sentences: list[str] = sentencex.segment("en", text)
+        sentences = [s.strip() for s in sentences if s.strip()]
 
         doc = pymupdf.open(document_path)
         page = doc[page_number - 1]
         words = page.get_text("words", sort=True)
-        some = []
+        sentence_objects = []
 
         for sentence in sentences:
             rects = page.search_for(sentence)
             if not rects:
                 rects = self._find_sentence_rects(sentence, words)
 
-            ob = {"text": sentence, "rects": rects}
-            some.append(ob)
+            sentence_object = {"text": sentence, "rects": rects}
+            sentence_objects.append(sentence_object)
 
-        return some
+        return sentence_objects
 
     def update_document(self, id: str, document: DocumentUpdate):
         update_data = document.model_dump(exclude_unset=True)
