@@ -30,7 +30,7 @@ export type Document = {
 }
 
 export function createDocumentStore(id: string) {
-	const [store, setStore] = createStore<Document>({
+	const [documentStore, setDocumentStore] = createStore<Document>({
 		id: id,
 		primaryColor: "",
 		annotations: [],
@@ -40,7 +40,7 @@ export function createDocumentStore(id: string) {
 	})
 
 	async function init(doc: Document) {
-		setStore(
+		setDocumentStore(
 			reconcile({
 				id,
 				primaryColor: doc.primaryColor,
@@ -53,31 +53,31 @@ export function createDocumentStore(id: string) {
 	}
 
 	async function addAnnotation(annotation: AnnotationCreate) {
-		setStore("annotations", store.annotations.length, { ...annotation })
+		setDocumentStore("annotations", documentStore.annotations.length, { ...annotation })
 	}
 
 	async function updateAnnotation(id: string, ann: AnnotationUpdate) {
-		setStore("annotations", (a) => a.id === id, ann)
+		setDocumentStore("annotations", (a) => a.id === id, ann)
 	}
 
 	async function deleteAnnotation(id: string) {
-		setStore("annotations", (list) => list.filter((a) => a.id !== id))
+		setDocumentStore("annotations", (list) => list.filter((a) => a.id !== id))
 	}
 
 	function getAnnotationsByPage(page: number): Accessor<Annotation[]> {
-		return () => store.annotations.filter(ann => ann.page === page)
+		return () => documentStore.annotations.filter(ann => ann.page === page)
 	}
 
 	function addBookmark(bookmark: BookmarkCreate) {
-		setStore("bookmarks", store.bookmarks.length, { ...bookmark })
+		setDocumentStore("bookmarks", documentStore.bookmarks.length, { ...bookmark })
 	}
 
 	function deleteBookmark(id: number) {
-		setStore("bookmarks", (list) => list.filter(bm => bm.id !== id))
+		setDocumentStore("bookmarks", (list) => list.filter(bm => bm.id !== id))
 	}
 
 	return {
-		store,
+		documentStore,
 		actions: {
 			init,
 			addAnnotation,

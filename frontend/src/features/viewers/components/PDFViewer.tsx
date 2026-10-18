@@ -51,7 +51,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		ttsHighlight: null
 	})
 
-	const { store: documentStore, actions } = createDocumentStore(props.id)
+	const { documentStore, actions } = createDocumentStore(props.id)
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
 	createDocumentSync(props.id, actions)
 	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
@@ -86,14 +86,11 @@ export default function PDFViewer(props: PDFViewerProps) {
 				status: "ready",
 				outline: pdfSlickStore.documentOutline
 			})
-			console.log(pdfSlickStore.documentOutline)
 			setSideBarStore(
 				"navigate",
 				() => (dest: string | any[]) =>
 					pdfSlickStore.pdfSlick?.linkService.goToDestination(dest)
-			)
-			setSideBarStore("annotations", documentStore.annotations)
-			setSideBarStore("bookmarks", documentStore.bookmarks)
+			), setSideBarStore("documentStore", documentStore)
 			setStatusStore("currentPage", pdfSlickStore.pageNumber)
 			setStatusStore("totalPages", pdfSlickStore.numPages)
 		} else {
@@ -102,8 +99,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	})
 	onCleanup(() => {
 		setSideBarStore("tocState", { status: "empty", outline: null })
-		setSideBarStore("annotations", null)
-		setSideBarStore("bookmarks", null)
+		setSideBarStore("documentStore", null)
 		setStatusStore("currentPage", null)
 		setStatusStore("totalPages", null)
 	})

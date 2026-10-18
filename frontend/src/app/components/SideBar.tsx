@@ -57,13 +57,15 @@ export default function SideBar(props: SideBarProps) {
 				value="annotations"
 				data-tab="annotations"
 			>
-				<For each={sideBarStore.annotations}>
+				<For each={sideBarStore.documentStore?.annotations}>
 					{(annotation) => <AnnotationItem annotation={annotation} />}
 				</For>
 			</Tabs.Content>
 
 			<Tabs.Content class={styles.tabs__content} value="bookmarks">
-				<For each={sideBarStore.bookmarks}>{(bm) => <BookmarkItem bookmark={bm} />}</For>
+				<For each={sideBarStore.documentStore?.bookmarks}>
+					{(bm) => <BookmarkItem bookmark={bm} />}
+				</For>
 			</Tabs.Content>
 		</Tabs>
 	)

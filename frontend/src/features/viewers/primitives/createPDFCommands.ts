@@ -88,7 +88,6 @@ export function createPDFCommands(
 			actions.deleteBookmark(arg)
 		}),
 		commands.registerCommand("pdf.updateAnnotation", ({ arg }) => {
-			console.log("updating annotation to", arg.annotation)
 			actions.updateAnnotation(arg.id, arg.annotation)
 			annotationApi.updateAnnotation(arg.id, arg.annotation)
 		})
