@@ -1,12 +1,10 @@
-from sqlalchemy import delete, update
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.annotation import Annotation
 from app.schemas.annotation import (
-    AnnotationBase,
     AnnotationCreate,
-    AnnotationRead,
     AnnotationUpdate,
 )
 
@@ -16,18 +14,19 @@ class AnnotationService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    async def get_all_annotations(self) -> list[AnnotationBase]:
-        anns = self.db.query(Annotation).all()
-        return [AnnotationBase.model_validate(ann) for ann in anns]
+    def get_all_annotations(self) -> list[Annotation]:
+        stmt = select(Annotation)
+        annotations = list(self.db.scalars(stmt).all())
+        return annotations
 
-    async def add_annotation(self, ann: AnnotationCreate) -> AnnotationRead:
+    def add_annotation(self, ann: AnnotationCreate) -> Annotation:
         new_ann = Annotation(**ann.model_dump())
         self.db.add(new_ann)
         self.db.commit()
-        self.db.refresh(new_ann)  # TODO: understand how this works
-        return AnnotationRead.model_validate(new_ann)
+        self.db.refresh(new_ann)
+        return new_ann
 
-    async def update_annotation(self, id: str, ann: AnnotationUpdate):
+    def update_annotation(self, id: str, ann: AnnotationUpdate):
         update_ann = ann.model_dump(exclude_unset=True)
         stmt = (
             update(Annotation)
@@ -35,17 +34,11 @@ class AnnotationService:
             .values(**update_ann)
             .returning(Annotation)
         )
-        annotation = self.db.execute(stmt).scalar_one_or_none()
-        if annotation is None:
-            # TODO:
-            # raise Error
-            pass
-
+        annotation = self.db.execute(stmt).scalar_one()
         self.db.commit()
-        print(annotation)
+        return annotation
 
-    # TODO: check what should be returned from here
-    async def delete_annotation(self, id: str):
-        stmt = delete(Annotation).where(Annotation.id == id)
-        self.db.execute(stmt)
+    def delete_annotation(self, id: str) -> None:
+        ann = self.db.get_one(Annotation, id)
+        self.db.delete(ann)
         self.db.commit()

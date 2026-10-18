@@ -11,22 +11,21 @@ from app.schemas.annotation import (
 router = APIRouter(prefix="/api/annotations", tags=["annotations"])
 
 
-@router.get("/")
-async def get_all(service: AnnotationServiceDep) -> list[AnnotationBase]:
-    return await service.get_all_annotations()
+@router.get("/", status_code=200, response_model=list[AnnotationBase])
+def get_all(service: AnnotationServiceDep):
+    return service.get_all_annotations()
 
 
-@router.post("/")
-async def add(ann: AnnotationCreate, service: AnnotationServiceDep) -> AnnotationRead:
-    return await service.add_annotation(ann)
+@router.post("/", status_code=200, response_model=AnnotationRead)
+def add(ann: AnnotationCreate, service: AnnotationServiceDep):
+    return service.add_annotation(ann)
 
 
-@router.put("/{id}")
-async def update(id: str, ann: AnnotationUpdate, service: AnnotationServiceDep):
-    return await service.update_annotation(id, ann)
+@router.put("/{id}", status_code=201, response_model=AnnotationRead)
+def update(id: str, ann: AnnotationUpdate, service: AnnotationServiceDep):
+    return service.update_annotation(id, ann)
 
 
-# TODO: add return pydantic schema
-@router.delete("/{id}")
-async def delete(id: str, service: AnnotationServiceDep):
-    return await service.delete_annotation(id)
+@router.delete("/{id}", status_code=204)
+def delete(id: str, service: AnnotationServiceDep):
+    return service.delete_annotation(id)

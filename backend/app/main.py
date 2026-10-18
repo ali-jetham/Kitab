@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import DatabaseError, IntegrityError
+from sqlalchemy.exc import DatabaseError, IntegrityError, NoResultFound
 
 from app.core.config import settings
 from app.db.database import init_db
@@ -33,20 +33,35 @@ app.include_router(tts_routes.router)
 
 
 @app.exception_handler(DatabaseError)
-async def database_error_exception_handler(request, exc):
+async def database_error_handler(request, exc):
     return JSONResponse(
         status_code=500,
         content={"message": "A database error occurred."},
     )
 
 
+@app.exception_handler(NoResultFound)
+async def no_result_found_handler(request, exc):
+    route = request.scope.get("route")
+    resource = route.tags[0] if route and route.tags else "resource"
+    return JSONResponse(
+        status_code=404, content={"detail": f"No {resource[0:-1]} found"}
+    )
+
+
 @app.exception_handler(IntegrityError)
-async def integrity_error_exception_handler(request, exc):
+async def integrity_error_handler(request, exc):
     return JSONResponse(
         status_code=400,
         content={"message": "A database integrity error occurred."},
     )
 
+@app.exception_handler(FileNotFoundError)
+async def file_not_found_error_handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"message": "File not found"}
+    )
 
 if settings.ENVIRONMENT == "dev":
     app.add_middleware(

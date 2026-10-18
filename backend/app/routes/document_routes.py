@@ -1,43 +1,25 @@
-from pathlib import Path
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from app.core.config import settings
-from app.core.dependencies import get_document_service
-from app.schemas.document import DocumentBase, DocumentRead, DocumentUpdate
-from app.services.document_service import DocumentService
+from app.core.dependencies import DocumentServiceDep
+from app.schemas.document import DocumentBase, DocumentId, DocumentRead, DocumentUpdate
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
-@router.get("/")
-async def get_documents(
-    service: DocumentService = Depends(get_document_service),
-) -> list[DocumentBase]:
-    return await service.get_documents()
+@router.get("/", status_code=200, response_model=list[DocumentBase])
+def get_documents(service: DocumentServiceDep):
+    return service.get_documents()
 
 
-@router.get("/{id}")
-async def get_document(
-    id: str, service: DocumentService = Depends(get_document_service)
-) -> DocumentRead:
-    result = await service.get_document(id)
-    if result is None:
-        raise HTTPException(
-            status_code=404, detail=f"Document with {id} does not exist "
-        )
-    return result
+@router.get("/{id}", status_code=200, response_model=DocumentRead)
+def get_document(id: str, service: DocumentServiceDep):
+    return service.get_document(id)
 
 
-# TODO: check what should be the return type
 @router.get("/{id}/file")
-async def get_document_file(
-    id: str, service: DocumentService = Depends(get_document_service)
-):
+def get_document_file(id: DocumentId, service: DocumentServiceDep) -> FileResponse:
     document_path = service.get_document_file(id)
-    if document_path is None:
-        raise HTTPException(status_code=404, detail="Document not found")
     return FileResponse(
         path=document_path,
         media_type="application/pdf",
@@ -46,23 +28,13 @@ async def get_document_file(
 
 
 @router.get("/{id}/{page}/text")
-def get_document_page_text(
-    id: str, page: int, service: DocumentService = Depends(get_document_service)
-):
-    res = service.get_page_text(id, page)
-    if res is None:
-        raise HTTPException(404)
-    return res
+def get_document_page_text(id: DocumentId, page: int, service: DocumentServiceDep):
+    return service.get_page_text(id, page)
 
 
-# TODO: add validation for id
 @router.get("/{id}/cover")
-async def get_document_cover(id: str):
-    file_path = Path(settings.LIBRARY_PATH / ".covers") / f"{id}.jpg"
-
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Cover not found")
-
+def get_document_cover(id: DocumentId, service: DocumentServiceDep):
+    file_path = service.get_document_cover(id)
     return FileResponse(
         path=file_path,
         media_type="image/jpeg",
@@ -72,20 +44,15 @@ async def get_document_cover(id: str):
 
 # TODO: use a job and return the job_id
 @router.post("/scan")
-async def scan_documents(service: DocumentService = Depends(get_document_service)):
+def scan_documents(service: DocumentServiceDep):
     service.scan()
 
 
-# TODO: check if this should even be exposed to the user
 @router.post("/refresh")
-async def refresh_covers(service: DocumentService = Depends(get_document_service)):
-    service._refresh_covers()
+def refresh_covers(service: DocumentServiceDep):
+    service.refresh_covers()
 
 
 @router.post(f"/{id}")
-async def update_document(
-    id: str,
-    document: DocumentUpdate,
-    service: DocumentService = Depends(get_document_service),
-):
+def update_document(id: str, document: DocumentUpdate, service: DocumentServiceDep):
     service.update_document(id, document)

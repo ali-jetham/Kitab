@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
 from app.models.document import Document
-from app.schemas.document import DocumentBase, DocumentRead, DocumentUpdate
+from app.schemas.document import DocumentUpdate
 from app.utils import helper
 from app.utils.helper import normalize_pikepdf_value
 
@@ -22,35 +22,38 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    async def get_documents(self) -> list[DocumentBase]:
-        documents = list(self.db.scalars(select(Document)).all())
-        return [DocumentBase.model_validate(d) for d in documents]
+    def get_documents(self) -> list[Document]:
+        stmt = select(Document)
+        documents = list(self.db.scalars(stmt).all())
+        return documents
 
-    # TODO: write a version which does NOT return with all the annotations for Library.tsx page
-    async def get_document(self, id: str) -> DocumentRead | None:
-        document = self.db.scalar(
+    def get_document(self, id: str) -> Document:
+        stmt = (
             select(Document)
             .where(Document.id == id)
             .options(
                 selectinload(Document.annotations), selectinload(Document.bookmarks)
             )
         )
-        if document is None:
-            return None
-        return DocumentRead.model_validate(document)
+        return self.db.scalars(stmt).one()
 
-    def get_document_file(self, id: str) -> Path | None:
-        document: Document | None = self.db.get(Document, id)
-        if document is None:
-            return None
+    def get_document_file(self, id: str) -> Path:
+        document = self.db.get_one(Document, id)
         path = Path(document.file_path)
-        return path if path.is_file() else None
+        if not path.is_file():
+            raise FileNotFoundError(f"File missing for id: {id}")
+        return path
 
-    # TODO: clean up, use proper variable names
+    def get_document_cover(self, id: str) -> str:
+        covers_path = Path(settings.LIBRARY_PATH / ".covers").resolve()
+        file_path = Path(settings.LIBRARY_PATH / ".covers" / f"{id}.jpg").resolve()
+
+        if not (file_path.is_relative_to(covers_path) and file_path.is_file()):
+            raise FileNotFoundError
+        return str(file_path)
+
     def get_page_text(self, id: str, page_number: int):
         document_path = self.get_document_file(id)
-        if document_path is None:
-            return None
 
         text = cast(
             str,
@@ -159,7 +162,7 @@ class DocumentService:
                 x.update(chunk)
         return x.hexdigest()
 
-    def _refresh_covers(self):
+    def refresh_covers(self):
         """
         Refresh covers for all documents.
         """

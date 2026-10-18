@@ -1,8 +1,13 @@
-from pydantic import BaseModel, ConfigDict
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, StringConstraints
 from pydantic.alias_generators import to_camel
 
 from app.schemas.annotation import AnnotationRead
 from app.schemas.bookmark import BookmarkRead
+
+XXH3_128_HEX = r"^[0-9a-f]{32}$"
+DocumentId = Annotated[str, StringConstraints(pattern=XXH3_128_HEX)]
 
 
 class DocumentBase(BaseModel):

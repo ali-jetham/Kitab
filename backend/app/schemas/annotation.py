@@ -10,6 +10,7 @@ class AnnotationBase(BaseModel):
     model_config = ConfigDict(
         from_attributes=True, alias_generator=to_camel, populate_by_name=True
     )
+    id: str
     color: str
     style: Style
     page: int
@@ -19,7 +20,6 @@ class AnnotationBase(BaseModel):
 
 class AnnotationCreate(AnnotationBase):
     rects: list
-    id: str
     doc_id: str
 
 

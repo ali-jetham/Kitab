@@ -47,3 +47,6 @@ def get_tts_service(
 
 
 AnnotationServiceDep = Annotated[AnnotationService, Depends(get_annotation_service)]
+BookmarkServiceDep = Annotated[BookmarkService, Depends(get_bookmark_service)]
+DocumentServiceDep = Annotated[DocumentService, Depends(get_document_service)]
+TTSServiceDep = Annotated[TTSService, Depends(get_tts_service)]
