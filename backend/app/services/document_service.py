@@ -8,7 +8,7 @@ import pymupdf4llm
 import sentencex
 import xxhash
 from sqlalchemy import select, update
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, load_only, selectinload
 
 from app.core.config import settings
 from app.models.document import Document
@@ -91,13 +91,17 @@ class DocumentService:
 
     def scan(self) -> None:
         """Scan library_path for PDFs."""
-        documents_ids = list(self.db.scalars(select(Document.id)).all())
+        stmt = select(Document).options(load_only(Document.id, Document.file_path))
+        documents = self.db.scalars(stmt).all()
+        documents = {doc.id: doc for doc in documents}
         new_documents = []
 
         for path in self.library_path.rglob("*.pdf"):
             id = self._generate_content_hash(path)
-            exists = any(doc_id == id for doc_id in documents_ids)
-            if exists:
+            if id in documents:
+                if documents[id].file_path != str(path):
+                    documents[id].file_path = str(path)
+                    documents[id].file_name = path.stem
                 continue
 
             metadata = self._get_metadata(path)

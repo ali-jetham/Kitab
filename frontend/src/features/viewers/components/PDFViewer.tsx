@@ -80,6 +80,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	createEffect(() => {
 		if (error()) {
+			console.log(error)
 			setSideBarStore("tocState", { status: "error", outline: null })
 		} else if (pdfSlickStore.pagesReady) {
 			setSideBarStore("tocState", {
@@ -106,9 +107,19 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	return (
 		<div ref={containerRef} class="pdfslick-container pdfSlick">
-			<div>
-				<PDFSlickViewer {...{ store: pdfSlickStore, viewerRef }} />
-			</div>
+			<Show
+				when={!error()}
+				fallback={
+					<div class={styles.error}>
+						<p>This document couldn't be loaded.</p>
+						<p>Consider running the Scan library command.</p>
+					</div>
+				}
+			>
+				<div>
+					<PDFSlickViewer {...{ store: pdfSlickStore, viewerRef }} />
+				</div>
+			</Show>
 
 			<HighlightToolbar
 				open={viewerStore.showHighlightToolbar}

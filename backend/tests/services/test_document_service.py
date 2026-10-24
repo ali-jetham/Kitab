@@ -72,5 +72,21 @@ class TestScan:
         document_service.scan()
         # assert db_session.query(Document.id)
 
+    def test_scan_handles_moved_pdfs(
+        self, tmp_path, make_pdf, document_service, db_session
+    ):
+        original_path = make_pdf("a.pdf")
+        document_service.scan()
+
+        new_path = tmp_path / "sub" / "new.pdf"
+        new_path.parent.mkdir()
+        original_path.rename(new_path)
+        document_service.scan()
+        db_session.expire_all()
+
+        doc = db_session.query(Document).one()
+        assert doc.file_path == str(new_path)
+        assert doc.file_name == "new"
+
     def test_db_not_overwritten(self):
         pass
