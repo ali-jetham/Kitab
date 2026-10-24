@@ -45,12 +45,12 @@ class DocumentService:
         return path
 
     def get_document_cover(self, id: str) -> str:
-        covers_path = Path(settings.LIBRARY_PATH / ".covers").resolve()
-        file_path = Path(settings.LIBRARY_PATH / ".covers" / f"{id}.jpg").resolve()
-
-        if not (file_path.is_relative_to(covers_path) and file_path.is_file()):
+        covers_dir = Path(settings.LIBRARY_PATH / ".covers").resolve()
+        cover_path = Path(settings.LIBRARY_PATH / ".covers" / f"{id}.jpg").resolve()
+        print(cover_path)
+        if not (cover_path.is_relative_to(covers_dir) and cover_path.is_file()):
             raise FileNotFoundError
-        return str(file_path)
+        return str(cover_path)
 
     def get_page_text(self, id: str, page_number: int):
         document_path = self.get_document_file(id)
@@ -109,9 +109,10 @@ class DocumentService:
                 continue
             title, author = metadata
 
-            cover = self._generate_cover(id, path)
-            if cover is None:
-                continue
+            try:
+                self._generate_cover(id, path)
+            except pymupdf.FileDataError:
+                print(f"Count not generate cover for {id}")
 
             document = Document(
                 id=id,
@@ -119,7 +120,6 @@ class DocumentService:
                 file_name=path.stem,
                 title=title,
                 author=author,
-                cover=cover,
                 created_at=datetime.now(UTC),
             )
             new_documents.append(document)
@@ -138,22 +138,18 @@ class DocumentService:
         except pikepdf.PdfError:
             return None
 
-    def _generate_cover(self, id: str, document_path: Path) -> str | None:
+    def _generate_cover(self, document_id: str, document_path: Path) -> None:
         cover_folder = self.library_path / ".covers"
         cover_folder.mkdir(parents=True, exist_ok=True)
-        cover_path = cover_folder / f"{id}.jpg"
+        cover_path = cover_folder / f"{document_id}.jpg"
         target_w, target_h = 400, 566
 
-        try:
-            with pymupdf.open(document_path) as d:
-                page = d[0]
-                rect = page.rect
-                matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
-                pix = page.get_pixmap(matrix=matrix, alpha=False)
-                pix.save(cover_path, "jpg", jpg_quality=75)
-                return str(cover_path)
-        except pymupdf.FileDataError:
-            return None
+        with pymupdf.open(document_path) as d:
+            page = d[0]
+            rect = page.rect
+            matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
+            pix = page.get_pixmap(matrix=matrix, alpha=False)
+            pix.save(cover_path, "jpg", jpg_quality=75)
 
     def _generate_content_hash(self, filepath: Path) -> str:
         """
@@ -170,19 +166,18 @@ class DocumentService:
         """
         Refresh covers for all documents.
         """
-        for file in self.library_path.iterdir():
+        covers_dir = self.library_path / ".covers"
+        covers_dir.mkdir(exist_ok=True)
+        for file in covers_dir.iterdir():
             if file.is_file():
                 file.unlink()
 
         documents = list(self.db.scalars(select(Document)).all())
-        for d in documents:
-            path = Path(d.file_path)
+        for doc in documents:
+            path = Path(doc.file_path)
             if not path.is_file():
-                continue
-            cover = self._generate_cover(d.id, path)
-            stmt = update(Document).where(Document.id == d.id).values(cover=cover)
-            self.db.execute(stmt)
-        self.db.commit()
+                raise FileNotFoundError(f"File missing for id: {doc.id}")
+            self._generate_cover(doc.id, path)
 
     def _find_sentence_rects(self, sentence: str, words) -> list[pymupdf.Rect]:
         target = helper.normalize_word(sentence)

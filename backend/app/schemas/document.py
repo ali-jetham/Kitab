@@ -16,10 +16,8 @@ class DocumentBase(BaseModel):
     )
     id: str
     file_name: str
-    cover: str
     title: str | None = None
     author: list[str] | None = None
-    primary_color: str | None = None
 
 
 class DocumentRead(DocumentBase):

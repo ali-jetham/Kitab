@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, String, func
+from sqlalchemy import JSON, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -16,8 +16,6 @@ class Document(Base):
     file_name: Mapped[str] = mapped_column()
     title: Mapped[str] = mapped_column(nullable=True)
     author: Mapped[str] = mapped_column(JSON())
-    cover: Mapped[str] = mapped_column(String)
-    primary_color: Mapped[str] = mapped_column(String(7), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
