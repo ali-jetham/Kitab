@@ -56,12 +56,11 @@ async def integrity_error_handler(request, exc):
         content={"message": "A database integrity error occurred."},
     )
 
+
 @app.exception_handler(FileNotFoundError)
 async def file_not_found_error_handler(request, exc):
-    return JSONResponse(
-        status_code=404,
-        content={"message": "File not found"}
-    )
+    return JSONResponse(status_code=404, content={"message": str(exc)})
+
 
 if settings.ENVIRONMENT == "dev":
     app.add_middleware(

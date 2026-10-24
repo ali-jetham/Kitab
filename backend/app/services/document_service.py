@@ -39,7 +39,7 @@ class DocumentService:
 
     def get_document_file(self, id: str) -> Path:
         document = self.db.get_one(Document, id)
-        path = Path(document.file_path)
+        path = self.library_path / Path(document.file_path)
         if not path.is_file():
             raise FileNotFoundError(f"File missing for id: {id}")
         return path
@@ -65,7 +65,7 @@ class DocumentService:
                 table_format="plain",
             ),
         )
-        sentences: list[str] = sentencex.segment("en", text)
+        sentences: list[str] = sentencex.segment("en", text)  # pyright: ignore[reportAttributeAccessIssue]
         sentences = [s.strip() for s in sentences if s.strip()]
 
         doc = pymupdf.open(document_path)
@@ -115,7 +115,7 @@ class DocumentService:
 
             document = Document(
                 id=id,
-                file_path=str(path),
+                file_path=str(path.relative_to(self.library_path)),
                 file_name=path.stem,
                 title=title,
                 author=author,
