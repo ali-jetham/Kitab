@@ -39,7 +39,13 @@ class DocumentService:
 
     def get_document_file(self, id: str) -> Path:
         document = self.db.get_one(Document, id)
-        path = self.library_path / Path(document.file_path)
+        path = (
+            self.library_path
+            / document.file_path
+            / (document.file_name + document.file_type.value)
+        )
+
+        print(path)
         if not path.is_file():
             raise FileNotFoundError(f"File missing for id: {id}")
         return path
@@ -100,7 +106,7 @@ class DocumentService:
             id = self._generate_content_hash(path)
             if id in documents:
                 if documents[id].file_path != str(path):
-                    documents[id].file_path = str(path)
+                    documents[id].file_path = str(self._get_relative_path(path))
                     documents[id].file_name = path.stem
                 continue
 
@@ -116,8 +122,9 @@ class DocumentService:
 
             document = Document(
                 id=id,
-                file_path=str(path.relative_to(self.library_path)),
+                file_path=str(self._get_relative_path(path).parent),
                 file_name=path.stem,
+                file_type=path.suffix,
                 title=title,
                 author=author,
                 created_at=datetime.now(UTC),
@@ -125,6 +132,9 @@ class DocumentService:
             new_documents.append(document)
         self.db.add_all(new_documents)
         self.db.commit()
+
+    def _get_relative_path(self, path: Path) -> Path:
+        return path.relative_to(self.library_path)
 
     def _get_metadata(self, path: Path):
         try:

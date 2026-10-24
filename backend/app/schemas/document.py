@@ -3,6 +3,7 @@ from typing import Annotated
 from pydantic import BaseModel, ConfigDict, StringConstraints
 from pydantic.alias_generators import to_camel
 
+from app.models.document import FileType
 from app.schemas.annotation import AnnotationRead
 from app.schemas.bookmark import BookmarkRead
 
@@ -16,6 +17,7 @@ class DocumentBase(BaseModel):
     )
     id: str
     file_name: str
+    file_type: FileType
     title: str | None = None
     author: list[str] | None = None
 
