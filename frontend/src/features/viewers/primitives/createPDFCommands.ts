@@ -79,7 +79,7 @@ export function createPDFCommands(
 			setViewerStore("annotationId", null)
 		}),
 		register("pdf.addBookmark", (pdfSlick) => {
-			actions.addBookmark(pdfSlick.viewer.currentPageNumber)
+			actions.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick.viewer.currentPageNumber })
 			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick.viewer.currentPageNumber })
 		}),
 		commands.registerCommand("pdf.deleteBookmark", ({ arg }) => {
