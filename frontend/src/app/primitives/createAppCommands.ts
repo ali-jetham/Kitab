@@ -9,14 +9,17 @@ export function createAppCommands(appStore: AppStore, setAppStore: SetStoreFunct
 	const navigate = useNavigate()
 
 	const unregisters = [
-		commands.registerCommand("app.modal.toggle", () => setAppStore("isModalOpen", (prev) => !prev)),
-		commands.registerCommand("app.modal.close", () => setAppStore("isModalOpen", false)),
+		commands.registerCommand("app.pallete.toggle", () => setAppStore("isCommandPalleteOpen", (prev) => !prev)),
+		commands.registerCommand("app.pallete.close", () => setAppStore("isCommandPalleteOpen", false)),
 		commands.registerCommand("app.sidebar.toggle", () => setAppStore("isSideBarOpen", (prev) => !prev)),
 		commands.registerCommand("app.statusbar.toggle", () => setAppStore("isStatusOpen", (prev) => !prev)),
 		commands.registerCommand("app.downloadTTS", async ({ arg }) => {
 			if (!arg) {
 				const models = await TTSApi.getModels()
-				setAppStore("modalArgs", models.map(({ id, quality }) => ({ id, label: quality, hidden: false })))
+				setAppStore("commandPalleteArgs", [{
+					group: "Models",
+					options: models.map(({ id, quality }) => ({ id, label: quality, hidden: false }))
+				}])
 				return
 			}
 			console.log("downloading model: ", arg)

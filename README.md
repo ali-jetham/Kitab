@@ -26,7 +26,7 @@ Kitab is a self-hosted directory first document reader.
 
 ![Library](https://github.com/user-attachments/assets/72047847-f502-451b-85c3-5e8b9811e4f5 "Library View")
 
-![Modal](https://github.com/user-attachments/assets/b920a000-b12f-4744-a926-ebfbf0b81376 "Modal example")
+![Command Palette](https://github.com/user-attachments/assets/b920a000-b12f-4744-a926-ebfbf0b81376 "Command Pallete example")
 
 ![Annotations](https://github.com/user-attachments/assets/3afc52bd-3167-49e5-8d5c-8084230aa46a "Annotations example")
 

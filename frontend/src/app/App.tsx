@@ -11,7 +11,7 @@ import { keymap } from "../core/keymap"
 import styles from "./App.module.css"
 import ActionBar from "./components/ActionBar"
 import actionBarStyles from "./components/ActionBar.module.css"
-import Modal from "./components/Modal"
+import CommandPallete from "./components/CommandPallete"
 import SideBar from "./components/SideBar"
 import StatusBar from "./components/StatusBar"
 import { SideBarProvider } from "./contexts/SideBarContext"
@@ -20,12 +20,16 @@ import { createAppCommands } from "./primitives/createAppCommands"
 
 export type AppStore = {
 	isMobile: () => boolean
-	isModalOpen: boolean
+	isCommandPalleteOpen: boolean
 	isActionOpen: boolean
 	isSideBarOpen: boolean
 	isStatusOpen: boolean
-	modalArgs: { id: string; label: string; hidden: boolean }[] | null
-	modalSelectedCommand: CommandId | null
+	commandPalleteArgs: {
+		group: string
+		options: { id: string; label: string; hidden: boolean }[]
+	}[] | null
+
+	commandPalleteSelectedCommand: CommandId | null
 	trigger: number
 }
 
@@ -39,12 +43,12 @@ export const AppContext = createContext<AppContextType>()
 export default function App(props: RouteSectionProps) {
 	const [appStore, setAppStore] = createStore<AppStore>({
 		isMobile: createMediaQuery("(max-width: 768px)"),
-		isModalOpen: false,
+		isCommandPalleteOpen: false,
 		isActionOpen: true,
 		isSideBarOpen: false,
 		isStatusOpen: true,
-		modalArgs: null,
-		modalSelectedCommand: null,
+		commandPalleteArgs: null,
+		commandPalleteSelectedCommand: null,
 		trigger: 0
 	})
 
@@ -102,8 +106,8 @@ export default function App(props: RouteSectionProps) {
 						</Transition>
 
 						<Portal>
-							<Show when={appStore.isModalOpen}>
-								<Modal appStore={appStore} setAppStore={setAppStore} />
+							<Show when={appStore.isCommandPalleteOpen}>
+								<CommandPallete appStore={appStore} setAppStore={setAppStore} />
 							</Show>
 						</Portal>
 					</div>

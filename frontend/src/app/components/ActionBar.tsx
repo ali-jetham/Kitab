@@ -37,7 +37,9 @@ export default function ActionBar(props: ActionBarProps) {
 					</Show>
 				</Button>
 
-				<Button onClick={() => props.setAppStore("isModalOpen", (prev) => !prev)}>
+				<Button
+					onClick={() => props.setAppStore("isCommandPalleteOpen", (prev) => !prev)}
+				>
 					<CommandIcon />
 				</Button>
 

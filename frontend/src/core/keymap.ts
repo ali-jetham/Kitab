@@ -1,11 +1,11 @@
 import { CommandId } from "./commands"
 
 type Keybind = { key: string; command: CommandId; context: KeybindContext; isInputAllowed?: boolean }
-type KeybindContext = "global" | "viewer" | "modal"
+type KeybindContext = "global" | "viewer" | "pallete"
 
 export const keymap: readonly Keybind[] = [
-	{ key: "Shift+:", command: "app.modal.toggle", context: "global" },
-	{ key: "escape", command: "app.modal.close", context: "modal", isInputAllowed: true },
+	{ key: "Shift+:", command: "app.pallete.toggle", context: "global" },
+	{ key: "escape", command: "app.pallete.close", context: "pallete", isInputAllowed: true },
 	{ key: "t h", command: "app.sidebar.toggle", context: "global", isInputAllowed: false },
 	{ key: "t j", command: "app.statusbar.toggle", context: "global", isInputAllowed: false },
 

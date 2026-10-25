@@ -9,20 +9,21 @@
 }
 
 .combobox__control {
+  width: 60%;
   display: inline-flex;
   justify-content: space-between;
-  width: min(680px, 90%);
   background-color: var(--popover-bg-color);
   color: var(--popover-fg-color);
-  outline: none;
+  border: solid 1px var(--border-color);
   border-top-left-radius: 0.6rem;
   border-top-right-radius: 0.6rem;
   box-shadow: var(--shadow-soft);
+  overflow: hidden;
   transition: border-color 250ms, color 250ms;
 }
 
 .combobox__control[data-invalid] {
-  border-color: var(0 72% 51%);
+  border-color: var(--destructive-fg-color);
   color: var(--destructive-fg-color);
 }
 
@@ -36,22 +37,22 @@
   border: none;
 }
 
-.combobox__error-message {
-  color: var(--destructive-fg-color);
-  font-size: 0.9rem;
-  user-select: none;
-}
-
 .combobox__content {
+	height: 60vh;
   background-color: var(--popover-bg-color);
-  border: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
   border-bottom-left-radius: 0.6rem;
   border-bottom-right-radius: 0.6rem;
 }
 
 .combobox__listbox {
+	max-height: 100%;
+	padding-right: 1rem;
+  margin-right: -1rem;
   overflow-y: auto;
-  max-height: 30vh;
 }
 
 .combobox__listbox:focus {
@@ -72,6 +73,10 @@
   outline: none;
 }
 
+.combobox__group {
+  font-weight: 600;
+  padding: 0.6rem 0;
+}
 .combobox__item[data-disabled] {
   color: var(--popover-fg-color);
   opacity: var(--disabled-opacity);
@@ -83,22 +88,20 @@
   background-color: var(--view-active-color);
 }
 
-.combobox__itemIndicator {
-  height: 20px;
-  width: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 @media (max-width: 600px) {
-  .combobox__content {
-    border-radius: 0.3rem;
+  .combobox {
+    padding-top: 1rem;
   }
-  .combobox__listbox {
-    max-height: 90vh;
+  .combobox__control {
+    width: 90%;
+    border: none;
   }
   .combobox__input {
     display: none;
+  }
+  .combobox__content {
+    border-top: none;
+    min-height: 80vh;
+    border-radius: .6rem;
   }
 }
