@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@kobalte/core/breadcrumbs"
 import { TextField } from "@kobalte/core/text-field"
 import { useSearchParams } from "@solidjs/router"
 import { createResource, For, type JSX, Suspense } from "solid-js"
@@ -8,7 +9,10 @@ import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library(): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams()
-	const [books] = createResource(documentApi.getDocs)
+	const [books] = createResource(
+		() => searchParams.folder ?? "",
+		(folder) => documentApi.getDocs(folder || undefined)
+	)
 	createLibraryCommands()
 
 	const filteredBooks = () =>

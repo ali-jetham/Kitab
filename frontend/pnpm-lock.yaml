@@ -11,6 +11,9 @@ importers:
       '@kobalte/core':
         specifier: ^0.13.14
         version: 0.13.14(solid-js@1.9.15)
+      '@lezer/lr':
+        specifier: ^1.4.11
+        version: 1.4.11
       '@pdfslick/core':
         specifier: ^4.0.2
         version: 4.0.2
@@ -51,6 +54,9 @@ importers:
         specifier: ^14.0.2
         version: 14.0.2
     devDependencies:
+      '@lezer/generator':
+        specifier: ^1.8.1
+        version: 1.8.1
       '@types/node':
         specifier: ^26.4.1
         version: 26.4.1
@@ -893,6 +899,16 @@ packages:
     resolution: {integrity: sha512-jRVXr+zsVHxzDXRoh+CDeXzvCsFJ6uiHhqqNQ26Cw9ZsZ3D6nqPUBt1gGVtj2ZPmRL3a9Uk1v8D1aJ8/I12Dow==}
     peerDependencies:
       solid-js: ^1.8.8
+
+  '@lezer/common@1.5.4':
+    resolution: {integrity: sha512-xt3Q4z64xM+xhg4M7NXqw1N//1O74bUFo5kz6fwMeC4qwxSuRdwkYSmjcqCEEKYkNw5e67f2hcNqBoNERAEU0w==}
+
+  '@lezer/generator@1.8.1':
+    resolution: {integrity: sha512-7q7szXqT7EPTs6SODBl58Qoz/4OrhNvm5pW4lbu1ZDnG5e0nn7drLzeN9Nxkm8j/1iMs5QZ9j3i4SV+W4Z6SQA==}
+    hasBin: true
+
+  '@lezer/lr@1.4.11':
+    resolution: {integrity: sha512-UwgZcl1R66H2hDzBrA7kWyYmX6s8p5TQ+e/t7CuvgCtBEPxbEPaHYHu+pJBvTvDotEJpuQkJjbXuHiw5Cixxgw==}
 
   '@napi-rs/canvas-android-arm64@1.0.8':
     resolution: {integrity: sha512-5+nkh8i3gt6lqS/d2jTZ1xAn6tdgtB4Lf1mW6T0Qm5/rXNwBuV1sAEyLEWan5o9gJPU/GuvHR3rvSeZ+FaGrbw==}
@@ -3671,6 +3687,17 @@ snapshots:
       '@solid-primitives/refs': 1.1.4(solid-js@1.9.15)
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
       solid-js: 1.9.15
+
+  '@lezer/common@1.5.4': {}
+
+  '@lezer/generator@1.8.1':
+    dependencies:
+      '@lezer/common': 1.5.4
+      '@lezer/lr': 1.4.11
+
+  '@lezer/lr@1.4.11':
+    dependencies:
+      '@lezer/common': 1.5.4
 
   '@napi-rs/canvas-android-arm64@1.0.8':
     optional: true

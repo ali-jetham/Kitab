@@ -1,53 +1,54 @@
-.tocitem {
+.treeitem {
   padding: 0.6rem;
   cursor: pointer;
 }
 
-.tocitem__nested {
+.treeitem__nested {
   padding-left: 0.9rem;
 }
 
-.tocitem:hover {
+.treeitem:hover {
   background-color: var(--view-hover-color);
 }
 
-.tocitem[data-active] {
+.treeitem[data-active] {
   background-color: var(--view-active-color);
 }
 
-.tocitem__container, .tocitem__trigger {
+.treeitem__container, .treeitem__trigger {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.tocitem__chevron {
+.treeitem__chevron {
   color: var(--accent-bg-color);
   transition: transform 120ms ease;
 }
 
-.tocitem__trigger[data-expanded] .tocitem__chevron {
+.treeitem__trigger[data-expanded] .treeitem__chevron {
   transform: rotate(180deg);
 }
 
-.tocitem__content {
+.treeitem__content {
   overflow: hidden;
 }
 
-.tocitem__content[data-expanded] {
-  animation: tocitemSlideDown 150ms ease-out;
+.treeitem__content[data-expanded] {
+  animation: treeitemSlideDown 150ms ease-out;
 }
 
-.tocitem__content[data-closed] {
-  animation: tocitemSlideUp 150ms ease-out;
+.treeitem__content[data-closed] {
+  animation: treeitemSlideUp 150ms ease-out;
 }
 
-.tocitem__children {
-  display: flex;
+.treeitem__children {
+	padding-left: 1rem;
+	display: flex;
   flex-direction: column;
 }
 
-@keyframes tocitemSlideDown {
+@keyframes treeitemSlideDown {
   from {
     height: 0;
   }
@@ -56,7 +57,7 @@
   }
 }
 
-@keyframes tocitemSlideUp {
+@keyframes treeitemSlideUp {
   from {
     height: var(--kb-collapsible-content-height);
   }

@@ -1,5 +1,6 @@
 interface RequestOptions extends Omit<RequestInit, "body"> {
 	body?: any
+	queryParams?: Record<string, any>
 }
 
 export async function http(
@@ -8,10 +9,21 @@ export async function http(
 	parse: (r: Response) => Promise<any> = (r) => r.json()
 ) {
 	try {
+		const { queryParams, body, ...requestInit } = options
+		if (queryParams) {
+			console.log(queryParams)
+			const queryString = new URLSearchParams(
+				Object.entries(queryParams).filter(([_, value]) => value !== undefined && value !== null).map((
+					[key, value]
+				) => [key, String(value)])
+			).toString()
+
+			url += `?${queryString}`
+		}
 		const response = await fetch(url, {
-			...options,
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(options.body)
+			...requestInit,
+			headers: { "Content-Type": "application/json" }, // TODO: apply when POST
+			body: JSON.stringify(body) // TODO: apply only when POST
 		})
 
 		if (!response.ok) {

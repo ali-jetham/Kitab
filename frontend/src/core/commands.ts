@@ -4,6 +4,7 @@ const COMMANDS = [
 	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },
 	{ id: "app.statusbar.toggle", label: "App: Toggle Statusbar", hidden: false, withArgs: false },
 	{ id: "app.downloadTTS", label: "App: Setup Read Aloud", hidden: false, withArgs: true },
+	{ id: "app.folderSelect", label: "App: Select Folder", hidden: false, withArgs: true },
 
 	{ id: "library.refreshCovers", label: "Library: Refresh Covers", hidden: false, withArgs: false },
 	{ id: "library.scan", label: "Library: Scan", hidden: false, withArgs: false },

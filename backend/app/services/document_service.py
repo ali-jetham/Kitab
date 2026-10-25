@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session, load_only, selectinload
 
 from app.core.config import settings
 from app.models.document import Document
-from app.schemas.document import DocumentUpdate
+from app.schemas.document import DocumentUpdate, FilterParams
 from app.utils import helper
 from app.utils.helper import normalize_pikepdf_value
 
@@ -22,8 +22,11 @@ class DocumentService:
         self.db = db
         self.library_path = settings.LIBRARY_PATH
 
-    def get_documents(self) -> list[Document]:
+    def get_documents(self, filter_query: FilterParams) -> list[Document]:
         stmt = select(Document)
+        if filter_query.folder is not None:
+            stmt = stmt.where(Document.file_path == filter_query.folder)
+        stmt = stmt.order_by(getattr(Document, filter_query.order_by))
         documents = list(self.db.scalars(stmt).all())
         return documents
 
@@ -36,6 +39,26 @@ class DocumentService:
             )
         )
         return self.db.scalars(stmt).one()
+
+    def get_document_folders(self):
+        stmt = select(Document.file_path).distinct()
+        folders = list(self.db.scalars(stmt).all())
+        folders = self._build_tree(folders)
+        return folders
+
+    def _build_tree(self, paths: list[str]) -> list[dict]:
+        root = {"children": []}
+        nodes = {"": root}
+
+        for path in sorted(paths):
+            parts = path.split("/")
+            for i in range(len(parts)):
+                current = "/".join(parts[: i + 1])
+                if current not in nodes:
+                    node = {"name": parts[i], "path": current, "children": []}
+                    nodes["/".join(parts[:i])]["children"].append(node)
+                    nodes[current] = node
+        return root["children"]
 
     def get_document_file(self, id: str) -> Path:
         document = self.db.get_one(Document, id)

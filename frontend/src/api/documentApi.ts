@@ -6,8 +6,12 @@ async function getDoc(id: string) {
 	return await http(`/api/documents/${id}`, { method: "GET" })
 }
 
-async function getDocs() {
-	return await http("api/documents", { method: "GET" })
+async function getDocs(folder?: string) {
+	return await http("api/documents", { method: "GET", queryParams: { folder } })
+}
+
+async function getDocsFolders() {
+	return await http("api/documents:folders", { method: "GET" })
 }
 
 async function scanDocs() {
@@ -34,4 +38,13 @@ async function getPageText(id: string, page: number, signal?: AbortSignal) {
 	}))
 }
 
-export const documentApi = { getDoc, getDocs, getCoverUrl, getFileUrl, getPageText, scanDocs, refreshCovers }
+export const documentApi = {
+	getDoc,
+	getDocs,
+	getDocsFolders,
+	getCoverUrl,
+	getFileUrl,
+	getPageText,
+	scanDocs,
+	refreshCovers
+}

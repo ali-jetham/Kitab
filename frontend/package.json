@@ -8,11 +8,13 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview --host 0.0.0.0",
-    "test": "vitest"
+    "test": "vitest",
+    "lezer": "lezer-generator src/core/search.grammar -o src/parser.js"
   },
   "license": "MIT",
   "dependencies": {
     "@kobalte/core": "^0.13.14",
+    "@lezer/lr": "^1.4.11",
     "@pdfslick/core": "^4.0.2",
     "@pdfslick/solid": "^4.0.2",
     "@solid-primitives/media": "^2.3.6",
@@ -28,6 +30,7 @@
     "uuid": "^14.0.2"
   },
   "devDependencies": {
+    "@lezer/generator": "^1.8.1",
     "@types/node": "^26.4.1",
     "dprint": "^0.56.1",
     "openapi-typescript": "^7.13.0",

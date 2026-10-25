@@ -1,20 +1,35 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Query
 from fastapi.responses import FileResponse
 
 from app.core.dependencies import DocumentServiceDep
-from app.schemas.document import DocumentBase, DocumentId, DocumentRead, DocumentUpdate
+from app.schemas.document import (
+    DocumentBase,
+    DocumentId,
+    DocumentRead,
+    DocumentUpdate,
+    FilterParams,
+)
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
 @router.get("/", status_code=200, response_model=list[DocumentBase])
-def get_documents(service: DocumentServiceDep):
-    return service.get_documents()
+def get_documents(
+    service: DocumentServiceDep, filter_query: Annotated[FilterParams, Query()]
+):
+    return service.get_documents(filter_query)
 
 
 @router.get("/{id}", status_code=200, response_model=DocumentRead)
 def get_document(id: str, service: DocumentServiceDep):
     return service.get_document(id)
+
+
+@router.get(":folders", status_code=200)
+def get_document_folders(service: DocumentServiceDep):
+    return service.get_document_folders()
 
 
 @router.get("/{id}/file")
