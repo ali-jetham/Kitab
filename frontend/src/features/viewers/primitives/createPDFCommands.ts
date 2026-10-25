@@ -46,7 +46,7 @@ export function createPDFCommands(
 
 	const unregisters = [
 		register("pdf.fitHeight", (pdfSlick) => pdfSlick.currentScaleValue = "page-fit"),
-		register("pdf.fitWidth", (pdfSlick) => pdfSlick.currentScale = minScale()),
+		register("pdf.fitWidth", (pdfSlick) => pdfSlick.currentScaleValue = "page-width"),
 		register("pdf.zoomIn", (pdfSlick) => {
 			let newScale = pdfSlickStore.scale * DEFAULT_SCALE_DELTA
 			if (newScale > maxScale()) newScale = maxScale()

@@ -1,6 +1,6 @@
 import { createMediaQuery } from "@solid-primitives/media"
 import type { RouteSectionProps } from "@solidjs/router"
-import { createContext, createEffect, onCleanup, onMount } from "solid-js"
+import { createContext, createEffect, onCleanup, onMount, useContext } from "solid-js"
 import { createStore, type SetStoreFunction } from "solid-js/store"
 import { Portal, Show } from "solid-js/web"
 import { Transition } from "solid-transition-group"
@@ -35,12 +35,13 @@ export type AppContextType = {
 }
 
 export const AppContext = createContext<AppContextType>()
+
 export default function App(props: RouteSectionProps) {
 	const [appStore, setAppStore] = createStore<AppStore>({
 		isMobile: createMediaQuery("(max-width: 768px)"),
 		isModalOpen: false,
 		isActionOpen: true,
-		isSideBarOpen: true,
+		isSideBarOpen: false,
 		isStatusOpen: true,
 		modalArgs: null,
 		modalSelectedCommand: null,
@@ -110,4 +111,10 @@ export default function App(props: RouteSectionProps) {
 			</SideBarProvider>
 		</AppContext.Provider>
 	)
+}
+
+export function useAppContext() {
+	const context = useContext(AppContext)
+	if (!context) throw new Error("AppContext.Provider is missing")
+	return context
 }

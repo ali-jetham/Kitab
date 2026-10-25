@@ -1,21 +1,35 @@
 import { Collapsible } from "@kobalte/core/collapsible"
 import { ChevronDownIcon } from "lucide-solid"
-import { JSX, Show } from "solid-js"
+import { JSX, Show, useContext } from "solid-js"
+import { AppContext, useAppContext } from "../app/App"
+import { useSideBarContext } from "../app/contexts/SideBarContext"
 import styles from "./TreeItem.module.css"
 
 export interface TreeItemProps {
 	label: string
-	onClick: (e: MouseEvent) => void
+	onClick: () => void
 	hasChildren: boolean
 	children?: JSX.Element
 }
 
 export function TreeItem(props: TreeItemProps) {
+	const { appStore, setAppStore } = useAppContext()
+
 	return (
 		<Show
 			when={props.hasChildren}
 			fallback={
-				<button type="button" class={styles.treeitem} onClick={props.onClick}>
+				<button
+					type="button"
+					class={styles.treeitem}
+					onClick={(e) => {
+						e.preventDefault()
+						props.onClick()
+						if (appStore.isMobile()) {
+							setAppStore("isSideBarOpen", false)
+						}
+					}}
+				>
 					{props.label}
 				</button>
 			}

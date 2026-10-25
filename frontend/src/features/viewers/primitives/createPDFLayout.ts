@@ -12,8 +12,8 @@ export function createPDFLayout(pdfSlickStore: PDFSlickState) {
 		const page = pdfSlickStore.pdfSlick.viewer.getPageView(pdfSlickStore.pageNumber - 1)
 		if (!page) return
 
-		const min = viewerSize.clientWidth / (page.width / page.scale)
-		return { min, max: min * 4 }
+		const fitWidth = viewerSize.clientWidth / (page.width / page.scale)
+		return isMobile() ? { min: fitWidth, max: fitWidth * 4 } : { min: fitWidth * 0.3, max: fitWidth * 4 }
 	})
 
 	const minScale = () => scaleBounds()?.min ?? MIN_SCALE
