@@ -1,4 +1,5 @@
 const COMMANDS = [
+	{ id: "app.theme.toggle", label: "App: Toggle Dark Mode", hidden: false, withArgs: false },
 	{ id: "app.modal.toggle", label: "", hidden: true, withArgs: false },
 	{ id: "app.modal.close", label: "", hidden: true, withArgs: false },
 	{ id: "app.sidebar.toggle", label: "App: Toggle Sidebar", hidden: false, withArgs: false },

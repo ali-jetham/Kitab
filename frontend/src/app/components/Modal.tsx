@@ -62,6 +62,7 @@ export default function CommandPallete(props: ModalProps) {
 					return
 				}
 				commands.executeCommand(value.id)
+				console.log(value.id)
 				props.setAppStore("isModalOpen", false)
 			}}
 		>

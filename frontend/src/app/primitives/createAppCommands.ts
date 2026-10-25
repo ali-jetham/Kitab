@@ -25,6 +25,15 @@ export function createAppCommands(appStore: AppStore, setAppStore: SetStoreFunct
 		commands.registerCommand("app.folderSelect", ({ arg }) => {
 			console.log("navigate", arg)
 			navigate(`/?folder=${encodeURIComponent(arg)}`)
+		}),
+		commands.registerCommand("app.theme.toggle", () => {
+			const html = document.documentElement
+			const theme = html.getAttribute("data-theme")
+			if (theme === "light") {
+				html.setAttribute("data-theme", "dark")
+			} else {
+				html.setAttribute("data-theme", "light")
+			}
 		})
 	]
 
