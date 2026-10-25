@@ -43,8 +43,8 @@
 }
 
 .treeitem__children {
-	padding-left: 1rem;
-	display: flex;
+  padding-left: 1rem;
+  display: flex;
   flex-direction: column;
 }
 

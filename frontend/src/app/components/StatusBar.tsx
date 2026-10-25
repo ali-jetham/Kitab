@@ -1,4 +1,5 @@
 import { Button } from "@kobalte/core/button"
+import { Tooltip } from "@kobalte/core/tooltip"
 import { PanelLeftCloseIcon, PanelLeftIcon } from "lucide-solid"
 import { Show } from "solid-js"
 import { SetStoreFunction } from "solid-js/store"
@@ -14,17 +15,31 @@ export default function StatusBar(props: StatusBarProps) {
 	return (
 		<div class={styles.status}>
 			<div class={styles.section}>
-				<Button onClick={() => props.setAppStore("isSideBarOpen", (prev) => !prev)}>
-					<Show
-						when={props.appStore.isSideBarOpen}
-						fallback={<PanelLeftIcon size={24} strokeWidth={1.5} />}
+				<Tooltip openDelay={1000}>
+					<Tooltip.Trigger
+						onClick={() => props.setAppStore("isSideBarOpen", (prev) => !prev)}
 					>
-						<PanelLeftCloseIcon size={24} strokeWidth={1.5} />
-					</Show>
-				</Button>
+						<Show
+							when={props.appStore.isSideBarOpen}
+							fallback={<PanelLeftIcon size={24} strokeWidth={1.5} />}
+						>
+							<PanelLeftCloseIcon size={24} strokeWidth={1.5} />
+						</Show>
+					</Tooltip.Trigger>
+					<Tooltip.Portal>
+						<Tooltip.Content class="tooltip__content">Toggle Sidebar</Tooltip.Content>
+					</Tooltip.Portal>
+				</Tooltip>
 			</div>
 			<div class={styles.section}>
-				<div>[ {statusStore.currentPage} / {statusStore.totalPages} ]</div>
+				<Tooltip>
+					<Tooltip.Trigger as="div">
+						[ {statusStore.currentPage} / {statusStore.totalPages} ]
+					</Tooltip.Trigger>
+					<Tooltip.Portal>
+						<Tooltip.Content class="tooltip__content">Page number</Tooltip.Content>
+					</Tooltip.Portal>
+				</Tooltip>
 			</div>
 		</div>
 	)
