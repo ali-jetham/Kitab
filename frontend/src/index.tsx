@@ -1,21 +1,13 @@
 /* @refresh reload */
 import { render } from "solid-js/web"
-import "solid-devtools"
-
+import "./core/commands"
 import { Route, Router } from "@solidjs/router"
-import "@pdfslick/solid/dist/pdf_viewer.css"
 import App from "./app/App"
 import Library from "./features/library/Library"
-import "./core/commands"
 import Viewer from "./features/viewers/Viewer"
+import "@pdfslick/solid/dist/pdf_viewer.css"
 
 const root = document.getElementById("root")
-
-if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
-	throw new Error(
-		"Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?"
-	)
-}
 
 render(() => (
 	<Router root={App}>
