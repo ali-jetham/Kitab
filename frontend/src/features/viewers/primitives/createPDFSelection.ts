@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onCleanup, onSettled } from "solid-js"
 
 export function createPDFSelection() {
 	function handleSelection(e: PointerEvent) {
@@ -6,7 +6,7 @@ export function createPDFSelection() {
 		if (!selection || selection.isCollapsed) return
 	}
 
-	onMount(() => {
+	onSettled(() => {
 		document.addEventListener("pointerup", handleSelection)
 	})
 

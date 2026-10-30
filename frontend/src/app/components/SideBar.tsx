@@ -1,14 +1,15 @@
 import { Tabs } from "@kobalte/core/tabs"
 import { Tooltip } from "@kobalte/core/tooltip"
-import { useLocation } from "@solidjs/router"
 import {
 	BookmarkIcon,
 	FolderTreeIcon,
+	Grid2X2Icon,
 	HighlighterIcon,
 	TableOfContentsIcon
-} from "lucide-solid"
-import { createResource, createSignal, For, Match, Show, Switch } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
+} from "@lucide/solid"
+import { useLocation, useMatch } from "@solidjs/router"
+import { createMemo, createSignal, For, Match, Show, Switch } from "solid-js"
+import { type StoreSetter } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import AnnotationItem from "../../components/AnnotationItem"
 import BookmarkItem from "../../components/BookmarkItem"
@@ -17,18 +18,22 @@ import TocNode from "../../components/TocNode"
 import { AppStore } from "../App"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
+import PDFThumbnails from "../../features/viewers/components/PDFThumbnails"
 
-type SideBarProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore> }
+type SideBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
 
 export default function SideBar(props: SideBarProps) {
 	const { sideBarStore } = useSideBarContext()
-	const [folders] = createResource(() => documentApi.getDocsFolders())
 	const [selectedTab, setSelectedTab] = createSignal("folders")
+	const match = useMatch(() => "/viewer/:id")
 	const location = useLocation()
+	const folders = createMemo(() => documentApi.getDocsFolders())
+
 	// dprint-ignore
 	const tabs = [
 		{ label: "Folders", value: "folders", icon: FolderTreeIcon, show: () => location.pathname === "/" },
-		{ label: "Table of Contents", value: "toc", icon: TableOfContentsIcon, show: () => location.pathname === "/viewer" },
+		{ label: "Table of Contents", value: "toc", icon: TableOfContentsIcon, show: () => match() },
+		{ label: "Thumbnails", value: "thumbnails", icon: Grid2X2Icon, show: () => match() },
 		{ label: "Annotations", value: "annotations", icon: HighlighterIcon, show: () => true },
 		{ label: "Bookmarks", value: "bookmarks", icon: BookmarkIcon, show: () => true }
 	]
@@ -94,6 +99,11 @@ export default function SideBar(props: SideBarProps) {
 				<For each={sideBarStore.documentStore?.bookmarks}>
 					{(bm) => <BookmarkItem bookmark={bm} />}
 				</For>
+			</Tabs.Content>
+
+			<Tabs.Content class={styles.tabs__content} value="thumbnails">
+				Thumbnails go here
+				{/*<PDFThumbnails show={true} {...{  thumbsRef: sideBarStore.thumbsRef, store: sideBarStore.pdfSlickStore }} />*/}
 			</Tabs.Content>
 		</Tabs>
 	)

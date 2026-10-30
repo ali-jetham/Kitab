@@ -48,7 +48,9 @@ export function createPDFGestures(
 		} else if (touch.clientX >= zoneWidth * 2 && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
 			pdfSlickStore?.pdfSlick?.viewer.nextPage()
 		} else {
-			setAppStore("isActionOpen", (prev) => !prev)
+			setAppStore(draft => {
+				draft.isActionOpen = !draft.isActionOpen
+			})
 		}
 	}
 
@@ -147,8 +149,7 @@ export function createPDFGestures(
 		}
 	}
 
-	createEffect(() => {
-		const el = containerRef()
+	createEffect(() => containerRef(), (el) => {
 		if (!el) return
 
 		el.addEventListener("touchstart", handleTouchStart, { passive: false })
@@ -165,10 +166,12 @@ export function createPDFGestures(
 	})
 
 	// TODO: move to createViewerGestures
-	createEffect(() => {
-		trigger()
+	createEffect(() => trigger(), () => {
 		if (!appStore.isActionOpen) return
-		const timer = setTimeout(() => setAppStore("isActionOpen", false), 3000)
+		const timer = setTimeout(() =>
+			setAppStore(draft => {
+				draft.isActionOpen = false
+			}), 3000)
 		onCleanup(() => clearTimeout(timer))
 	})
 }

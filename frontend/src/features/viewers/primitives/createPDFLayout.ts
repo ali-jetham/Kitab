@@ -19,8 +19,8 @@ export function createPDFLayout(pdfSlickStore: PDFSlickState) {
 	const minScale = () => scaleBounds()?.min ?? MIN_SCALE
 	const maxScale = () => scaleBounds()?.max ?? MAX_SCALE
 
-	createEffect(() => {
-		if (!pdfSlickStore.pdfSlick || !pdfSlickStore.pagesReady) return
+	createEffect(() => pdfSlickStore.pagesReady, (pagesReady) => {
+		if (!pdfSlickStore.pdfSlick || !pagesReady) return
 		if (isMobile()) {
 			pdfSlickStore.pdfSlick.setScrollMode(3)
 		}

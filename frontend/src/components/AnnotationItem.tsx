@@ -10,8 +10,8 @@ import {
 	SquarePenIcon,
 	TrashIcon,
 	UnderlineIcon
-} from "lucide-solid"
-import { createEffect, createSignal, Match, onMount, Show, Switch } from "solid-js"
+} from "@lucide/solid"
+import { createSignal, Match, Show, Switch } from "solid-js"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
 import { Annotation } from "../stores/createDocumentStore"

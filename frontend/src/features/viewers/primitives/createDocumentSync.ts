@@ -1,15 +1,10 @@
-import { onMount } from "solid-js"
+import { createEffect, createMemo } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 
 export function createDocumentSync(id: string, actions: any) {
-	onMount(async () => {
-		try {
-			const doc = await documentApi.getDoc(id)
-			if (doc) {
-				actions.init(doc)
-			}
-		} catch (error) {
-			console.error("Failed to load document:", error)
-		}
+	const doc = createMemo(() => documentApi.getDoc(id))
+
+	createEffect(() => doc(), (doc) => {
+		if (doc) actions.init(doc)
 	})
 }

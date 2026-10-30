@@ -1,5 +1,5 @@
 import { Collapsible } from "@kobalte/core/collapsible"
-import { ChevronDownIcon } from "lucide-solid"
+import { ChevronDownIcon } from "@lucide/solid"
 import { JSX, Show, useContext } from "solid-js"
 import { AppContext, useAppContext } from "../app/App"
 import { useSideBarContext } from "../app/contexts/SideBarContext"

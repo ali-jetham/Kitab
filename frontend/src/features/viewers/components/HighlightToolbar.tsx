@@ -2,14 +2,14 @@ import { ColorSwatch } from "@kobalte/core/color-swatch"
 import { parseColor } from "@kobalte/core/colors"
 import { Popover } from "@kobalte/core/popover"
 import { For } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
+import { StoreSetter } from "solid-js"
 import styles from "./HighlightToolbar.module.css"
 import { ViewerStore } from "./PDFViewer"
 
 export type HighlightToolbarProps = {
 	open: boolean
 	anchorRef: HTMLElement | undefined
-	setViewerStore: SetStoreFunction<ViewerStore>
+	setViewerStore: StoreSetter<ViewerStore>
 	onSelectColor: (color: string) => void
 }
 

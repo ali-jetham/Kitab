@@ -38,7 +38,7 @@
 }
 
 .combobox__content {
-	height: 60vh;
+  height: 60vh;
   background-color: var(--popover-bg-color);
   border-right: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
@@ -49,8 +49,8 @@
 }
 
 .combobox__listbox {
-	max-height: 100%;
-	padding-right: 1rem;
+  max-height: 100%;
+  padding-right: 1rem;
   margin-right: -1rem;
   overflow-y: auto;
 }
@@ -102,6 +102,6 @@
   .combobox__content {
     border-top: none;
     min-height: 80vh;
-    border-radius: .6rem;
+    border-radius: 0.6rem;
   }
 }

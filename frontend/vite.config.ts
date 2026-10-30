@@ -1,13 +1,13 @@
+import solid from "@solidjs/vite-plugin"
 import { defineConfig, loadEnv } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
-import solidPlugin from "vite-plugin-solid"
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "")
 
 	return {
 		plugins: [
-			solidPlugin()
+			solid({ start: true, extensions: [".jsx", ".tsx"], diagnostics: true })
 			// VitePWA({
 			// 	registerType: "autoUpdate",
 			// 	strategies: "generateSW",

@@ -1,6 +1,6 @@
-import type { TPDFDocumentOutline } from "@pdfslick/core"
+import type { PDFSlickState, TPDFDocumentOutline } from "@pdfslick/core"
 import { createContext, type ParentProps, useContext } from "solid-js"
-import { createStore, SetStoreFunction } from "solid-js/store"
+import { createStore, type StoreSetter } from "solid-js"
 import { Document } from "../../stores/createDocumentStore"
 
 type Navigate = (dest: string | any[]) => void
@@ -19,7 +19,7 @@ type SideBarStore = {
 
 type SideBarContextType = {
 	sideBarStore: SideBarStore
-	setSideBarStore: SetStoreFunction<SideBarStore>
+	setSideBarStore: StoreSetter<SideBarStore>
 }
 
 const SideBarContext = createContext<SideBarContextType>()
@@ -28,13 +28,13 @@ export function SideBarProvider(props: ParentProps) {
 	const [sideBarStore, setSideBarStore] = createStore<SideBarStore>({
 		documentStore: null,
 		navigate: null,
-		tocState: { status: "empty", outline: null }
+		tocState: { status: "empty", outline: null },
 	})
 
 	return (
-		<SideBarContext.Provider value={{ sideBarStore, setSideBarStore }}>
+		<SideBarContext value={{ sideBarStore, setSideBarStore }}>
 			{props.children}
-		</SideBarContext.Provider>
+		</SideBarContext>
 	)
 }
 

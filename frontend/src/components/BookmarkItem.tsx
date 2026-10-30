@@ -1,4 +1,4 @@
-import { DeleteIcon, TrashIcon } from "lucide-solid"
+import { DeleteIcon, TrashIcon } from "@lucide/solid"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
 import { Bookmark } from "../stores/createDocumentStore"

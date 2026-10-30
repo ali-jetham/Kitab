@@ -1,6 +1,6 @@
 import { PDFSlickState } from "@pdfslick/core"
 import { createEffect, createResource, createSignal, onCleanup } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
+import { type StoreSetter } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { TTSApi } from "../../../api/ttsApi"
 import { commands } from "../../../core/commands"
@@ -15,7 +15,7 @@ interface ReadySentence extends Sentence {
 
 const QUEUE_SIZE = 3
 
-export function createTTS(setViewerStore: SetStoreFunction<ViewerStore>, pdfSlickStore: PDFSlickState, id: string) {
+export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStore: PDFSlickState, id: string) {
 	let nextIndex = 0
 	let nextPlay = 0
 	let abortControllers: AbortController[] = []

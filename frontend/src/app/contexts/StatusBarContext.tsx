@@ -1,10 +1,10 @@
 import { createContext, ParentProps, useContext } from "solid-js"
-import { createStore, SetStoreFunction } from "solid-js/store"
+import { createStore, StoreSetter } from "solid-js"
 
 type StatusBarStore = { currentPage: number | null; totalPages: number | null }
 type StatusBarContextType = {
 	statusStore: StatusBarStore
-	setStatusStore: SetStoreFunction<StatusBarStore>
+	setStatusStore: StoreSetter<StatusBarStore>
 }
 
 const StatusBarContext = createContext<StatusBarContextType>()
@@ -16,9 +16,9 @@ export function StatusBarProvider(props: ParentProps) {
 	})
 
 	return (
-		<StatusBarContext.Provider value={{ statusStore, setStatusStore }}>
+		<StatusBarContext value={{ statusStore, setStatusStore }}>
 			{props.children}
-		</StatusBarContext.Provider>
+		</StatusBarContext>
 	)
 }
 

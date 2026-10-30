@@ -18,7 +18,9 @@ export async function http(
 				) => [key, String(value)])
 			).toString()
 
-			url += `?${queryString}`
+			if (queryString) {
+				url += (url.includes("?") ? "&" : "?") + queryString
+			}
 		}
 		const response = await fetch(url, {
 			...requestInit,

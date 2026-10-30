@@ -1,8 +1,8 @@
 import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
 import { debounce } from "@solid-primitives/scheduled"
-import { type Accessor, createEffect, createSignal, onCleanup, onMount } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
-import { createComponent, render } from "solid-js/web"
+import { createComponent, render } from "@solidjs/web"
+import { type Accessor, createEffect, createSignal, onCleanup, onSettled } from "solid-js"
+import { StoreSetter } from "solid-js"
 import { v7 as uuid7 } from "uuid"
 import { annotationApi } from "../../../api/annotationApi"
 import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore"
@@ -18,7 +18,7 @@ export function createPDFHighlights(
 	docId: string,
 	actions: any,
 	selectedColor: string,
-	setViewerStore: SetStoreFunction<ViewerStore>,
+	setViewerStore: StoreSetter<ViewerStore>,
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 ) {
 	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99"
@@ -114,7 +114,10 @@ export function createPDFHighlights(
 					page,
 					pageNumber: e.pageNumber,
 					annotations,
-					onSelectAnnotation: (id: string) => setViewerStore("annotationId", id),
+					onSelectAnnotation: (id: string) =>
+						setViewerStore(draft => {
+							draft.annotationId = id
+						}),
 					ttsHighlight
 				}),
 			page.div
@@ -138,7 +141,7 @@ export function createPDFHighlights(
 		debouncedHandleSelectionChange.clear()
 	}
 
-	onMount(() => {
+	onSettled(() => {
 		document.addEventListener("selectionchange", debouncedHandleSelectionChange)
 		document.addEventListener("mousedown", handleMouseDown, true)
 		document.addEventListener("mouseup", handleMouseUp, true)
@@ -153,12 +156,12 @@ export function createPDFHighlights(
 		debouncedHandleSelectionChange.clear()
 	})
 
-	createEffect(() => {
-		if (!pdfSlickStore.pdfSlick) return
-		pdfSlickStore.pdfSlick.eventBus.on("pagerendered", handlePageRendered)
+	createEffect(() => pdfSlickStore.pdfSlick, (pdfSlick) => {
+		if (!pdfSlick) return
+		pdfSlick.eventBus.on("pagerendered", handlePageRendered)
 
 		onCleanup(() => {
-			pdfSlickStore.pdfSlick?.eventBus.off("pagerendered", handlePageRendered)
+			pdfSlick?.eventBus.off("pagerendered", handlePageRendered)
 		})
 	})
 

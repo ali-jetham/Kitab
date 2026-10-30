@@ -1,19 +1,11 @@
 import { Button } from "@kobalte/core/button"
-import { Slider } from "@kobalte/core/slider"
-import {
-	CommandIcon,
-	Menu,
-	MenuIcon,
-	PanelLeftClose,
-	PanelLeftCloseIcon,
-	PanelLeftIcon
-} from "lucide-solid"
+import { CommandIcon, PanelLeftCloseIcon, PanelLeftIcon } from "@lucide/solid"
 import { Show } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
+import { StoreSetter } from "solid-js"
 import { AppStore } from "../App"
 import styles from "./ActionBar.module.css"
 
-type ActionBarProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore> }
+type ActionBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
 
 export default function ActionBar(props: ActionBarProps) {
 	return (
@@ -31,14 +23,22 @@ export default function ActionBar(props: ActionBarProps) {
 			}
 
 			<div class={styles.actionButtons}>
-				<Button onClick={() => props.setAppStore("isSideBarOpen", (prev) => !prev)}>
+				<Button
+					onClick={() =>
+						props.setAppStore(draft => {
+							draft.isSideBarOpen = !draft.isSideBarOpen
+						})}
+				>
 					<Show when={props.appStore.isSideBarOpen} fallback={<PanelLeftIcon />}>
 						<PanelLeftCloseIcon />
 					</Show>
 				</Button>
 
 				<Button
-					onClick={() => props.setAppStore("isCommandPalleteOpen", (prev) => !prev)}
+					onClick={() =>
+						props.setAppStore(draft => {
+							draft.isCommandPalleteOpen = !draft.isCommandPalleteOpen
+						})}
 				>
 					<CommandIcon />
 				</Button>

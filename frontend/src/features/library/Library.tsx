@@ -1,18 +1,19 @@
-import { Breadcrumbs } from "@kobalte/core/breadcrumbs"
 import { TextField } from "@kobalte/core/text-field"
 import { useSearchParams } from "@solidjs/router"
-import { createResource, For, type JSX, Suspense } from "solid-js"
+import { createMemo, For, Loading } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import LibraryItem from "./components/LibraryItem"
 import styles from "./Library.module.css"
 import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
-export default function Library(): JSX.Element {
+export default function Library() {
 	const [searchParams, setSearchParams] = useSearchParams()
-	const [books] = createResource(
-		() => searchParams.folder ?? "",
-		(folder) => documentApi.getDocs(folder || undefined)
-	)
+	const books = createMemo(() => documentApi.getDocs(searchParams.folder ?? null))
+
+	// 	createResource(
+	// 	() => searchParams.folder ?? "",
+	// 	(folder) => documentApi.getDocs(folder || undefined)
+	// )
 	createLibraryCommands()
 
 	const filteredBooks = () =>
@@ -39,7 +40,7 @@ export default function Library(): JSX.Element {
 				<TextField.ErrorMessage />
 			</TextField>
 
-			<Suspense fallback={<div>Loading books...</div>}>
+			<Loading fallback={<div>Loading books...</div>}>
 				{/* TODO: show when no books found, waiting for Solid 2 */}
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
@@ -48,7 +49,7 @@ export default function Library(): JSX.Element {
 						)}
 					</For>
 				</div>
-			</Suspense>
+			</Loading>
 		</div>
 	)
 }

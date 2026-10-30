@@ -32,10 +32,7 @@ function getFileUrl(id: string) {
 
 async function getPageText(id: string, page: number, signal?: AbortSignal) {
 	const sentences: Sentence[] = await http(`/api/documents/${id}/${page}/text`, { method: "GET", signal })
-	return sentences.map(({ text, rects }) => ({
-		text,
-		rects: rects.map(({ x0, y0, x1, y1 }): PDFRect => [x0, y0, x1, y1])
-	}))
+	return sentences.map(({ text, rects }) => ({ text, rects: rects.map(({ x0, y0, x1, y1 }: any) => [x0, y0, x1, y1]) }))
 }
 
 export const documentApi = {

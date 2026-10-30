@@ -1,13 +1,12 @@
-import { Button } from "@kobalte/core/button"
 import { Tooltip } from "@kobalte/core/tooltip"
-import { PanelLeftCloseIcon, PanelLeftIcon } from "lucide-solid"
+import { PanelLeftCloseIcon, PanelLeftIcon } from "@lucide/solid"
 import { Show } from "solid-js"
-import { SetStoreFunction } from "solid-js/store"
+import { type StoreSetter } from "solid-js"
 import { AppStore } from "../App"
 import { useStatusBarContext } from "../contexts/StatusBarContext"
 import styles from "./StatusBar.module.css"
 
-type StatusBarProps = { appStore: AppStore; setAppStore: SetStoreFunction<AppStore> }
+type StatusBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
 
 export default function StatusBar(props: StatusBarProps) {
 	const { statusStore } = useStatusBarContext()
@@ -17,7 +16,10 @@ export default function StatusBar(props: StatusBarProps) {
 			<div class={styles.section}>
 				<Tooltip openDelay={1000}>
 					<Tooltip.Trigger
-						onClick={() => props.setAppStore("isSideBarOpen", (prev) => !prev)}
+						onClick={() =>
+							props.setAppStore(draft => {
+								draft.isSideBarOpen = !draft.isSideBarOpen
+							})}
 					>
 						<Show
 							when={props.appStore.isSideBarOpen}

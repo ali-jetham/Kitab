@@ -9,7 +9,7 @@ export function FolderNode(props: FolderNodeProps) {
 		<TreeItem
 			label={props.name}
 			hasChildren={props.children.length > 0}
-			onClick={() => commands.executeCommand("app.folderSelect", { arg: props.path })}
+			onClick={() => commands.executeCommand("library.folderSelect", { arg: props.path })}
 		>
 			<For each={props.children}>{(child) => <FolderNode {...child} />}</For>
 		</TreeItem>
