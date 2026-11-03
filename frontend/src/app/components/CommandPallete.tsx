@@ -1,5 +1,5 @@
 import { Combobox } from "@kobalte/core/combobox"
-import { createSignal, onSettled, Show } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 import { StoreSetter } from "solid-js"
 import { type Command, commands } from "../../core/commands"
 import { AppStore } from "../App"
@@ -9,11 +9,8 @@ type CommandPalleteProps = { appStore: AppStore; setAppStore: StoreSetter<AppSto
 
 export default function CommandPallete(props: CommandPalleteProps) {
 	const options = commands.COMMANDS.filter((c) => !c.hidden)
-	console.log(options)
 	const grouped = Object.groupBy(options, option => option.group ?? "Other")
-	console.log(grouped)
 	const result = Object.entries(grouped).map(([label, options]) => ({ label, options }))
-	console.log(result)
 	const [value, setValue] = createSignal<Command | null>()
 	let inputRef: HTMLInputElement | undefined
 
@@ -88,11 +85,9 @@ export default function CommandPallete(props: CommandPalleteProps) {
 			<Combobox.Control class={styles.combobox__control}>
 				<Combobox.Input ref={inputRef} class={styles.combobox__input} />
 			</Combobox.Control>
-			<Combobox.Portal>
-				<Combobox.Content class={styles.combobox__content}>
-					<Combobox.Listbox class={styles.combobox__listbox} />
-				</Combobox.Content>
-			</Combobox.Portal>
+			<Combobox.Content class={styles.combobox__content}>
+				<Combobox.Listbox class={styles.combobox__listbox} />
+			</Combobox.Content>
 		</Combobox>
 	)
 }

@@ -1,17 +1,15 @@
 .combobox {
+  z-index: 1;
   position: fixed;
   inset: 0;
-  padding-top: 3rem;
+  padding-top: 6rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  background-color: var(--popover-shade-color);
 }
 
 .combobox__control {
   width: 60%;
-  display: inline-flex;
-  justify-content: space-between;
   background-color: var(--popover-bg-color);
   color: var(--popover-fg-color);
   border: solid 1px var(--border-color);
