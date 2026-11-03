@@ -1,5 +1,5 @@
 import { Bookmark } from "@lucide/solid"
-import { usePDFSlick } from "@pdfslick/solid"
+import { PDFSlickThumbnails, usePDFSlick } from "@pdfslick/solid"
 import { createEffect, onCleanup, Show } from "solid-js"
 import { createStore } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
@@ -13,8 +13,9 @@ import { createPDFHighlights } from "../primitives/createPDFHighlight"
 import { createPDFLayout } from "../primitives/createPDFLayout"
 // import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
-import "@pdfslick/solid/dist/pdf_viewer.css"
 import PDFThumbnails from "./PDFThumbnails"
+import "@pdfslick/solid/dist/pdf_viewer.css"
+import { Portal } from "@solidjs/web"
 import styles from "./PDFViewer.module.css"
 
 export type ViewerStore = {
@@ -31,25 +32,19 @@ type PDFViewerProps = { id: string }
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement
 	const url = documentApi.getFileUrl(props.id)
-	const { setSideBarStore } = useSideBarContext()
+	const { sideBarStore, setSideBarStore } = useSideBarContext()
 	const { setStatusStore } = useStatusBarContext()
 
-	const {
-		viewerRef,
-		thumbsRef,
-		pdfSlickStore,
-		pdfSlick,
-		PDFSlickViewer,
-		error
-	} = usePDFSlick(url, {
-		scaleValue: "page-fit",
-		removePageBorders: true,
-		getDocumentParams: {
-			rangeChunkSize: 65536,
-			disableAutoFetch: true,
-			disableStream: false
-		}
-	})
+	const { viewerRef, thumbsRef, pdfSlickStore, pdfSlick, PDFSlickViewer, error } =
+		usePDFSlick(url, {
+			scaleValue: "page-fit",
+			removePageBorders: true,
+			getDocumentParams: {
+				rangeChunkSize: 65536,
+				disableAutoFetch: true,
+				disableStream: false
+			}
+		})
 	// ;(window as any).raw = pdfSlick
 	// ;(window as any).store = pdfSlickStore
 
@@ -109,7 +104,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 					draft.tocState = { status: "ready", outline: outline }
 					draft.navigate = (dest: string | any[]) =>
 						pdfSlick()?.linkService.goToDestination(dest)
-					draft.thumbsRef = thumbsRef
 				})
 				setStatusStore(draft => {
 					draft.currentPage = pdfSlickStore.pageNumber
@@ -138,41 +132,57 @@ export default function PDFViewer(props: PDFViewerProps) {
 	})
 
 	return (
-		<div ref={containerRef} class="pdfslick-container pdfSlick">
-			<Show
-				when={!error()}
-				fallback={
-					<div class={styles.error}>
-						<p>This document couldn't be loaded.</p>
-						<p>Consider running the Scan library command.</p>
+		<>
+			<Show when={sideBarStore.thumbnailsSlot}>
+				<Portal mount={sideBarStore.thumbnailsSlot!}>
+					<PDFThumbnails
+						thumbsRef={thumbsRef}
+						store={pdfSlickStore}
+						pdfSlick={pdfSlick}
+					/>
+				</Portal>
+			</Show>
+
+			<div ref={containerRef} class="pdfslick-container pdfSlick">
+				<Show
+					when={!error()}
+					fallback={
+						<div class={styles.error}>
+							<p>This document couldn't be loaded.</p>
+							<p>Consider running the Scan library command.</p>
+						</div>
+					}
+				>
+					<PDFSlickViewer
+						viewerRef={viewerRef}
+						store={pdfSlickStore}
+						pdfSlick={pdfSlick}
+					/>
+				</Show>
+
+				<HighlightToolbar
+					open={viewerStore.showHighlightToolbar}
+					anchorRef={viewerStore.anchorRef}
+					setViewerStore={setViewerStore}
+					onSelectColor={(color) => {
+						setViewerStore(draft => {
+							draft.selectedColor = color
+						})
+						setViewerStore((prev) => ({
+							...prev,
+							showHighlightToolbar: false,
+							anchorRef: undefined
+						}))
+						highlights.commitAnnotation(color)
+					}}
+				/>
+
+				<Show when={hasBookmark()}>
+					<div class={styles.bookmark}>
+						<Bookmark fill="red" stroke="red" />
 					</div>
-				}
-			>
-					<PDFSlickViewer viewerRef={viewerRef} store={pdfSlickStore} pdfSlick={pdfSlick}  />
-			</Show>
-
-			<HighlightToolbar
-				open={viewerStore.showHighlightToolbar}
-				anchorRef={viewerStore.anchorRef}
-				setViewerStore={setViewerStore}
-				onSelectColor={(color) => {
-					setViewerStore(draft => {
-						draft.selectedColor = color
-					})
-					setViewerStore((prev) => ({
-						...prev,
-						showHighlightToolbar: false,
-						anchorRef: undefined
-					}))
-					highlights.commitAnnotation(color)
-				}}
-			/>
-
-			<Show when={hasBookmark()}>
-				<div class={styles.bookmark}>
-					<Bookmark fill="red" stroke="red" />
-				</div>
-			</Show>
-		</div>
+				</Show>
+			</div>
+		</>
 	)
 }

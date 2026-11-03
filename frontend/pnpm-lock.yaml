@@ -24,7 +24,7 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       '@pdfslick/solid':
-        specifier: file:/home/ali/Code/pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz
+        specifier: file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz
         version: file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       '@solid-primitives/media':
         specifier: 4.0.0-next.6
@@ -1036,10 +1036,10 @@ packages:
     resolution: {integrity: sha512-5luQVnnDom5PD0fNnjnnf80gXgTWLvNJqJiVNDNuKw/1imnzvID5gkPZ3C07tbVxofneCFYiIu72JCAVD/2B4w==}
 
   '@pdfslick/solid@file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz':
-    resolution: {integrity: sha512-v+2zlOPWRbKxha+n8JSrUJiFk6iNbalK3hs6EK++yRF0AO1rEI/cGEOqecCCFDAxqXane5ZUWkPCmPd9M03y0g==, tarball: file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz}
+    resolution: {integrity: sha512-GYIQwqoio2DSDcrKd7vTVG7CU4ZPKstYEA9KpaBjw5dol0e99i8gc9olPXm6T2rckjLpfZ59m1kibLahjt3k3g==, tarball: file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz}
     version: 4.0.3
     peerDependencies:
-      solid-js: '>=2.0.0-rc.14'
+      solid-js: 2.0.0-rc.20
 
   '@rolldown/binding-android-arm-eabi@1.2.15':
     resolution: {integrity: sha512-aLcgK9gIJ3YRvrrtfSBbRa27F5WrpiTaPulnFpsHPxpUHgFlSgnU4854MHwoRGEBhfRJDWCS2WQ7lIjskE9Olw==}

@@ -8,7 +8,7 @@ import {
 	TableOfContentsIcon
 } from "@lucide/solid"
 import { useLocation, useMatch } from "@solidjs/router"
-import { createMemo, createSignal, For, Match, Show, Switch } from "solid-js"
+import { createMemo, createSignal, For, Match, onCleanup, Show, Switch } from "solid-js"
 import { type StoreSetter } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import AnnotationItem from "../../components/AnnotationItem"
@@ -18,12 +18,11 @@ import TocNode from "../../components/TocNode"
 import { AppStore } from "../App"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
-import PDFThumbnails from "../../features/viewers/components/PDFThumbnails"
 
 type SideBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
 
 export default function SideBar(props: SideBarProps) {
-	const { sideBarStore } = useSideBarContext()
+	const { setSideBarStore, sideBarStore } = useSideBarContext()
 	const [selectedTab, setSelectedTab] = createSignal("folders")
 	const match = useMatch(() => "/viewer/:id")
 	const location = useLocation()
@@ -101,10 +100,21 @@ export default function SideBar(props: SideBarProps) {
 				</For>
 			</Tabs.Content>
 
-			<Tabs.Content class={styles.tabs__content} value="thumbnails">
-				Thumbnails go here
-				{/*<PDFThumbnails show={true} {...{  thumbsRef: sideBarStore.thumbsRef, store: sideBarStore.pdfSlickStore }} />*/}
-			</Tabs.Content>
+			<Tabs.Content
+				class={styles.tabs__content}
+				value="thumbnails"
+				data-tab="thumbnails"
+				forceMount
+				style={{ display: selectedTab() === "thumbnails" ? undefined : "none" }}
+				ref={(el) => {
+					setSideBarStore(d => {
+						d.thumbnailsSlot = el
+					})
+					onCleanup(() => setSideBarStore(d => {
+						d.thumbnailsSlot = null
+					}))
+				}}
+			/>
 		</Tabs>
 	)
 }

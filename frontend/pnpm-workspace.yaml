@@ -1,3 +1,5 @@
 allowBuilds:
   dprint: false
   esbuild: true
+overrides:
+  pdfjs-dist: 6.2.108

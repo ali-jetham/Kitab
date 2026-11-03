@@ -51,6 +51,7 @@
 }
 
 .tabs__content {
+  flex: 1;
   overflow-y: auto;
   padding-block: 1rem;
   display: flex;

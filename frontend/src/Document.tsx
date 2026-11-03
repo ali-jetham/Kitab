@@ -14,7 +14,6 @@ export default function Document(props: ParentProps) {
 					content="#fafafb"
 				/>
 				<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#222226" />
-				<link rel="icon" href="favicon.ico" />
 				{
 					/*<link rel="stylesheet" href="/theme.css" />
 				<link rel="stylesheet" href="/style.css" />*/

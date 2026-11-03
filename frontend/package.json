@@ -17,7 +17,7 @@
     "@lezer/lr": "^1.4.11",
     "@lucide/solid": "^1.61.0",
     "@pdfslick/core": "^4.0.3",
-    "@pdfslick/solid": "file:/home/ali/Code/pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz",
+    "@pdfslick/solid": "file:../../pdfslick/packages/solid/pdfslick-solid-4.0.3.tgz",
     "@solid-primitives/media": "4.0.0-next.6",
     "@solid-primitives/pointer": "1.0.0-next.4",
     "@solid-primitives/resize-observer": "^4.0.0-next.7",
@@ -40,10 +40,5 @@
     "vite": "^8.3.5",
     "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "pdfjs-dist": "6.2.108"
-    }
   }
 }

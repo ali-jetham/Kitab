@@ -8,12 +8,8 @@ type LibraryItemProps = { id: string; title: string | null; fileName: string }
 export default function LibraryItem(props: LibraryItemProps) {
 	const navigate = useNavigate()
 
-	function handleClick() {
-		navigate(`/viewer/${props.id}`)
-	}
-
 	return (
-		<div class={styles.libraryItem} onClick={handleClick}>
+		<div class={styles.libraryItem} onClick={() => navigate(`/viewer/${props.id}`)}>
 			<Image>
 				<Image.Img src={documentApi.getCoverUrl(props.id)} alt="cover" />
 				<Image.Fallback>
