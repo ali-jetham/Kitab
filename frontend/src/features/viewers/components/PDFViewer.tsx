@@ -1,5 +1,5 @@
 import { Bookmark } from "@lucide/solid"
-import { PDFSlickThumbnails, usePDFSlick } from "@pdfslick/solid"
+import { usePDFSlick } from "@pdfslick/solid"
 import { createEffect, onCleanup, Show } from "solid-js"
 import { createStore } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
@@ -45,8 +45,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 				disableStream: false
 			}
 		})
-	// ;(window as any).raw = pdfSlick
-	// ;(window as any).store = pdfSlickStore
 
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,

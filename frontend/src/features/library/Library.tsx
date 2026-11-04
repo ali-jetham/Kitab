@@ -45,7 +45,7 @@ export default function Library() {
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
 						{(book) => (
-							<LibraryItem id={book.id} title={book.title} fileName={book.fileName} />
+							<LibraryItem id={book.id} title={book.title} fileName={book.fileName} fileType={book.fileType} />
 						)}
 					</For>
 				</div>

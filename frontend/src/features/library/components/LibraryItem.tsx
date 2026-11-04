@@ -3,13 +3,22 @@ import { useNavigate } from "@solidjs/router"
 import { documentApi } from "../../../api/documentApi"
 import styles from "./LibraryItem.module.css"
 
-type LibraryItemProps = { id: string; title: string | null; fileName: string }
+type LibraryItemProps = {
+	id: string
+	title: string | null
+	fileName: string
+	fileType: string
+}
 
 export default function LibraryItem(props: LibraryItemProps) {
 	const navigate = useNavigate()
 
 	return (
-		<div class={styles.libraryItem} onClick={() => navigate(`/viewer/${props.id}`)}>
+		<div
+			class={styles.libraryItem}
+			onClick={() =>
+				navigate(`/viewer/${props.id}`, { state: { fileType: props.fileType } })}
+		>
 			<Image>
 				<Image.Img src={documentApi.getCoverUrl(props.id)} alt="cover" />
 				<Image.Fallback>
