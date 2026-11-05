@@ -16,6 +16,9 @@
 
 		// Type Checking & Safety
 		"strict": true,
-		"types": ["vite/client"]
+		"types": ["vite/client"],
+
+		// openapi-typescript
+		"noUncheckedIndexedAccess": true
 	}
 }
