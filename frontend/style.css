@@ -23,9 +23,10 @@ button:focus {
 
 body {
   height: 100%;
-  background-color: var(--window-bg-color);
-  font-family: "Inter", sans-serif;
+  font-family: "Adwaita Sans", sans-serif;
+  font-weight: 400;
   font-style: normal;
+  background-color: var(--window-bg-color);
   font-size: 1rem;
   color: var(--window-fg-color);
 }

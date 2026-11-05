@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@fontsource/adwaita-sans": "^5.3.0",
     "@kobalte/core": "^2.0.0-alpha.4",
     "@lezer/lr": "^1.4.11",
     "@lucide/solid": "^1.61.0",
