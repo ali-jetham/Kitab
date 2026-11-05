@@ -7,30 +7,40 @@ import { type AppStore } from "../App"
 export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 	const unregisters = [
 		commands.registerCommand("app.pallete.toggle", () =>
-			setAppStore(draft => {
+			setAppStore((draft) => {
 				draft.isCommandPalleteOpen = !draft.isCommandPalleteOpen
-			})),
+			})
+		),
 		commands.registerCommand("app.pallete.close", () =>
-			setAppStore(draft => {
+			setAppStore((draft) => {
 				draft.isCommandPalleteOpen = false
-			})),
+			})
+		),
 		commands.registerCommand("app.sidebar.toggle", () =>
-			setAppStore(draft => {
+			setAppStore((draft) => {
 				draft.isSideBarOpen = !draft.isSideBarOpen
-			})),
+			})
+		),
 		commands.registerCommand("app.statusbar.toggle", () =>
-			setAppStore(draft => {
+			setAppStore((draft) => {
 				draft.isStatusOpen = !draft.isStatusOpen
-			})),
+			})
+		),
 
 		commands.registerCommand("app.downloadTTS", async ({ arg }) => {
 			if (!arg) {
 				const models = await ttsApi.getModels()
-				setAppStore(draft => {
-					draft.commandPalleteArgs = [{
-						group: "Models",
-						options: models.map(({ id, quality }) => ({ id, label: quality, hidden: false }))
-					}]
+				setAppStore((draft) => {
+					draft.commandPalleteArgs = [
+						{
+							group: "Models",
+							options: models.map(({ id, quality }) => ({
+								id,
+								label: quality,
+								hidden: false
+							}))
+						}
+					]
 				})
 				return
 			}

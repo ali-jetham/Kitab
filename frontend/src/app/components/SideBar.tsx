@@ -30,11 +30,36 @@ export default function SideBar(props: SideBarProps) {
 
 	// dprint-ignore
 	const tabs = [
-		{ label: "Folders", value: "folders", icon: FolderTreeIcon, show: () => location.pathname === "/" },
-		{ label: "Table of Contents", value: "toc", icon: TableOfContentsIcon, show: () => match() },
-		{ label: "Thumbnails", value: "thumbnails", icon: Grid2X2Icon, show: () => match() },
-		{ label: "Annotations", value: "annotations", icon: HighlighterIcon, show: () => true },
-		{ label: "Bookmarks", value: "bookmarks", icon: BookmarkIcon, show: () => true }
+		{
+			label: "Folders",
+			value: "folders",
+			icon: FolderTreeIcon,
+			show: () => location.pathname === "/"
+		},
+		{
+			label: "Table of Contents",
+			value: "toc",
+			icon: TableOfContentsIcon,
+			show: () => match()
+		},
+		{
+			label: "Thumbnails",
+			value: "thumbnails",
+			icon: Grid2X2Icon,
+			show: () => match()
+		},
+		{
+			label: "Annotations",
+			value: "annotations",
+			icon: HighlighterIcon,
+			show: () => true
+		},
+		{
+			label: "Bookmarks",
+			value: "bookmarks",
+			icon: BookmarkIcon,
+			show: () => true
+		}
 	]
 
 	return (
@@ -44,11 +69,7 @@ export default function SideBar(props: SideBarProps) {
 					{(tab) => (
 						<Show when={tab.show()}>
 							<Tooltip openDelay={1000}>
-								<Tooltip.Trigger
-									as={Tabs.Trigger}
-									value={tab.value}
-									class={styles.tabs__trigger}
-								>
+								<Tooltip.Trigger as={Tabs.Trigger} value={tab.value} class={styles.tabs__trigger}>
 									<tab.icon />
 								</Tooltip.Trigger>
 								<Tooltip.Portal>
@@ -75,20 +96,13 @@ export default function SideBar(props: SideBarProps) {
 					</Match>
 					<Match when={sideBarStore.tocState.status === "ready"}>
 						<ol class={styles.tabs__content}>
-							<For each={sideBarStore.tocState.outline}>
-								{(item) => <TocNode outline={item} />}
-							</For>
+							<For each={sideBarStore.tocState.outline}>{(item) => <TocNode outline={item} />}</For>
 						</ol>
 					</Match>
 				</Switch>
 			</Tabs.Content>
 
-			<Tabs.Content
-				as="ol"
-				class={styles.tabs__content}
-				value="annotations"
-				data-tab="annotations"
-			>
+			<Tabs.Content as="ol" class={styles.tabs__content} value="annotations" data-tab="annotations">
 				<For each={sideBarStore.documentStore?.annotations}>
 					{(annotation) => <AnnotationItem annotation={annotation} />}
 				</For>
@@ -107,12 +121,14 @@ export default function SideBar(props: SideBarProps) {
 				forceMount
 				style={{ display: selectedTab() === "thumbnails" ? undefined : "none" }}
 				ref={(el) => {
-					setSideBarStore(d => {
+					setSideBarStore((d) => {
 						d.thumbnailsSlot = el
 					})
-					onCleanup(() => setSideBarStore(d => {
-						d.thumbnailsSlot = null
-					}))
+					onCleanup(() =>
+						setSideBarStore((d) => {
+							d.thumbnailsSlot = null
+						})
+					)
 				}}
 			/>
 		</Tabs>

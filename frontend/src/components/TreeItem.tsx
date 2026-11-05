@@ -36,7 +36,9 @@ export function TreeItem(props: TreeItemProps) {
 		>
 			<Collapsible>
 				<div class={`${styles.treeitem__container} ${styles.treeitem}`}>
-					<button type="button" onClick={props.onClick}>{props.label}</button>
+					<button type="button" onClick={props.onClick}>
+						{props.label}
+					</button>
 					<Collapsible.Trigger class={styles.treeitem__trigger}>
 						<ChevronDownIcon size={16} strokeWidth={3} class={styles.treeitem__chevron} />
 					</Collapsible.Trigger>

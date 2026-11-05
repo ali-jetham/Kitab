@@ -1,28 +1,28 @@
 .thumbnails__container {
-  position: relative; /* the containing block the lib pins itself to */
-  width: 100%;
-  height: 100%;
+	position: relative; /* the containing block the lib pins itself to */
+	width: 100%;
+	height: 100%;
 }
 
 .pdfSlickThumbnails {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.6rem;
 }
 
 .thumbnail__button {
-  border: 0.3rem solid transparent;
-  border-radius: 0.3rem;
-  transition: border-color 300ms ease;
+	border: 0.3rem solid transparent;
+	border-radius: 0.3rem;
+	transition: border-color 300ms ease;
 }
 
 .thumbnail__button[data-active] {
-  border-color: var(--accent-bg-color);
+	border-color: var(--accent-bg-color);
 }
 
 .label {
-  color: var(--view-fg-color);
-  text-align: center;
-  font-size: 0.9rem;
+	color: var(--view-fg-color);
+	text-align: center;
+	font-size: 0.9rem;
 }

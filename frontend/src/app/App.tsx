@@ -22,16 +22,21 @@ export type AppStore = {
 	isActionOpen: boolean
 	isSideBarOpen: boolean
 	isStatusOpen: boolean
-	commandPalleteArgs: {
-		group: string
-		options: { id: string; label: string; hidden: boolean }[]
-	}[] | null
+	commandPalleteArgs:
+		| {
+				group: string
+				options: { id: string; label: string; hidden: boolean }[]
+		  }[]
+		| null
 
 	commandPalleteSelectedCommand: CommandId | null
 	trigger: number
 }
 
-export type AppContextType = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
+export type AppContextType = {
+	appStore: AppStore
+	setAppStore: StoreSetter<AppStore>
+}
 
 export const AppContext = createContext<AppContextType>()
 
@@ -71,10 +76,7 @@ export default function App(props: RouteSectionProps) {
 		<AppContext value={{ appStore, setAppStore }}>
 			<SideBarProvider>
 				<StatusBarProvider>
-					<div
-						class={styles.app}
-						data-sidebar={appStore.isSideBarOpen ? "open" : "closed"}
-					>
+					<div class={styles.app} data-sidebar={appStore.isSideBarOpen ? "open" : "closed"}>
 						<Show when={appStore.isSideBarOpen}>
 							<SideBar appStore={appStore} setAppStore={setAppStore} />
 						</Show>
@@ -84,19 +86,19 @@ export default function App(props: RouteSectionProps) {
 							<StatusBar appStore={appStore} setAppStore={setAppStore} />
 						</Show>
 
-						{
-							/*<Transition
+						{/*<Transition
 							enterClass={actionBarStyles.slideEnter}
 							enterActiveClass={actionBarStyles.slideEnterActive}
 							enterToClass={actionBarStyles.slideEnterTo}
 							exitClass={actionBarStyles.slideExit}
 							exitActiveClass={actionBarStyles.slideExitActive}
 							exitToClass={actionBarStyles.slideExitTo}
-						>*/
-						}
+						>*/}
 						<Show
-							when={appStore.isActionOpen && appStore.isMobile()
-								|| appStore.isMobile() && appStore.isSideBarOpen}
+							when={
+								(appStore.isActionOpen && appStore.isMobile()) ||
+								(appStore.isMobile() && appStore.isSideBarOpen)
+							}
 						>
 							<ActionBar appStore={appStore} setAppStore={setAppStore} />
 						</Show>

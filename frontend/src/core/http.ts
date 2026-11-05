@@ -13,9 +13,9 @@ export async function http(
 		if (queryParams) {
 			console.log(queryParams)
 			const queryString = new URLSearchParams(
-				Object.entries(queryParams).filter(([_, value]) => value !== undefined && value !== null).map((
-					[key, value]
-				) => [key, String(value)])
+				Object.entries(queryParams)
+					.filter(([_, value]) => value !== undefined && value !== null)
+					.map(([key, value]) => [key, String(value)])
 			).toString()
 
 			if (queryString) {

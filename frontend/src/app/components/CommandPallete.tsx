@@ -5,12 +5,18 @@ import { type Command, commands } from "../../core/commands"
 import { AppStore } from "../App"
 import styles from "./CommandPallete.module.css"
 
-type CommandPalleteProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
+type CommandPalleteProps = {
+	appStore: AppStore
+	setAppStore: StoreSetter<AppStore>
+}
 
 export default function CommandPallete(props: CommandPalleteProps) {
 	const options = commands.COMMANDS.filter((c) => !c.hidden)
-	const grouped = Object.groupBy(options, option => option.group ?? "Other")
-	const result = Object.entries(grouped).map(([label, options]) => ({ label, options }))
+	const grouped = Object.groupBy(options, (option) => option.group ?? "Other")
+	const result = Object.entries(grouped).map(([label, options]) => ({
+		label,
+		options
+	}))
 	const [value, setValue] = createSignal<Command | null>()
 	let inputRef: HTMLInputElement | undefined
 
@@ -34,7 +40,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 			preventScroll={true}
 			open={props.appStore.isCommandPalleteOpen}
 			onOpenChange={(open) => {
-				props.setAppStore(draft => {
+				props.setAppStore((draft) => {
 					draft.isCommandPalleteOpen = open
 					draft.commandPalleteSelectedCommand = null
 					draft.commandPalleteArgs = null
@@ -47,7 +53,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 					<Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
 				</Combobox.Item>
 			)}
-			sectionComponent={props => (
+			sectionComponent={(props) => (
 				<Combobox.Section class={styles.combobox__group}>
 					{props.section.rawValue.label}
 				</Combobox.Section>
@@ -60,7 +66,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 					commands.executeCommand(props.appStore.commandPalleteSelectedCommand, {
 						arg: value.id
 					})
-					props.setAppStore(draft => {
+					props.setAppStore((draft) => {
 						draft.commandPalleteSelectedCommand = null
 						draft.commandPalleteArgs = null
 						draft.isCommandPalleteOpen = false
@@ -68,7 +74,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 					return
 				}
 				if (value.withArgs) {
-					props.setAppStore(draft => {
+					props.setAppStore((draft) => {
 						draft.commandPalleteSelectedCommand = value.id
 					})
 					commands.executeCommand(value.id)
@@ -77,7 +83,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 				}
 				commands.executeCommand(value.id)
 				console.log(value.id)
-				props.setAppStore(draft => {
+				props.setAppStore((draft) => {
 					draft.isCommandPalleteOpen = false
 				})
 			}}

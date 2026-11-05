@@ -14,13 +14,7 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 			<button
 				class={styles.bookmarkitem__navigate}
 				onClick={() => {
-					sideBarStore.navigate?.([
-						props.bookmark.page - 1,
-						{ name: "XYZ" },
-						null,
-						null,
-						null
-					])
+					sideBarStore.navigate?.([props.bookmark.page - 1, { name: "XYZ" }, null, null, null])
 				}}
 			>
 				<span>{props.bookmark.page}</span>
@@ -28,7 +22,9 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 			<button>
 				<DeleteIcon
 					onClick={() => {
-						commands.executeCommand("pdf.deleteBookmark", { arg: props.bookmark.id })
+						commands.executeCommand("pdf.deleteBookmark", {
+							arg: props.bookmark.id
+						})
 					}}
 					strokeWidth={1.25}
 				/>

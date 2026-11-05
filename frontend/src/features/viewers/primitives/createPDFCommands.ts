@@ -1,11 +1,10 @@
 import { DEFAULT_SCALE_DELTA, type PDFSlick, type PDFSlickState, ScrollMode } from "@pdfslick/core"
 import { createElementSize } from "@solid-primitives/resize-observer"
-import { type Accessor, createEffect, onCleanup } from "solid-js"
-import { StoreSetter } from "solid-js"
+import { type Accessor, createEffect, onCleanup, type StoreSetter } from "solid-js"
 import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
-import { CommandId, commands } from "../../../core/commands"
-import { ViewerStore } from "../components/PDFViewer"
+import { commands } from "../../../core/commands"
+import type { ViewerStore } from "../components/PDFViewer"
 
 export function createPDFCommands(
 	pdfSlickStore: PDFSlickState,
@@ -22,21 +21,24 @@ export function createPDFCommands(
 		return pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1)?.div
 	})
 
-	createEffect(() => viewerSize, (viewerSize) => {
-		if (pdfSlickStore.scrollMode === ScrollMode.PAGE) {
-			const page = pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1)
-			const containerHeight = viewerSize.clientHeight
-			const pageHeight = activePageSize.clientHeight
-			if (!page || containerHeight == null || pageHeight == null) return
-			page.div.style.marginTop = `${Math.max(0, (containerHeight - pageHeight) / 2)}px`
-			page.div.style.marginBottom = "0"
+	createEffect(
+		() => viewerSize,
+		(viewerSize) => {
+			if (pdfSlickStore.scrollMode === ScrollMode.PAGE) {
+				const page = pdfSlickStore.pdfSlick?.viewer.getPageView(pdfSlickStore.pageNumber - 1)
+				const containerHeight = viewerSize.clientHeight
+				const pageHeight = activePageSize.clientHeight
+				if (!page || containerHeight == null || pageHeight == null) return
+				page.div.style.marginTop = `${Math.max(0, (containerHeight - pageHeight) / 2)}px`
+				page.div.style.marginBottom = "0"
 
-			onCleanup(() => {
-				page.div.style.marginTop = ""
-				page.div.style.marginBottom = ""
-			})
+				onCleanup(() => {
+					page.div.style.marginTop = ""
+					page.div.style.marginBottom = ""
+				})
+			}
 		}
-	})
+	)
 
 	const unregisters = [
 		commands.registerCommand("pdf.fitHeight", () => {
@@ -57,24 +59,32 @@ export function createPDFCommands(
 		}),
 		commands.registerCommand("pdf.nextPage", () => pdfSlick()?.viewer.nextPage()),
 		commands.registerCommand("pdf.prevPage", () => pdfSlick()?.viewer.previousPage()),
-		commands.registerCommand("pdf.gotoFirstPage", () => pdfSlick().viewer.currentPageNumber = 1),
+		commands.registerCommand("pdf.gotoFirstPage", () => (pdfSlick().viewer.currentPageNumber = 1)),
 		commands.registerCommand(
 			"pdf.gotoLastPage",
-			() => pdfSlick().viewer.currentPageNumber = pdfSlick().document?.numPages!
+			() => (pdfSlick().viewer.currentPageNumber = pdfSlickStore.numPages)
 		),
-		commands.registerCommand("pdf.rotateClockwise", () => pdfSlick().setRotation(pdfSlickStore.pagesRotation + 90)),
-		commands.registerCommand("pdf.rotateAntiClockwise", () => pdfSlick().setRotation(pdfSlickStore.pagesRotation - 90)),
-		commands.registerCommand(
-			"pdf.scrollDown",
-			() => pdfSlick().viewer.container.scrollBy({ top: 100, behavior: "instant" })
+		commands.registerCommand("pdf.rotateClockwise", () =>
+			pdfSlick().setRotation(pdfSlickStore.pagesRotation + 90)
 		),
-		commands.registerCommand(
-			"pdf.scrollUp",
-			() => pdfSlick().viewer.container.scrollBy({ top: -100, behavior: "instant" })
+		commands.registerCommand("pdf.rotateAntiClockwise", () =>
+			pdfSlick().setRotation(pdfSlickStore.pagesRotation - 90)
 		),
-		commands.registerCommand("pdf.viewModeScrollV", () => pdfSlick().setScrollMode(ScrollMode.VERTICAL)),
-		commands.registerCommand("pdf.viewModeScrollH", () => pdfSlick().setScrollMode(ScrollMode.HORIZONTAL)),
-		commands.registerCommand("pdf.viewModeSinglePage", () => pdfSlick().setScrollMode(ScrollMode.PAGE)),
+		commands.registerCommand("pdf.scrollDown", () =>
+			pdfSlick().viewer.container.scrollBy({ top: 100, behavior: "instant" })
+		),
+		commands.registerCommand("pdf.scrollUp", () =>
+			pdfSlick().viewer.container.scrollBy({ top: -100, behavior: "instant" })
+		),
+		commands.registerCommand("pdf.viewModeScrollV", () =>
+			pdfSlick().setScrollMode(ScrollMode.VERTICAL)
+		),
+		commands.registerCommand("pdf.viewModeScrollH", () =>
+			pdfSlick().setScrollMode(ScrollMode.HORIZONTAL)
+		),
+		commands.registerCommand("pdf.viewModeSinglePage", () =>
+			pdfSlick().setScrollMode(ScrollMode.PAGE)
+		),
 		commands.registerCommand("pdf.deleteAnnotation", ({ arg }) => {
 			let id
 			if (typeof arg === "string") id = arg
@@ -82,13 +92,21 @@ export function createPDFCommands(
 			else return
 			actions.deleteAnnotation(id)
 			annotationApi.deleteAnnotation(id)
-			setViewerStore(draft => {
+			setViewerStore((draft) => {
 				draft.annotationId = null
 			})
 		}),
 		commands.registerCommand("pdf.addBookmark", () => {
-			actions.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick().viewer.currentPageNumber })
-			bookmarkApi.addBookmark({ docId: viewerStore.docId, note: "", page: pdfSlick().viewer.currentPageNumber })
+			actions.addBookmark({
+				docId: viewerStore.docId,
+				note: "",
+				page: pdfSlick().viewer.currentPageNumber
+			})
+			bookmarkApi.addBookmark({
+				docId: viewerStore.docId,
+				note: "",
+				page: pdfSlick().viewer.currentPageNumber
+			})
 		}),
 		commands.registerCommand("pdf.deleteBookmark", ({ arg }) => {
 			console.log("pdf.deletebookmark called")

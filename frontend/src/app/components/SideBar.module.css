@@ -1,64 +1,64 @@
 .tabs {
-  user-select: none;
-  -webkit-user-select: none;
-  grid-area: sidebar;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--sidebar-bg-color);
-  font-size: 0.9rem;
-  overflow-y: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	grid-area: sidebar;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--sidebar-bg-color);
+	font-size: 0.9rem;
+	overflow-y: hidden;
 }
 
 .tabs__list {
-  position: relative;
-  display: flex;
+	position: relative;
+	display: flex;
 }
 
 .tabs__list[data-orientation="horizontal"] {
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid var(--border-color);
 }
 
 .tabs__indicator {
-  position: absolute;
-  background-color: var(--accent-bg-color);
-  transition: all 250ms;
+	position: absolute;
+	background-color: var(--accent-bg-color);
+	transition: all 250ms;
 }
 
 .tabs__indicator[data-orientation="horizontal"] {
-  bottom: -1px;
-  height: 2px;
+	bottom: -1px;
+	height: 2px;
 }
 
 .tabs__trigger {
-  display: inline-block;
-  border: none;
-  background: none;
-  padding: 0.6rem 1.2rem;
-  outline: none;
+	display: inline-block;
+	border: none;
+	background: none;
+	padding: 0.6rem 1.2rem;
+	outline: none;
 }
 
 .tabs__trigger:hover {
-  background-color: color-mix(in srgb, currentColor 7%, transparent);
+	background-color: color-mix(in srgb, currentColor 7%, transparent);
 }
 
 .tabs__trigger[data-disabled],
 .tabs__trigger[data-disabled]:hover {
-  opacity: 0.5;
-  background-color: transparent;
+	opacity: 0.5;
+	background-color: transparent;
 }
 
 .tabs__content {
-  flex: 1;
-  overflow-y: auto;
-  padding-block: 1rem;
-  display: flex;
-  flex-direction: column;
+	flex: 1;
+	overflow-y: auto;
+	padding-block: 1rem;
+	display: flex;
+	flex-direction: column;
 
-  &[data-tab="annotations"] {
-    gap: 0.9rem;
-    padding-inline: 0.6rem;
-  }
+	&[data-tab="annotations"] {
+		gap: 0.9rem;
+		padding-inline: 0.6rem;
+	}
 }

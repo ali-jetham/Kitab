@@ -1,6 +1,14 @@
 import { PDFSlickState } from "@pdfslick/core"
 import { makeEventListener } from "@solid-primitives/event-listener"
-import { createEffect, createMemo, createSignal, isPending, mapArray, onCleanup, type StoreSetter } from "solid-js"
+import {
+	createEffect,
+	createMemo,
+	createSignal,
+	isPending,
+	mapArray,
+	onCleanup,
+	type StoreSetter
+} from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { ttsApi } from "../../../api/ttsApi"
 import { commands } from "../../../core/commands"
@@ -11,12 +19,18 @@ const PREFETCH = 6
 
 export type Sentence = { text: string; rects: PDFRect[] }
 
-export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStore: PDFSlickState, id: string) {
+export function createTTS(
+	setViewerStore: StoreSetter<ViewerStore>,
+	pdfSlickStore: PDFSlickState,
+	id: string
+) {
 	const [isPlaying, setIsPlaying] = createSignal(false)
 	const [currentPage, setCurrentPage] = createSignal<number>()
 	const [currentSentence, setCurrentSentence] = createSignal(0)
 
-	const sentences = createMemo(async () => currentPage() ? await documentApi.getPageText(id, currentPage()!) : [])
+	const sentences = createMemo(async () =>
+		currentPage() ? await documentApi.getPageText(id, currentPage()!) : []
+	)
 
 	function start() {
 		setCurrentSentence(0)
@@ -34,7 +48,8 @@ export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStor
 	const audio = new Audio()
 	onCleanup(() => audio.remove())
 
-	const window = () => (isPlaying() ? sentences().slice(currentSentence(), currentSentence() + PREFETCH) : [])
+	const window = () =>
+		isPlaying() ? sentences().slice(currentSentence(), currentSentence() + PREFETCH) : []
 
 	const audioUrls = mapArray(window, (sentence) =>
 		createMemo(async () => {
@@ -46,7 +61,8 @@ export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStor
 			})
 			url = URL.createObjectURL(await ttsApi.synthesize(sentence.text, controller.signal))
 			return url
-		}))
+		})
+	)
 
 	const current = () => {
 		const sentence = window()[0]
@@ -61,20 +77,28 @@ export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStor
 		else setCurrentSentence((i) => i + 1)
 	})
 
-	createEffect(() => current(), (current) => {
-		if (!current) return
-		audio.src = current.url
-		audio.play().catch(() => {})
-		setViewerStore((draft) => {
-			draft.ttsHighlight = { page: currentPage(), rects: current.sentence.rects }
-		})
-		return () =>
+	createEffect(
+		() => current(),
+		(current) => {
+			if (!current) return
+			audio.src = current.url
+			audio.play().catch(() => {})
 			setViewerStore((draft) => {
-				draft.ttsHighlight = null
+				draft.ttsHighlight = {
+					page: currentPage(),
+					rects: current.sentence.rects
+				}
 			})
-	})
+			return () =>
+				setViewerStore((draft) => {
+					draft.ttsHighlight = null
+				})
+		}
+	)
 
-	const unregister = commands.registerCommand("pdf.readAloud", () => (isPlaying() ? stop() : start()))
+	const unregister = commands.registerCommand("pdf.readAloud", () =>
+		isPlaying() ? stop() : start()
+	)
 	onCleanup(unregister)
 
 	return { isPlaying, loading }

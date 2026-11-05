@@ -63,22 +63,12 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 						</g>
 					)}
 				</For>
-				<Show
-					when={props.ttsHighlight()?.page === props.pageNumber
-						? props.ttsHighlight()
-						: null}
-				>
+				<Show when={props.ttsHighlight()?.page === props.pageNumber ? props.ttsHighlight() : null}>
 					{(ttsHighlight) => (
 						<g data-tts-highlight="true" style={{ "pointer-events": "none" }}>
 							<For each={ttsHighlight().rects}>
 								{([x0, y0, x1, y1]) => (
-									<rect
-										x={x0}
-										y={y0}
-										width={x1 - x0}
-										height={y1 - y0}
-										fill-opacity="0.3"
-									/>
+									<rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill-opacity="0.3" />
 								)}
 							</For>
 						</g>

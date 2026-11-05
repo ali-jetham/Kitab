@@ -5,13 +5,15 @@ import { StoreSetter } from "solid-js"
 import { AppStore } from "../App"
 import styles from "./ActionBar.module.css"
 
-type ActionBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
+type ActionBarProps = {
+	appStore: AppStore
+	setAppStore: StoreSetter<AppStore>
+}
 
 export default function ActionBar(props: ActionBarProps) {
 	return (
 		<div class={styles.actionBar}>
-			{
-				/*<Slider class={styles.SliderRoot}>
+			{/*<Slider class={styles.SliderRoot}>
 				<div class={styles.SliderLabel}></div>
 				<Slider.Track class={styles.SliderTrack}>
 					<Slider.Fill class={styles.SliderRange} />
@@ -19,15 +21,15 @@ export default function ActionBar(props: ActionBarProps) {
 						<Slider.Input />
 					</Slider.Thumb>
 				</Slider.Track>
-			</Slider>*/
-			}
+			</Slider>*/}
 
 			<div class={styles.actionButtons}>
 				<Button
 					onClick={() =>
-						props.setAppStore(draft => {
+						props.setAppStore((draft) => {
 							draft.isSideBarOpen = !draft.isSideBarOpen
-						})}
+						})
+					}
 				>
 					<Show when={props.appStore.isSideBarOpen} fallback={<PanelLeftIcon />}>
 						<PanelLeftCloseIcon />
@@ -36,9 +38,10 @@ export default function ActionBar(props: ActionBarProps) {
 
 				<Button
 					onClick={() =>
-						props.setAppStore(draft => {
+						props.setAppStore((draft) => {
 							draft.isCommandPalleteOpen = !draft.isCommandPalleteOpen
-						})}
+						})
+					}
 				>
 					<CommandIcon />
 				</Button>

@@ -1,109 +1,111 @@
 .actionBar {
-  grid-area: bottombar;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  align-items: stretch;
-  background-color: var(--headerbar-bg-color);
-  padding: 1.5rem;
-  border-top: solid 0.1rem var(--border-color);
+	grid-area: bottombar;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.9rem;
+	align-items: stretch;
+	background-color: var(--headerbar-bg-color);
+	padding: 1.5rem;
+	border-top: solid 0.1rem var(--border-color);
 }
 
 .actionButtons {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .SliderRoot {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  user-select: none;
-  touch-action: none;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	user-select: none;
+	touch-action: none;
 }
 
 .SliderRoot[data-orientation="vertical"] {
-  height: 200px;
+	height: 200px;
 }
 
 .SliderTrack {
-  background-color: var(--view-bg-color);
-  position: relative;
-  border-radius: 9999px;
-  height: 8px;
-  width: 100%;
+	background-color: var(--view-bg-color);
+	position: relative;
+	border-radius: 9999px;
+	height: 8px;
+	width: 100%;
 }
 
 .SliderTrack[data-orientation="vertical"] {
-  width: 8px;
-  height: 100%;
+	width: 8px;
+	height: 100%;
 }
 
 .SliderRange {
-  position: absolute;
-  background-color: var(--accent-bg-color);
-  border-radius: 9999px;
-  height: 100%;
+	position: absolute;
+	background-color: var(--accent-bg-color);
+	border-radius: 9999px;
+	height: 100%;
 }
 
 .SliderRange[data-orientation="vertical"] {
-  width: 100%;
-  height: unset;
+	width: 100%;
+	height: unset;
 }
 
 .SliderThumb {
-  display: block;
-  width: 16px;
-  height: 16px;
-  background-color: var(--accent-bg-color);
-  border-radius: 9999px;
-  top: -4px;
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-color: var(--accent-bg-color);
+	border-radius: 9999px;
+	top: -4px;
 }
 
 .SliderThumb[data-orientation="vertical"] {
-  left: -4px;
-  top: unset;
+	left: -4px;
+	top: unset;
 }
 
 .SliderThumb:hover {
-  box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
+	box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
 .SliderThumb:focus {
-  outline: none;
-  box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
+	outline: none;
+	box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
 .SliderLabel {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
 }
 
 .slideEnter,
 .slideExitTo {
-  transform: translateY(100%);
+	transform: translateY(100%);
 }
 
 .slideEnterTo,
 .slideExit {
-  transform: translateY(0);
+	transform: translateY(0);
 }
 
 .slideEnterActive,
 .slideExitActive {
-  transition: transform 300ms ease-out, opacity 300ms ease-out;
+	transition:
+		transform 300ms ease-out,
+		opacity 300ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .slideEnterActive,
-  .slideExitActive {
-    transition: none;
-  }
+	.slideEnterActive,
+	.slideExitActive {
+		transition: none;
+	}
 }

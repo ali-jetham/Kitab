@@ -18,7 +18,10 @@ export default function LibraryItem(props: LibraryItemProps) {
 		<div
 			class={styles.libraryItem}
 			onClick={() =>
-				navigate(paths.viewer(props.id), { state: { fileType: props.fileType } })}
+				navigate(paths.viewer(props.id), {
+					state: { fileType: props.fileType }
+				})
+			}
 		>
 			<Image>
 				<Image.Img src={documentApi.getCoverUrl(props.id)} alt="cover" />

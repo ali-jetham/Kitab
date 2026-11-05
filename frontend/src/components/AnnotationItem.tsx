@@ -4,13 +4,7 @@ import { ColorSwatch } from "@kobalte/core/color-swatch"
 import { parseColor } from "@kobalte/core/colors"
 import { DropdownMenu } from "@kobalte/core/dropdown-menu"
 import { TextField } from "@kobalte/core/text-field"
-import {
-	DotIcon,
-	HighlighterIcon,
-	SquarePenIcon,
-	TrashIcon,
-	UnderlineIcon
-} from "@lucide/solid"
+import { DotIcon, HighlighterIcon, SquarePenIcon, TrashIcon, UnderlineIcon } from "@lucide/solid"
 import { createSignal, Match, Show, Switch } from "solid-js"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
@@ -24,13 +18,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 	const { sideBarStore } = useSideBarContext()
 
 	function handleClick() {
-		sideBarStore.navigate?.([
-			props.annotation.page - 1,
-			{ name: "XYZ" },
-			null,
-			null,
-			null
-		])
+		sideBarStore.navigate?.([props.annotation.page - 1, { name: "XYZ" }, null, null, null])
 	}
 
 	return (
@@ -49,10 +37,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 				</div>
 
 				<div class={styles.item__body}>
-					<ColorSwatch
-						class={styles.colorLine}
-						value={parseColor(props.annotation.color)}
-					/>
+					<ColorSwatch class={styles.colorLine} value={parseColor(props.annotation.color)} />
 					<Show
 						when={isEditing()}
 						fallback={<p class={styles.item__description}>{props.annotation.text}</p>}
@@ -64,7 +49,10 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 								setIsEditing(false)
 								const data = new FormData(e.currentTarget as HTMLFormElement)
 								commands.executeCommand("pdf.updateAnnotation", {
-									arg: { id: props.annotation.id, annotation: { text: data.get("text") } }
+									arg: {
+										id: props.annotation.id,
+										annotation: { text: data.get("text") }
+									}
 								})
 							}}
 						>
@@ -106,21 +94,21 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 									value={props.annotation.style}
 									onChange={(value) =>
 										commands.executeCommand("pdf.updateAnnotation", {
-											arg: { id: props.annotation.id, annotation: { style: value } }
-										})}
+											arg: {
+												id: props.annotation.id,
+												annotation: { style: value }
+											}
+										})
+									}
 								>
 									<DropdownMenu.RadioItem class={styles.dropdown__item} value="highlight">
-										<DropdownMenu.ItemIndicator
-											class={styles["dropdown__item-indicator"]}
-										>
+										<DropdownMenu.ItemIndicator class={styles["dropdown__item-indicator"]}>
 											<DotIcon size={30} />
 										</DropdownMenu.ItemIndicator>
 										Convert to highlight
 									</DropdownMenu.RadioItem>
 									<DropdownMenu.RadioItem class={styles.dropdown__item} value="underline">
-										<DropdownMenu.ItemIndicator
-											class={styles["dropdown__item-indicator"]}
-										>
+										<DropdownMenu.ItemIndicator class={styles["dropdown__item-indicator"]}>
 											<DotIcon />
 										</DropdownMenu.ItemIndicator>
 										Convert to underline
@@ -136,7 +124,10 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 
 				<Button
 					onClick={() =>
-						commands.executeCommand("pdf.deleteAnnotation", { arg: props.annotation.id })}
+						commands.executeCommand("pdf.deleteAnnotation", {
+							arg: props.annotation.id
+						})
+					}
 				>
 					<TrashIcon size={20} style={{ color: "var(--destructive-bg-color)" }} />
 				</Button>

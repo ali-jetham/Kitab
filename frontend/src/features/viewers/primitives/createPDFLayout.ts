@@ -7,24 +7,30 @@ export function createPDFLayout(pdfSlickStore: PDFSlickState) {
 	const isMobile = createMediaQuery("(max-width: 768px)")
 	const viewerSize = createElementSize(() => pdfSlickStore.pdfSlick?.viewer.container)
 	const scaleBounds = createMemo(() => {
-		if (!pdfSlickStore.pagesReady || !pdfSlickStore.pdfSlick || viewerSize.clientWidth == null) return
+		if (!pdfSlickStore.pagesReady || !pdfSlickStore.pdfSlick || viewerSize.clientWidth == null)
+			return
 
 		const page = pdfSlickStore.pdfSlick.viewer.getPageView(pdfSlickStore.pageNumber - 1)
 		if (!page) return
 
 		const fitWidth = viewerSize.clientWidth / (page.width / page.scale)
-		return isMobile() ? { min: fitWidth, max: fitWidth * 4 } : { min: fitWidth * 0.3, max: fitWidth * 4 }
+		return isMobile()
+			? { min: fitWidth, max: fitWidth * 4 }
+			: { min: fitWidth * 0.3, max: fitWidth * 4 }
 	})
 
 	const minScale = () => scaleBounds()?.min ?? MIN_SCALE
 	const maxScale = () => scaleBounds()?.max ?? MAX_SCALE
 
-	createEffect(() => pdfSlickStore.pagesReady, (pagesReady) => {
-		if (!pdfSlickStore.pdfSlick || !pagesReady) return
-		if (isMobile()) {
-			pdfSlickStore.pdfSlick.setScrollMode(3)
+	createEffect(
+		() => pdfSlickStore.pagesReady,
+		(pagesReady) => {
+			if (!pdfSlickStore.pdfSlick || !pagesReady) return
+			if (isMobile()) {
+				pdfSlickStore.pdfSlick.setScrollMode(3)
+			}
 		}
-	})
+	)
 
 	return { minScale, maxScale }
 }

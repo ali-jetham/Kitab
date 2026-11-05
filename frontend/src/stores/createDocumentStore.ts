@@ -15,9 +15,18 @@ export type Annotation = {
 	updatedAt: string
 }
 export type AnnotationCreate = Omit<Annotation, "createdAt" | "updatedAt">
-export type AnnotationUpdate = Partial<Omit<Annotation, "id" | "docId" | "rects" | "createdAt" | "updatedAt">>
+export type AnnotationUpdate = Partial<
+	Omit<Annotation, "id" | "docId" | "rects" | "createdAt" | "updatedAt">
+>
 
-export type Bookmark = { id: number; docId: string; page: number; note: string; createdAt: string; updatedAt: string }
+export type Bookmark = {
+	id: number
+	docId: string
+	page: number
+	note: string
+	createdAt: string
+	updatedAt: string
+}
 export type BookmarkCreate = Omit<Bookmark, "id" | "createdAt" | "updatedAt">
 
 export type Document = {
@@ -53,37 +62,37 @@ export function createDocumentStore(id: string) {
 	}
 
 	async function addAnnotation(annotation: AnnotationCreate) {
-		setDocumentStore(draft => {
+		setDocumentStore((draft) => {
 			draft.annotations.push(annotation)
 		})
 	}
 
 	async function updateAnnotation(id: string, annotationUpdate: AnnotationUpdate) {
-		setDocumentStore(draft => {
+		setDocumentStore((draft) => {
 			const ann = draft.annotations.find((a) => a.id === id)
 			if (ann) Object.assign(ann, annotationUpdate)
 		})
 	}
 
 	async function deleteAnnotation(id: string) {
-		setDocumentStore(draft => {
-			draft.annotations = draft.annotations.filter(a => a.id !== id)
+		setDocumentStore((draft) => {
+			draft.annotations = draft.annotations.filter((a) => a.id !== id)
 		})
 	}
 
 	function getAnnotationsByPage(page: number): Accessor<Annotation[]> {
-		return () => documentStore.annotations.filter(ann => ann.page === page)
+		return () => documentStore.annotations.filter((ann) => ann.page === page)
 	}
 
 	function addBookmark(bookmark: BookmarkCreate) {
-		setDocumentStore(draft => {
+		setDocumentStore((draft) => {
 			draft.bookmarks.push(bookmark)
 		})
 	}
 
 	function deleteBookmark(id: number) {
-		setDocumentStore(draft => {
-			draft.bookmarks = draft.bookmarks.filter(bm => bm.id !== id)
+		setDocumentStore((draft) => {
+			draft.bookmarks = draft.bookmarks.filter((bm) => bm.id !== id)
 		})
 	}
 

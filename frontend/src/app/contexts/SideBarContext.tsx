@@ -33,11 +33,7 @@ export function SideBarProvider(props: ParentProps) {
 		thumbnailsSlot: null
 	})
 
-	return (
-		<SideBarContext value={{ sideBarStore, setSideBarStore }}>
-			{props.children}
-		</SideBarContext>
-	)
+	return <SideBarContext value={{ sideBarStore, setSideBarStore }}>{props.children}</SideBarContext>
 }
 
 export function useSideBarContext() {

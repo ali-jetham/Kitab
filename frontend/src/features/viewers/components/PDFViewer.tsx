@@ -1,7 +1,8 @@
 import { Bookmark } from "@lucide/solid"
 import { usePDFSlick } from "@pdfslick/solid"
-import { createEffect, onCleanup, Show } from "solid-js"
-import { createStore } from "solid-js"
+import "@pdfslick/solid/dist/pdf_viewer.css"
+import { Portal } from "@solidjs/web"
+import { createEffect, createStore, onCleanup, Show } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
@@ -14,8 +15,6 @@ import { createPDFLayout } from "../primitives/createPDFLayout"
 import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
 import PDFThumbnails from "./PDFThumbnails"
-import "@pdfslick/solid/dist/pdf_viewer.css"
-import { Portal } from "@solidjs/web"
 import styles from "./PDFViewer.module.css"
 
 export type ViewerStore = {
@@ -35,8 +34,9 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const { sideBarStore, setSideBarStore } = useSideBarContext()
 	const { setStatusStore } = useStatusBarContext()
 
-	const { viewerRef, thumbsRef, pdfSlickStore, pdfSlick, PDFSlickViewer, error } =
-		usePDFSlick(url, {
+	const { viewerRef, thumbsRef, pdfSlickStore, pdfSlick, PDFSlickViewer, error } = usePDFSlick(
+		url,
+		{
 			scaleValue: "page-fit",
 			removePageBorders: true,
 			getDocumentParams: {
@@ -44,7 +44,8 @@ export default function PDFViewer(props: PDFViewerProps) {
 				disableAutoFetch: true,
 				disableStream: false
 			}
-		})
+		}
+	)
 
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,
@@ -80,7 +81,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const hasBookmark = () => {
 		const currentPage = pdfSlickStore.pageNumber
 		if (!currentPage) return false
-		return documentStore.bookmarks.some(bm => bm.page === currentPage)
+		return documentStore.bookmarks.some((bm) => bm.page === currentPage)
 	}
 
 	createEffect(
@@ -93,38 +94,37 @@ export default function PDFViewer(props: PDFViewerProps) {
 		}),
 		({ error, pagesReady, outline }) => {
 			if (error) {
-				setSideBarStore(draft => {
+				setSideBarStore((draft) => {
 					draft.tocState = { status: "error", outline: null }
 				})
 			} else if (pagesReady) {
-				setSideBarStore(draft => {
+				setSideBarStore((draft) => {
 					draft.documentStore = documentStore
 					draft.tocState = { status: "ready", outline: outline }
-					draft.navigate = (dest: string | any[]) =>
-						pdfSlick()?.linkService.goToDestination(dest)
+					draft.navigate = (dest: string | any[]) => pdfSlick()?.linkService.goToDestination(dest)
 				})
-				setStatusStore(draft => {
+				setStatusStore((draft) => {
 					draft.currentPage = pdfSlickStore.pageNumber
 					draft.totalPages = pdfSlickStore.numPages
 				})
 			} else {
-				setSideBarStore(draft => {
+				setSideBarStore((draft) => {
 					draft.tocState = { status: "loading", outline: null }
 				})
 			}
 		}
 	)
 	onCleanup(() => {
-		setSideBarStore(draft => {
+		setSideBarStore((draft) => {
 			draft.tocState = { status: "empty", outline: null }
 		})
-		setSideBarStore(draft => {
+		setSideBarStore((draft) => {
 			draft.documentStore = null
 		})
-		setStatusStore(draft => {
+		setStatusStore((draft) => {
 			draft.currentPage = null
 		})
-		setStatusStore(draft => {
+		setStatusStore((draft) => {
 			draft.totalPages = null
 		})
 	})
@@ -133,11 +133,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		<>
 			<Show when={sideBarStore.thumbnailsSlot}>
 				<Portal mount={sideBarStore.thumbnailsSlot!}>
-					<PDFThumbnails
-						thumbsRef={thumbsRef}
-						store={pdfSlickStore}
-						pdfSlick={pdfSlick}
-					/>
+					<PDFThumbnails thumbsRef={thumbsRef} store={pdfSlickStore} pdfSlick={pdfSlick} />
 				</Portal>
 			</Show>
 
@@ -151,11 +147,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 						</div>
 					}
 				>
-					<PDFSlickViewer
-						viewerRef={viewerRef}
-						store={pdfSlickStore}
-						pdfSlick={pdfSlick}
-					/>
+					<PDFSlickViewer viewerRef={viewerRef} store={pdfSlickStore} pdfSlick={pdfSlick} />
 				</Show>
 
 				<HighlightToolbar
@@ -163,7 +155,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 					anchorRef={viewerStore.anchorRef}
 					setViewerStore={setViewerStore}
 					onSelectColor={(color) => {
-						setViewerStore(draft => {
+						setViewerStore((draft) => {
 							draft.selectedColor = color
 						})
 						setViewerStore((prev) => ({

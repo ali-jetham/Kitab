@@ -11,7 +11,11 @@ import { ViewerStore } from "../components/PDFViewer"
 
 export type SVGRect = { x: number; y: number; width: number; height: number }
 
-type PendingAnnotation = { pageNumber: number; text: string; pdfRects: PDFRect[] }
+type PendingAnnotation = {
+	pageNumber: number
+	text: string
+	pdfRects: PDFRect[]
+}
 
 export function createPDFHighlights(
 	pdfSlickStore: PDFSlickState,
@@ -82,11 +86,13 @@ export function createPDFHighlights(
 
 		const anchorEl =
 			(selection?.anchorNode?.nodeType === Node.ELEMENT_NODE
-				? selection.anchorNode as HTMLElement
+				? (selection.anchorNode as HTMLElement)
 				: selection?.anchorNode?.parentElement) ?? undefined
 
 		const range = selection.getRangeAt(0)
-		const selectionRects: DOMRect[] = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0)
+		const selectionRects: DOMRect[] = [...range.getClientRects()].filter(
+			(rect) => rect.width > 0 && rect.height > 0
+		)
 		const mergedRects = mergeSelectionRects(selectionRects)
 
 		const pageNumber = pdfSlickStore.pdfSlick?.viewer.currentPageNumber
@@ -99,8 +105,16 @@ export function createPDFHighlights(
 			return convertToPDFRect(relativeRect, page.viewport)
 		})
 
-		setPendingAnnotation({ pageNumber, text: selection.toString().replaceAll("\n", " "), pdfRects })
-		setViewerStore((prev) => ({ ...prev, showHighlightToolbar: true, anchorRef: anchorEl }))
+		setPendingAnnotation({
+			pageNumber,
+			text: selection.toString().replaceAll("\n", " "),
+			pdfRects
+		})
+		setViewerStore((prev) => ({
+			...prev,
+			showHighlightToolbar: true,
+			anchorRef: anchorEl
+		}))
 	}
 
 	function handlePageRendered(e: TEventBusEvent) {
@@ -115,7 +129,7 @@ export function createPDFHighlights(
 					pageNumber: e.pageNumber,
 					annotations,
 					onSelectAnnotation: (id: string) =>
-						setViewerStore(draft => {
+						setViewerStore((draft) => {
 							draft.annotationId = id
 						}),
 					ttsHighlight
@@ -156,14 +170,17 @@ export function createPDFHighlights(
 		debouncedHandleSelectionChange.clear()
 	})
 
-	createEffect(() => pdfSlickStore.pdfSlick, (pdfSlick) => {
-		if (!pdfSlick) return
-		pdfSlick.eventBus.on("pagerendered", handlePageRendered)
+	createEffect(
+		() => pdfSlickStore.pdfSlick,
+		(pdfSlick) => {
+			if (!pdfSlick) return
+			pdfSlick.eventBus.on("pagerendered", handlePageRendered)
 
-		onCleanup(() => {
-			pdfSlick?.eventBus.off("pagerendered", handlePageRendered)
-		})
-	})
+			onCleanup(() => {
+				pdfSlick?.eventBus.off("pagerendered", handlePageRendered)
+			})
+		}
+	)
 
 	return { commitAnnotation }
 }
@@ -195,7 +212,12 @@ export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, page: any): SVGR
 }
 
 export function convertToCanvasRelativeRect(rect: DOMRect, canvasRect: DOMRect): DOMRect {
-	return new DOMRect(rect.left - canvasRect.left, rect.top - canvasRect.top, rect.width, rect.height)
+	return new DOMRect(
+		rect.left - canvasRect.left,
+		rect.top - canvasRect.top,
+		rect.width,
+		rect.height
+	)
 }
 
 export function convertToPDFRect(rect: DOMRect, viewport: any): PDFRect {

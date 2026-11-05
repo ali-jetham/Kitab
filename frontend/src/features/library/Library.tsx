@@ -19,12 +19,8 @@ export default function Library() {
 	const filteredBooks = () =>
 		books()?.filter((book: any) => {
 			return book.title
-				? book.title?.toLowerCase().includes(
-					(searchParams.q as string)?.toLowerCase() ?? ""
-				)
-				: book.fileName?.toLowerCase().includes(
-					(searchParams.q as string)?.toLowerCase() ?? ""
-				)
+				? book.title?.toLowerCase().includes((searchParams.q as string)?.toLowerCase() ?? "")
+				: book.fileName?.toLowerCase().includes((searchParams.q as string)?.toLowerCase() ?? "")
 		})
 
 	return (

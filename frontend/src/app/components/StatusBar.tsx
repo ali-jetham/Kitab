@@ -6,7 +6,10 @@ import { AppStore } from "../App"
 import { useStatusBarContext } from "../contexts/StatusBarContext"
 import styles from "./StatusBar.module.css"
 
-type StatusBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
+type StatusBarProps = {
+	appStore: AppStore
+	setAppStore: StoreSetter<AppStore>
+}
 
 export default function StatusBar(props: StatusBarProps) {
 	const { statusStore } = useStatusBarContext()
@@ -17,9 +20,10 @@ export default function StatusBar(props: StatusBarProps) {
 				<Tooltip openDelay={1000}>
 					<Tooltip.Trigger
 						onClick={() =>
-							props.setAppStore(draft => {
+							props.setAppStore((draft) => {
 								draft.isSideBarOpen = !draft.isSideBarOpen
-							})}
+							})
+						}
 					>
 						<Show
 							when={props.appStore.isSideBarOpen}

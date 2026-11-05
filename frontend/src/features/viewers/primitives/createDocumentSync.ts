@@ -4,7 +4,10 @@ import { documentApi } from "../../../api/documentApi"
 export function createDocumentSync(id: string, actions: any) {
 	const doc = createMemo(() => documentApi.getDoc(id))
 
-	createEffect(() => doc(), (doc) => {
-		if (doc) actions.init(doc)
-	})
+	createEffect(
+		() => doc(),
+		(doc) => {
+			if (doc) actions.init(doc)
+		}
+	)
 }

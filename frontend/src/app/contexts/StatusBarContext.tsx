@@ -16,9 +16,7 @@ export function StatusBarProvider(props: ParentProps) {
 	})
 
 	return (
-		<StatusBarContext value={{ statusStore, setStatusStore }}>
-			{props.children}
-		</StatusBarContext>
+		<StatusBarContext value={{ statusStore, setStatusStore }}>{props.children}</StatusBarContext>
 	)
 }
 

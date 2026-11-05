@@ -22,7 +22,11 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 			anchorRef={() => props.anchorRef}
 			placement="top"
 			onOpenChange={(open) =>
-				props.setViewerStore((prev) => ({ ...prev, showHighlightToolbar: open }))}
+				props.setViewerStore((prev) => ({
+					...prev,
+					showHighlightToolbar: open
+				}))
+			}
 			preventScroll={true}
 		>
 			<Popover.Portal>
@@ -30,10 +34,7 @@ export default function HighlightToolbar(props: HighlightToolbarProps) {
 					<Popover.Arrow />
 					<For each={colors}>
 						{(color) => (
-							<button
-								type="button"
-								onClick={() => props.onSelectColor(color)}
-							>
+							<button type="button" onClick={() => props.onSelectColor(color)}>
 								<ColorSwatch class="ColorSwatch" value={parseColor(color)} />
 							</button>
 						)}

@@ -1,67 +1,68 @@
 .treeitem {
-  padding: 0.6rem;
-  cursor: pointer;
+	padding: 0.6rem;
+	cursor: pointer;
 }
 
 .treeitem__nested {
-  padding-left: 0.9rem;
+	padding-left: 0.9rem;
 }
 
 .treeitem:hover {
-  background-color: var(--view-hover-color);
+	background-color: var(--view-hover-color);
 }
 
 .treeitem[data-active] {
-  background-color: var(--view-active-color);
+	background-color: var(--view-active-color);
 }
 
-.treeitem__container, .treeitem__trigger {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.treeitem__container,
+.treeitem__trigger {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .treeitem__chevron {
-  color: var(--accent-bg-color);
-  transition: transform 120ms ease;
+	color: var(--accent-bg-color);
+	transition: transform 120ms ease;
 }
 
 .treeitem__trigger[data-expanded] .treeitem__chevron {
-  transform: rotate(180deg);
+	transform: rotate(180deg);
 }
 
 .treeitem__content {
-  overflow: hidden;
+	overflow: hidden;
 }
 
 .treeitem__content[data-expanded] {
-  animation: treeitemSlideDown 150ms ease-out;
+	animation: treeitemSlideDown 150ms ease-out;
 }
 
 .treeitem__content[data-closed] {
-  animation: treeitemSlideUp 150ms ease-out;
+	animation: treeitemSlideUp 150ms ease-out;
 }
 
 .treeitem__children {
-  padding-left: 1rem;
-  display: flex;
-  flex-direction: column;
+	padding-left: 1rem;
+	display: flex;
+	flex-direction: column;
 }
 
 @keyframes treeitemSlideDown {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--kb-collapsible-content-height);
-  }
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--kb-collapsible-content-height);
+	}
 }
 
 @keyframes treeitemSlideUp {
-  from {
-    height: var(--kb-collapsible-content-height);
-  }
-  to {
-    height: 0;
-  }
+	from {
+		height: var(--kb-collapsible-content-height);
+	}
+	to {
+		height: 0;
+	}
 }

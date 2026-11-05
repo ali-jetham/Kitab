@@ -17,4 +17,9 @@ async function deleteAnnotation(id: string) {
 	return await http(`/api/annotations/${id}`, { method: "DELETE" }, async (r) => null)
 }
 
-export const annotationApi = { getAllAnnotations, addAnnotation, deleteAnnotation, updateAnnotation }
+export const annotationApi = {
+	getAllAnnotations,
+	addAnnotation,
+	deleteAnnotation,
+	updateAnnotation
+}

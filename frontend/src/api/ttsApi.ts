@@ -14,7 +14,9 @@ async function getModels(): Promise<TTSResponse[]> {
 }
 
 async function synthesize(text: string, signal?: AbortSignal): Promise<Blob> {
-	return await http("/api/tts/synthesize", { method: "POST", body: { text }, signal }, (r) => r.blob())
+	return await http("/api/tts/synthesize", { method: "POST", body: { text }, signal }, (r) =>
+		r.blob()
+	)
 }
 
 export const ttsApi = { getModels, downloadModel, synthesize }

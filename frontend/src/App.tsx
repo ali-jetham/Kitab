@@ -1,6 +1,5 @@
 import { Title } from "@solidjs/meta"
 import { Errored } from "solid-js"
-import AppShell from "./app/App"
 import { Router } from "./router"
 
 export default function App() {

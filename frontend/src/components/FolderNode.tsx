@@ -2,7 +2,11 @@ import { For } from "solid-js"
 import { commands } from "../core/commands"
 import { TreeItem } from "./TreeItem"
 
-export type FolderNodeProps = { name: string; path: string; children: FolderNodeProps[] }
+export type FolderNodeProps = {
+	name: string
+	path: string
+	children: FolderNodeProps[]
+}
 
 export function FolderNode(props: FolderNodeProps) {
 	return (

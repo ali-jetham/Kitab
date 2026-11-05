@@ -1,8 +1,8 @@
 .popover__content {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: var(--popover-bg-color);
-  color: var(--popover-fg-color);
-  border-radius: 0.3rem;
+	display: flex;
+	gap: 1rem;
+	padding: 1rem;
+	background-color: var(--popover-bg-color);
+	color: var(--popover-fg-color);
+	border-radius: 0.3rem;
 }

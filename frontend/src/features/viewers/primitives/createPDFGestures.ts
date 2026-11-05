@@ -23,18 +23,29 @@ export function createPDFGestures(
 	const { appStore, setAppStore } = useContext(AppContext)!
 
 	function getDistanceBetweenTouches(e: TouchEvent): number {
-		return Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY)
+		return Math.hypot(
+			e.touches[0].pageX - e.touches[1].pageX,
+			e.touches[0].pageY - e.touches[1].pageY
+		)
 	}
 
 	function getMidpoint(e: TouchEvent): number[] {
-		return [(e.touches[0].clientX + e.touches[1].clientX) / 2, (e.touches[0].clientY + e.touches[1].clientY) / 2]
+		return [
+			(e.touches[0].clientX + e.touches[1].clientX) / 2,
+			(e.touches[0].clientY + e.touches[1].clientY) / 2
+		]
 	}
 
 	function onTapNavigation(e: TouchEvent) {
 		if (
-			e.type !== "touchend" || isMultiTouch || tapCancelled || !tapStart || e.changedTouches.length !== 1
-			|| viewerStore.showHighlightToolbar
-		) return
+			e.type !== "touchend" ||
+			isMultiTouch ||
+			tapCancelled ||
+			!tapStart ||
+			e.changedTouches.length !== 1 ||
+			viewerStore.showHighlightToolbar
+		)
+			return
 
 		const touch = e.changedTouches[0]
 		if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) return
@@ -48,7 +59,7 @@ export function createPDFGestures(
 		} else if (touch.clientX >= zoneWidth * 2 && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
 			pdfSlickStore?.pdfSlick?.viewer.nextPage()
 		} else {
-			setAppStore(draft => {
+			setAppStore((draft) => {
 				draft.isActionOpen = !draft.isActionOpen
 			})
 		}
@@ -87,7 +98,13 @@ export function createPDFGestures(
 	}
 
 	function onPinchEnd(e: TouchEvent) {
-		if (e.touches.length >= 2 || !pdfSlickStore.pdfSlick || initialDistance == null || midpoint == null) return
+		if (
+			e.touches.length >= 2 ||
+			!pdfSlickStore.pdfSlick ||
+			initialDistance == null ||
+			midpoint == null
+		)
+			return
 
 		const zoomFactor = newScale / initialScale
 		const viewerContainer = pdfSlickStore.pdfSlick.viewer.container
@@ -149,29 +166,38 @@ export function createPDFGestures(
 		}
 	}
 
-	createEffect(() => containerRef(), (el) => {
-		if (!el) return
+	createEffect(
+		() => containerRef(),
+		(el) => {
+			if (!el) return
 
-		el.addEventListener("touchstart", handleTouchStart, { passive: false })
-		el.addEventListener("touchmove", handleTouchMove, { passive: false })
-		el.addEventListener("touchend", handleTouchEnd)
-		el.addEventListener("touchcancel", handleTouchEnd)
+			el.addEventListener("touchstart", handleTouchStart, { passive: false })
+			el.addEventListener("touchmove", handleTouchMove, { passive: false })
+			el.addEventListener("touchend", handleTouchEnd)
+			el.addEventListener("touchcancel", handleTouchEnd)
 
-		onCleanup(() => {
-			el.removeEventListener("touchstart", handleTouchStart)
-			el.removeEventListener("touchmove", handleTouchMove)
-			el.removeEventListener("touchend", handleTouchEnd)
-			el.removeEventListener("touchcancel", handleTouchEnd)
-		})
-	})
+			onCleanup(() => {
+				el.removeEventListener("touchstart", handleTouchStart)
+				el.removeEventListener("touchmove", handleTouchMove)
+				el.removeEventListener("touchend", handleTouchEnd)
+				el.removeEventListener("touchcancel", handleTouchEnd)
+			})
+		}
+	)
 
 	// TODO: move to createViewerGestures
-	createEffect(() => trigger(), () => {
-		if (!appStore.isActionOpen) return
-		const timer = setTimeout(() =>
-			setAppStore(draft => {
-				draft.isActionOpen = false
-			}), 3000)
-		onCleanup(() => clearTimeout(timer))
-	})
+	createEffect(
+		() => trigger(),
+		() => {
+			if (!appStore.isActionOpen) return
+			const timer = setTimeout(
+				() =>
+					setAppStore((draft) => {
+						draft.isActionOpen = false
+					}),
+				3000
+			)
+			onCleanup(() => clearTimeout(timer))
+		}
+	)
 }
