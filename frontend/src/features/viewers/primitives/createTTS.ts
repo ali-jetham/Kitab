@@ -1,114 +1,81 @@
 import { PDFSlickState } from "@pdfslick/core"
-import { createEffect, createResource, createSignal, onCleanup } from "solid-js"
-import { type StoreSetter } from "solid-js"
+import { makeEventListener } from "@solid-primitives/event-listener"
+import { createEffect, createMemo, createSignal, isPending, mapArray, onCleanup, type StoreSetter } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
-import { TTSApi } from "../../../api/ttsApi"
+import { ttsApi } from "../../../api/ttsApi"
 import { commands } from "../../../core/commands"
 import { PDFRect } from "../../../stores/createDocumentStore"
 import { ViewerStore } from "../components/PDFViewer"
 
-export type Sentence = { text: string; rects: PDFRect[] }
-interface ReadySentence extends Sentence {
-	audio: string
-	index: number
-}
+const PREFETCH = 6
 
-const QUEUE_SIZE = 3
+export type Sentence = { text: string; rects: PDFRect[] }
 
 export function createTTS(setViewerStore: StoreSetter<ViewerStore>, pdfSlickStore: PDFSlickState, id: string) {
-	let nextIndex = 0
-	let nextPlay = 0
-	let abortControllers: AbortController[] = []
-	let currentAudio: HTMLAudioElement | null = null
-
 	const [isPlaying, setIsPlaying] = createSignal(false)
-	const [currentPage, setCurrentPage] = createSignal<number | undefined>(undefined)
-	const [sentences, { mutate: mutateSentences, refetch: refetchSentences }] = createResource(
-		currentPage,
-		async (page) => documentApi.getPageText(id, page)
-	)
-	const [queue, setQueue] = createSignal<ReadySentence[]>([])
-	const [inFlight, setInFlight] = createSignal(0)
+	const [currentPage, setCurrentPage] = createSignal<number>()
+	const [currentSentence, setCurrentSentence] = createSignal(0)
 
-	createEffect(() => {
-		if (!isPlaying() || sentences.loading || !currentPage()) return
+	const sentences = createMemo(async () => currentPage() ? await documentApi.getPageText(id, currentPage()!) : [])
 
-		const list = sentences()
-		if (!list) return
-
-		const queueRemaining = QUEUE_SIZE - queue().length - inFlight()
-
-		for (let i = 0; i < queueRemaining && nextIndex < list.length; i++) {
-			const index = nextIndex++
-			const controller = new AbortController()
-			abortControllers.push(controller)
-			setInFlight((count) => count + 1)
-
-			TTSApi.synthesize(list[index].text, controller.signal).then((audio) => {
-				if (controller.signal.aborted) return
-				const readySentence: ReadySentence = { ...list[index], audio: URL.createObjectURL(audio), index }
-				setQueue((q) => [...q, readySentence].sort((a, b) => a.index - b.index))
-				play()
-			}).catch(error => {
-				if (error.name !== "AbortError") console.error(error)
-			}).finally(() => {
-				abortControllers = abortControllers.filter((item) => item !== controller)
-				if (!controller.signal.aborted) setInFlight((count) => count - 1)
-			})
-		}
-	})
-
-	function play() {
-		if (currentAudio) return
-
-		const [current, ...rest] = queue()
-		if (!current || current.index !== nextPlay) {
-			return
-		}
-
-		setQueue(rest)
-		nextPlay++
-		const audio = new Audio(current.audio)
-		currentAudio = audio
-		audio.addEventListener("ended", () => {
-			currentAudio = null
-			URL.revokeObjectURL(current.audio)
-			setViewerStore("ttsHighlight", null)
-			play()
-		})
-		setViewerStore("ttsHighlight", { page: currentPage(), rects: current.rects })
-		audio.play()
+	function start() {
+		setCurrentSentence(0)
+		setCurrentPage(pdfSlickStore.pageNumber)
+		setIsPlaying(true)
 	}
 
 	function stop() {
 		setIsPlaying(false)
-		setViewerStore("ttsHighlight", null)
-		abortControllers.forEach((c) => c.abort())
-		abortControllers = []
-		currentAudio?.pause()
-		currentAudio = null
-		setInFlight(0)
-		queue().forEach((sentence) => URL.revokeObjectURL(sentence.audio))
-		setQueue([])
-		mutateSentences(undefined)
-		nextIndex = 0
-		nextPlay = 0
+		setCurrentSentence(0)
+		audio.pause()
+		audio.removeAttribute("src")
 	}
 
-	const unregister = commands.registerCommand("pdf.readAloud", () => {
-		if (isPlaying()) {
-			stop()
-			return
-		}
-		setIsPlaying(true)
-		if (currentPage() === pdfSlickStore.pageNumber) {
-			refetchSentences()
-		} else {
-			setCurrentPage(pdfSlickStore.pageNumber)
-		}
+	const audio = new Audio()
+	onCleanup(() => audio.remove())
+
+	const window = () => (isPlaying() ? sentences().slice(currentSentence(), currentSentence() + PREFETCH) : [])
+
+	const audioUrls = mapArray(window, (sentence) =>
+		createMemo(async () => {
+			const controller = new AbortController()
+			let url: string | undefined
+			onCleanup(() => {
+				controller.abort()
+				if (url) URL.revokeObjectURL(url)
+			})
+			url = URL.createObjectURL(await ttsApi.synthesize(sentence.text, controller.signal))
+			return url
+		}))
+
+	const current = () => {
+		const sentence = window()[0]
+		const url = audioUrls()[0]
+		return sentence && url ? { sentence, url: url() } : undefined
+	}
+
+	const loading = () => isPlaying() && isPending(current)
+
+	makeEventListener(audio, "ended", () => {
+		if (currentSentence() + 1 >= sentences().length) stop()
+		else setCurrentSentence((i) => i + 1)
 	})
 
-	onCleanup(() => {
-		unregister()
+	createEffect(() => current(), (current) => {
+		if (!current) return
+		audio.src = current.url
+		audio.play().catch(() => {})
+		setViewerStore((draft) => {
+			draft.ttsHighlight = { page: currentPage(), rects: current.sentence.rects }
+		})
+		return () =>
+			setViewerStore((draft) => {
+				draft.ttsHighlight = null
+			})
 	})
+
+	const unregister = commands.registerCommand("pdf.readAloud", () => (isPlaying() ? stop() : start()))
+	onCleanup(unregister)
+
+	return { isPlaying, loading }
 }

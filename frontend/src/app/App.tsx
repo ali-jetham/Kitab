@@ -55,7 +55,7 @@ export default function App(props: RouteSectionProps) {
 			console.log(binding.key, "pressed")
 		}
 	}
-	createAppCommands(appStore, setAppStore)
+	createAppCommands(setAppStore)
 
 	onSettled(() => {
 		const unregister = tinykeys(window, bindings)

@@ -13,3 +13,4 @@ const routes = defineRoutes([{
 }])
 
 export const Router = createRouter({ routes })
+export const { paths } = Router

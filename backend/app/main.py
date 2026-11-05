@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from onnxruntime.capi.onnxruntime_pybind11_state import NoSuchFile
 from sqlalchemy.exc import DatabaseError, IntegrityError, NoResultFound
 
 from app.core.config import settings
@@ -54,6 +55,16 @@ async def integrity_error_handler(request, exc):
     return JSONResponse(
         status_code=400,
         content={"message": "A database integrity error occurred."},
+    )
+
+
+@app.exception_handler(NoSuchFile)
+async def onnxruntime_error_handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message": "Model file count not be found. Make sure you have setup TTS."
+        },
     )
 
 

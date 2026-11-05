@@ -11,7 +11,7 @@ import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
 import { createPDFHighlights } from "../primitives/createPDFHighlight"
 import { createPDFLayout } from "../primitives/createPDFLayout"
-// import { createTTS } from "../primitives/createTTS"
+import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
 import PDFThumbnails from "./PDFThumbnails"
 import "@pdfslick/solid/dist/pdf_viewer.css"
@@ -68,7 +68,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 		minScale,
 		maxScale
 	)
-	// createTTS(setViewerStore, pdfSlickStore, props.id)
+	createTTS(setViewerStore, pdfSlickStore, props.id)
 	const highlights = createPDFHighlights(
 		pdfSlickStore,
 		props.id,

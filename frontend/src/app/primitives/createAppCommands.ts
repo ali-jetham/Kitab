@@ -1,13 +1,10 @@
-import { useNavigate } from "@solidjs/router"
 import { onCleanup } from "solid-js"
 import { StoreSetter } from "solid-js"
-import { TTSApi } from "../../api/ttsApi"
+import { ttsApi } from "../../api/ttsApi"
 import { commands } from "../../core/commands"
 import { type AppStore } from "../App"
 
-export function createAppCommands(appStore: AppStore, setAppStore: StoreSetter<AppStore>) {
-	const navigate = useNavigate()
-
+export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 	const unregisters = [
 		commands.registerCommand("app.pallete.toggle", () =>
 			setAppStore(draft => {
@@ -28,7 +25,7 @@ export function createAppCommands(appStore: AppStore, setAppStore: StoreSetter<A
 
 		commands.registerCommand("app.downloadTTS", async ({ arg }) => {
 			if (!arg) {
-				const models = await TTSApi.getModels()
+				const models = await ttsApi.getModels()
 				setAppStore(draft => {
 					draft.commandPalleteArgs = [{
 						group: "Models",
@@ -38,7 +35,7 @@ export function createAppCommands(appStore: AppStore, setAppStore: StoreSetter<A
 				return
 			}
 			console.log("downloading model: ", arg)
-			TTSApi.downloadModel(arg)
+			ttsApi.downloadModel(arg)
 		}),
 		commands.registerCommand("app.theme.toggle", () => {
 			const html = document.documentElement
