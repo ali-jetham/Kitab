@@ -1,5 +1,6 @@
 import { onSettled } from "solid-js"
 import "../../../lib/foliate-js/view.js"
+import { documentApi } from "../../../api/documentApi.js"
 import styles from "./EPUBViewer.module.css"
 
 type FoliateView = HTMLElement & Record<string, any>
@@ -9,6 +10,7 @@ type EPUBViewerProps = { id: string }
 export default function EPUBViewer(props: EPUBViewerProps) {
 	let host!: HTMLDivElement
 	let view: any
+	const url = documentApi.getFileUrl(props.id)
 
 	onSettled(() => {
 		view = document.createElement("foliate-view") as FoliateView
@@ -16,7 +18,7 @@ export default function EPUBViewer(props: EPUBViewerProps) {
 
 		async function load() {
 			try {
-				await view.open(props.id)
+				await view.open(url)
 				view.renderer.setAttribute("flow", "scrolled")
 				await view.init({ lastLocation: null })
 			} catch (err) {

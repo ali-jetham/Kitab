@@ -1,3 +1,4 @@
+import mimetypes
 from typing import Annotated
 
 from fastapi import APIRouter, Query
@@ -35,9 +36,10 @@ def get_document_folders(service: DocumentServiceDep):
 @router.get("/{id}/file")
 def get_document_file(id: DocumentId, service: DocumentServiceDep) -> FileResponse:
     document_path = service.get_document_file(id)
+    media_type, _ = mimetypes.guess_file_type(document_path)
     return FileResponse(
         path=document_path,
-        media_type="application/pdf",
+        media_type=media_type,
         headers={"Cache-Control": "private, max-age=3600"},
     )
 

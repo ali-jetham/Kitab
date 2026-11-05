@@ -1,12 +1,15 @@
+import io
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import cast
+from PIL import Image, ImageOps
 
 import pikepdf
 import pymupdf
 import pymupdf4llm
 import sentencex
 import xxhash
+from ebooklib import epub, ITEM_COVER, ITEM_IMAGE
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session, load_only, selectinload
 
@@ -21,6 +24,7 @@ class DocumentService:
     def __init__(self, db: Session):
         self.db = db
         self.library_path = settings.LIBRARY_PATH
+        self.valid_files = {".pdf", ".epub"}
 
     def get_documents(self, filter_query: FilterParams) -> list[Document]:
         stmt = select(Document)
@@ -76,7 +80,6 @@ class DocumentService:
     def get_document_cover(self, id: str) -> str:
         covers_dir = Path(settings.LIBRARY_PATH / ".covers").resolve()
         cover_path = Path(settings.LIBRARY_PATH / ".covers" / f"{id}.jpg").resolve()
-        print(cover_path)
         if not (cover_path.is_relative_to(covers_dir) and cover_path.is_file()):
             raise FileNotFoundError
         return str(cover_path)
@@ -125,51 +128,78 @@ class DocumentService:
         documents = {doc.id: doc for doc in documents}
         new_documents = []
 
-        for path in self.library_path.rglob("*.pdf"):
-            id = self._generate_content_hash(path)
-            if id in documents:
-                if documents[id].file_path != str(path):
-                    documents[id].file_path = str(self._get_relative_path(path))
-                    documents[id].file_name = path.stem
-                continue
+        for path in self.library_path.rglob("*"):
+            if path.is_file() and path.suffix.lower() in self.valid_files:
+                print(path)
+                id = self._generate_content_hash(path)
+                if id in documents:
+                    if documents[id].file_path != str(path):
+                        documents[id].file_path = str(self._get_relative_path(path))
+                        documents[id].file_name = path.stem
+                    continue
 
-            metadata = self._get_metadata(path)
-            if metadata is None:
-                continue
-            title, author = metadata
+                if path.suffix == ".pdf":
+                    metadata = self._get_metadata(path)
+                    try:
+                        self._generate_cover(id, path)
+                    except pymupdf.FileDataError:
+                        print(f"Count not generate cover for {id}")
+                elif path.suffix == ".epub":
+                    metadata = self._get_epub_metadata(path)
+                else:
+                    metadata = None
 
-            try:
-                self._generate_cover(id, path)
-            except pymupdf.FileDataError:
-                print(f"Count not generate cover for {id}")
+                if metadata is None:
+                    continue
+                title, author = metadata
 
-            document = Document(
-                id=id,
-                file_path=str(self._get_relative_path(path).parent),
-                file_name=path.stem,
-                file_type=path.suffix,
-                title=title,
-                author=author,
-                created_at=datetime.now(UTC),
-            )
-            new_documents.append(document)
-        self.db.add_all(new_documents)
-        self.db.commit()
+                document = Document(
+                    id=id,
+                    file_path=str(self._get_relative_path(path).parent),
+                    file_name=path.stem,
+                    file_type=path.suffix,
+                    title=title,
+                    author=author,
+                    created_at=datetime.now(UTC),
+                )
+                new_documents.append(document)
+            self.db.add_all(new_documents)
+            self.db.commit()
 
     def _get_relative_path(self, path: Path) -> Path:
         return path.relative_to(self.library_path)
 
     def _get_metadata(self, path: Path):
-        try:
-            with pikepdf.open(path) as pdf:
-                meta = pdf.open_metadata()
-                title = normalize_pikepdf_value(meta.get("dc:title")) if meta else None
-                author = (
-                    normalize_pikepdf_value(meta.get("dc:creator")) if meta else None
-                )
-            return title, author
-        except pikepdf.PdfError:
-            return None
+        """Uses pikepdf to parse PDF metadata."""
+        match path.suffix:
+            case ".pdf":
+                try:
+                    with pikepdf.open(path) as pdf:
+                        meta = pdf.open_metadata()
+                        title = (
+                            normalize_pikepdf_value(meta.get("dc:title"))
+                            if meta
+                            else None
+                        )
+                        author = (
+                            normalize_pikepdf_value(meta.get("dc:creator"))
+                            if meta
+                            else None
+                        )
+                    return title, author
+                except pikepdf.PdfError:
+                    return None
+            case ".epub":
+                book = epub.read_epub(path)
+                title = book.get_metadata("DC", "title")[0][0]
+                author = [name for name, _ in book.get_metadata("DC", "creator")]
+                return title, author
+
+    def _get_epub_metadata(self, path: Path):
+        book = epub.read_epub(path)
+        title = book.get_metadata("DC", "title")[0][0]
+        author = [name for name, _ in book.get_metadata("DC", "creator")]
+        return title, author
 
     def _generate_cover(self, document_id: str, document_path: Path) -> None:
         cover_folder = self.library_path / ".covers"
@@ -177,12 +207,42 @@ class DocumentService:
         cover_path = cover_folder / f"{document_id}.jpg"
         target_w, target_h = 400, 566
 
-        with pymupdf.open(document_path) as d:
-            page = d[0]
-            rect = page.rect
-            matrix = pymupdf.Matrix(target_w / rect.width, target_h / rect.height)
-            pix = page.get_pixmap(matrix=matrix, alpha=False)
-            pix.save(cover_path, "jpg", jpg_quality=75)
+        match document_path.suffix:
+            case ".pdf":
+                with pymupdf.open(document_path) as d:
+                    page = d[0]
+                    rect = page.rect
+                    matrix = pymupdf.Matrix(
+                        target_w / rect.width, target_h / rect.height
+                    )
+                    pix = page.get_pixmap(matrix=matrix, alpha=False)
+                    pix.save(cover_path, "jpg", jpg_quality=75)
+            case ".epub":
+                book = epub.read_epub(document_path)
+                cover = self._find_epub_cover(book)
+                if cover is not None:
+                    with Image.open(io.BytesIO(cover.get_content())) as img:
+                        img = ImageOps.exif_transpose(img).convert("RGB")
+                        img = ImageOps.fit(img, (target_w, target_h), Image.Resampling.LANCZOS)
+                        img.save(cover_path, "JPEG", quality=75, optimize=True)
+
+    def _find_epub_cover(self, book: epub.EpubBook):
+        # 1. EPUB2: <meta name="cover" content="item-id"/>
+        for _, attrs in book.get_metadata("OPF", "cover"):
+            item = book.get_item_with_id(attrs.get("content", ""))
+            if item is not None:
+                return item
+
+        # 2. EPUB3 properties="cover-image" (ebooklib exposes this as ITEM_COVER)
+        for item in book.get_items_of_type(ITEM_COVER):
+            return item
+
+        # 3. Any image with "cover" in its filename
+        for item in book.get_items_of_type(ITEM_IMAGE):
+            if "cover" in item.file_name.lower():
+                return item
+
+        return None
 
     def _generate_content_hash(self, filepath: Path) -> str:
         """
@@ -207,7 +267,8 @@ class DocumentService:
 
         documents = list(self.db.scalars(select(Document)).all())
         for doc in documents:
-            path = Path(doc.file_path)
+            path = self.library_path / doc.file_path / (doc.file_name + doc.file_type)
+            print(path)
             if not path.is_file():
                 raise FileNotFoundError(f"File missing for id: {doc.id}")
             self._generate_cover(doc.id, path)
