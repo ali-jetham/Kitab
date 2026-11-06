@@ -14,7 +14,7 @@ export function createLibraryCommands() {
 			const res = documentApi.refreshCovers()
 		}),
 		commands.registerCommand("library.folderSelect", ({ arg }) => {
-			console.log("navigate", arg)
+			if (!arg) return
 			navigate(`/?folder=${encodeURIComponent(arg)}`)
 		})
 	]

@@ -1,3 +1,5 @@
+import { AnnotationUpdate } from "../stores/createDocumentStore"
+
 const COMMANDS = [
 	{
 		id: "app.theme.toggle",
@@ -205,6 +207,14 @@ const COMMANDS = [
 	}
 ] as const
 
+type CommandArgs = {
+	"pdf.updateAnnotation": { id: string; annotation: AnnotationUpdate }
+	"pdf.deleteAnnotation": { id: string }
+	"pdf.deleteBookmark": { id: string }
+	"library.folderSelect": string
+	"app.downloadTTS": string
+}
+
 export type CommandId = (typeof COMMANDS)[number]["id"]
 export type Command = {
 	id: CommandId
@@ -212,27 +222,26 @@ export type Command = {
 	hidden: boolean
 	withArgs: boolean
 }
-export type CommandContext = {
+export type CommandContext<K extends CommandId = CommandId> = {
 	event?: KeyboardEvent
 	count?: number
-	arg?: string | number
+	arg?: K extends keyof CommandArgs ? CommandArgs[K] : unknown
 }
-export type CommandHandler = (context: CommandContext) => void
+export type CommandHandler<K extends CommandId = CommandId> = (context: CommandContext<K>) => void
 
-const commandRegistry = new Map<CommandId, CommandHandler>()
+const commandRegistry = new Map<CommandId, CommandHandler<any>>()
 
-function registerCommand(command: CommandId, handler: CommandHandler): () => void {
+function registerCommand<K extends CommandId>(command: K, handler: CommandHandler<K>): () => void {
 	commandRegistry.set(command, handler)
 
 	return function unregister() {
-		const currentHandler = commandRegistry.get(command)
-		if (currentHandler === handler) {
+		if (commandRegistry.get(command) === handler) {
 			commandRegistry.delete(command)
 		}
 	}
 }
 
-function executeCommand(command: CommandId, context: CommandContext = {}): boolean {
+function executeCommand<K extends CommandId>(command: K, context: CommandContext<K> = {}): boolean {
 	const handler = commandRegistry.get(command)
 	if (!handler) return false
 

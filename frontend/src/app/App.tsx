@@ -24,7 +24,7 @@ export type AppStore = {
 	isStatusOpen: boolean
 	commandPalleteArgs:
 		| {
-				group: string
+				label: string
 				options: { id: string; label: string; hidden: boolean }[]
 		  }[]
 		| null

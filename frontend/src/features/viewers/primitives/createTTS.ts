@@ -51,7 +51,7 @@ export function createTTS(
 	const window = () =>
 		isPlaying() ? sentences().slice(currentSentence(), currentSentence() + PREFETCH) : []
 
-	const audioUrls = mapArray(window, (sentence) =>
+	const audioUrls = mapArray(window, (sentence: Sentence) =>
 		createMemo(async () => {
 			const controller = new AbortController()
 			let url: string | undefined
@@ -85,7 +85,7 @@ export function createTTS(
 			audio.play().catch(() => {})
 			setViewerStore((draft) => {
 				draft.ttsHighlight = {
-					page: currentPage(),
+					page: currentPage()!,
 					rects: current.sentence.rects
 				}
 			})

@@ -51,7 +51,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 								commands.executeCommand("pdf.updateAnnotation", {
 									arg: {
 										id: props.annotation.id,
-										annotation: { text: data.get("text") }
+										annotation: { text: data.get("text") as string | null }
 									}
 								})
 							}}
@@ -125,7 +125,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 				<Button
 					onClick={() =>
 						commands.executeCommand("pdf.deleteAnnotation", {
-							arg: props.annotation.id
+							arg: { id: props.annotation.id }
 						})
 					}
 				>

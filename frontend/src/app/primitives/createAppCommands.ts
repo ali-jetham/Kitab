@@ -33,7 +33,7 @@ export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 				setAppStore((draft) => {
 					draft.commandPalleteArgs = [
 						{
-							group: "Models",
+							label: "Models",
 							options: models.map(({ id, quality }) => ({
 								id,
 								label: quality,

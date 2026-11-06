@@ -111,15 +111,12 @@ export function createPDFCommands(
 			})
 		}),
 		commands.registerCommand("pdf.deleteBookmark", ({ arg }) => {
-			console.log("pdf.deletebookmark called")
-			if (typeof arg !== "string") {
-				console.log("arg", arg)
-				return
-			}
-			bookmarkApi.deleteBookmark(arg)
-			actions.deleteBookmark(arg)
+			if (!arg) return
+			bookmarkApi.deleteBookmark(arg.id)
+			actions.deleteBookmark(arg.id)
 		}),
 		commands.registerCommand("pdf.updateAnnotation", ({ arg }) => {
+			if (!arg) return
 			actions.updateAnnotation(arg.id, arg.annotation)
 			annotationApi.updateAnnotation(arg.id, arg.annotation)
 		})

@@ -1,5 +1,5 @@
 import { TextField } from "@kobalte/core/text-field"
-import { useSearchParams } from "@solidjs/router"
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router"
 import { createMemo, For, Loading } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import LibraryItem from "./components/LibraryItem"
@@ -8,12 +8,7 @@ import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library() {
 	const [searchParams, setSearchParams] = useSearchParams()
-	const books = createMemo(() => documentApi.getDocs(searchParams.folder ?? null))
-
-	// 	createResource(
-	// 	() => searchParams.folder ?? "",
-	// 	(folder) => documentApi.getDocs(folder || undefined)
-	// )
+	const books = createMemo(() => documentApi.getDocs([searchParams.folder].flat()[0]))
 	createLibraryCommands()
 
 	const filteredBooks = () =>

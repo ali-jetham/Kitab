@@ -22,18 +22,26 @@ export function createPDFGestures(
 	const [trigger, setTrigger] = createSignal(0)
 	const { appStore, setAppStore } = useContext(AppContext)!
 
-	function getDistanceBetweenTouches(e: TouchEvent): number {
-		return Math.hypot(
-			e.touches[0].pageX - e.touches[1].pageX,
-			e.touches[0].pageY - e.touches[1].pageY
-		)
+	function getDistanceBetweenTouches(e: TouchEvent): number | undefined {
+		if (e.touches.length < 2) return undefined
+
+		const first = e.touches.item(0)
+		const second = e.touches.item(1)
+
+		if (!first || !second) return undefined
+
+		return Math.hypot(first.pageX - second.pageX, first.pageY - second.pageY)
 	}
 
-	function getMidpoint(e: TouchEvent): number[] {
-		return [
-			(e.touches[0].clientX + e.touches[1].clientX) / 2,
-			(e.touches[0].clientY + e.touches[1].clientY) / 2
-		]
+	function getMidpoint(e: TouchEvent): number[] | null {
+		if (e.touches.length < 2) return null
+
+		const first = e.touches.item(0)
+		const second = e.touches.item(1)
+
+		if (!first || !second) return null
+
+		return [(first.clientX + second.clientX) / 2, (first.clientY + second.clientY) / 2]
 	}
 
 	function onTapNavigation(e: TouchEvent) {
@@ -47,7 +55,9 @@ export function createPDFGestures(
 		)
 			return
 
-		const touch = e.changedTouches[0]
+		const touch = e.changedTouches.item(0)
+		if (!touch) return
+
 		if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) return
 
 		const size = createWindowSize()
@@ -55,9 +65,9 @@ export function createPDFGestures(
 		e.stopPropagation()
 
 		if (touch.clientX < zoneWidth && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
-			pdfSlickStore?.pdfSlick?.viewer.previousPage()
+			pdfSlickStore.pdfSlick?.viewer.previousPage()
 		} else if (touch.clientX >= zoneWidth * 2 && pdfSlickStore.scrollMode === ScrollMode.PAGE) {
-			pdfSlickStore?.pdfSlick?.viewer.nextPage()
+			pdfSlickStore.pdfSlick?.viewer.nextPage()
 		} else {
 			setAppStore((draft) => {
 				draft.isActionOpen = !draft.isActionOpen
@@ -70,7 +80,7 @@ export function createPDFGestures(
 
 		e.preventDefault()
 		initialScale = pdfSlickStore.scale
-		initialDistance = getDistanceBetweenTouches(e)
+		initialDistance = getDistanceBetweenTouches(e) ?? null
 	}
 
 	function onPinchMove(e: TouchEvent) {
@@ -79,20 +89,27 @@ export function createPDFGestures(
 		if (initialDistance == null) return
 
 		const currentDistance = getDistanceBetweenTouches(e)
-		midpoint = getMidpoint(e)
+		const currentMidpoint = getMidpoint(e)
+
+		if (currentDistance == null || currentMidpoint == null) return
+
+		midpoint = currentMidpoint
 		newScale = initialScale * (currentDistance / initialDistance)
+
 		if (newScale < minScale()) newScale = minScale()
 		if (newScale > maxScale()) newScale = maxScale()
 
 		const zoomFactor = newScale / initialScale
 		const viewer = document.getElementById("viewer")
 		const viewerContainer = pdfSlickStore.pdfSlick?.viewer.container
+
 		if (viewer == null || viewerContainer == null) return
 
 		// Anchor the zoom at the pinch midpoint, in #viewer local coords
 		const rect = viewerContainer.getBoundingClientRect()
 		const originX = midpoint[0] - rect.left + viewerContainer.scrollLeft
 		const originY = midpoint[1] - rect.top + viewerContainer.scrollTop
+
 		viewer.style.transformOrigin = `${originX}px ${originY}px`
 		viewer.style.transform = `scale(${zoomFactor})`
 	}
@@ -123,14 +140,15 @@ export function createPDFGestures(
 
 		const viewer = document.getElementById("viewer")
 		if (viewer != null) viewer.style.transform = ""
+
 		initialDistance = null
 		midpoint = null
 	}
 
 	function handleTouchStart(e: TouchEvent) {
 		if (e.touches.length === 1) {
-			const touch = e.touches[0]
-			tapStart = { x: touch.clientX, y: touch.clientY }
+			const touch = e.touches.item(0)
+			if (touch) tapStart = { x: touch.clientX, y: touch.clientY }
 		}
 
 		if (e.touches.length === 2) {
@@ -142,8 +160,9 @@ export function createPDFGestures(
 
 	function handleTouchMove(e: TouchEvent) {
 		if (e.touches.length === 1 && tapStart) {
-			const touch = e.touches[0]
-			if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) {
+			const touch = e.touches.item(0)
+
+			if (touch && Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) {
 				tapCancelled = true
 			}
 		}

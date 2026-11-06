@@ -1,8 +1,8 @@
 import { Bookmark } from "@lucide/solid"
-import { usePDFSlick } from "@pdfslick/solid"
+import { PDFSlick, usePDFSlick } from "@pdfslick/solid"
 import "@pdfslick/solid/dist/pdf_viewer.css"
 import { Portal } from "@solidjs/web"
-import { createEffect, createStore, isPending, onCleanup, Show } from "solid-js"
+import { Accessor, createEffect, createStore, isPending, onCleanup, Show } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
@@ -58,15 +58,17 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const { documentStore, actions } = createDocumentStore(props.id)
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
 	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
+
 	createPDFCommands(
 		pdfSlickStore,
-		pdfSlick,
+		pdfSlick as Accessor<PDFSlick>, // TODO: check if this type cast is safe
 		viewerStore,
 		setViewerStore,
 		actions,
 		minScale,
 		maxScale
 	)
+
 	createTTS(setViewerStore, pdfSlickStore, props.id)
 	const highlights = createPDFHighlights(
 		pdfSlickStore,

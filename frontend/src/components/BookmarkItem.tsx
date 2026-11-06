@@ -22,7 +22,7 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 			<button
 				onClick={() => {
 					commands.executeCommand("pdf.deleteBookmark", {
-						arg: props.bookmark.id // TODO: bookmark.id is not set on newly created bookmarks
+						arg: { id: props.bookmark.id }
 					})
 				}}
 			>
