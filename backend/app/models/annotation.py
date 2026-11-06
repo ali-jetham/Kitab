@@ -27,10 +27,3 @@ class Annotation(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
     )
-
-
-class PDFRect:
-    x1: float
-    y1: float
-    x2: float
-    y2: float

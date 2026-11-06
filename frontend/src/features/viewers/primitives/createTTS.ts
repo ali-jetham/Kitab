@@ -12,12 +12,12 @@ import {
 import { documentApi } from "../../../api/documentApi"
 import { ttsApi } from "../../../api/ttsApi"
 import { commands } from "../../../core/commands"
-import { PDFRect } from "../../../stores/createDocumentStore"
 import { ViewerStore } from "../components/PDFViewer"
+import { components } from "../../../api/schema"
 
 const PREFETCH = 6
 
-export type Sentence = { text: string; rects: PDFRect[] }
+export type Sentence = components["schemas"]["Sentence"]
 
 export function createTTS(
 	setViewerStore: StoreSetter<ViewerStore>,

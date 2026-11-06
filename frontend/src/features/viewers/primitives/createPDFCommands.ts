@@ -5,6 +5,7 @@ import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
 import { commands } from "../../../core/commands"
 import type { ViewerStore } from "../components/PDFViewer"
+import { v7 as uuidv7 } from "uuid"
 
 export function createPDFCommands(
 	pdfSlickStore: PDFSlickState,
@@ -103,6 +104,7 @@ export function createPDFCommands(
 				page: pdfSlick().viewer.currentPageNumber
 			})
 			bookmarkApi.addBookmark({
+				id: uuidv7(),
 				docId: viewerStore.docId,
 				note: "",
 				page: pdfSlick().viewer.currentPageNumber
@@ -110,7 +112,10 @@ export function createPDFCommands(
 		}),
 		commands.registerCommand("pdf.deleteBookmark", ({ arg }) => {
 			console.log("pdf.deletebookmark called")
-			if (typeof arg !== "number") return
+			if (typeof arg !== "string") {
+				console.log("arg", arg)
+				return
+			}
 			bookmarkApi.deleteBookmark(arg)
 			actions.deleteBookmark(arg)
 		}),

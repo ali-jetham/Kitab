@@ -1,10 +1,10 @@
 import { DeleteIcon, TrashIcon } from "@lucide/solid"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
-import { Bookmark } from "../stores/createDocumentStore"
+import { BookmarkRead } from "../stores/createDocumentStore"
 import styles from "./BookmarkItem.module.css"
 
-type BookmarkItemProps = { bookmark: Bookmark }
+type BookmarkItemProps = { bookmark: BookmarkRead }
 
 export default function BookmarkItem(props: BookmarkItemProps) {
 	const { sideBarStore } = useSideBarContext()
@@ -19,15 +19,14 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 			>
 				<span>{props.bookmark.page}</span>
 			</button>
-			<button>
-				<DeleteIcon
-					onClick={() => {
-						commands.executeCommand("pdf.deleteBookmark", {
-							arg: props.bookmark.id
-						})
-					}}
-					strokeWidth={1.25}
-				/>
+			<button
+				onClick={() => {
+					commands.executeCommand("pdf.deleteBookmark", {
+						arg: props.bookmark.id // TODO: bookmark.id is not set on newly created bookmarks
+					})
+				}}
+			>
+				<DeleteIcon strokeWidth={1.25} />
 			</button>
 		</li>
 	)

@@ -8,7 +8,7 @@ async function addBookmark(bookmark: BookmarkCreate) {
 	return await http(BASE_URL, { method: "POST", body: bookmark })
 }
 
-async function deleteBookmark(id: number) {
+async function deleteBookmark(id: string) {
 	return await http(`${BASE_URL}/${id}`, { method: "DELETE" })
 }
 

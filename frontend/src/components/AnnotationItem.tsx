@@ -8,10 +8,10 @@ import { DotIcon, HighlighterIcon, SquarePenIcon, TrashIcon, UnderlineIcon } fro
 import { createSignal, Match, Show, Switch } from "solid-js"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
-import { Annotation } from "../stores/createDocumentStore"
+import { AnnotationRead } from "../stores/createDocumentStore"
 import styles from "./AnnotationItem.module.css"
 
-type AnnotationItemProps = { annotation: Annotation }
+type AnnotationItemProps = { annotation: AnnotationRead }
 
 export default function AnnotationItem(props: AnnotationItemProps) {
 	const [isEditing, setIsEditing] = createSignal(false)

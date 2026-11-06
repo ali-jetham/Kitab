@@ -16,7 +16,7 @@ class BookmarkService:
         bookmarks = list(self.db.scalars(stmt).all())
         return bookmarks
 
-    def get_bookmark(self, id: int) -> Bookmark:
+    def get_bookmark(self, id: str) -> Bookmark:
         bookmark = self.db.get_one(Bookmark, id)
         return bookmark
 
@@ -25,7 +25,7 @@ class BookmarkService:
         self.db.add(new_bookmark)
         self.db.commit()
 
-    def delete_bookmark(self, id: int) -> None:
+    def delete_bookmark(self, id: str) -> None:
         bm = self.db.get_one(Bookmark, id)
         self.db.delete(bm)
         self.db.commit()

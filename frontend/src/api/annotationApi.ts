@@ -1,5 +1,5 @@
 import { http } from "../core/http"
-import { Annotation, AnnotationCreate } from "../stores/createDocumentStore"
+import { AnnotationUpdate, AnnotationCreate } from "../stores/createDocumentStore"
 
 async function getAllAnnotations() {
 	return await http(`/api/annotations`, { method: "GET" })
@@ -9,7 +9,7 @@ async function addAnnotation(ann: AnnotationCreate) {
 	return await http("/api/annotations", { method: "POST", body: ann })
 }
 
-async function updateAnnotation(id: string, ann: Annotation) {
+async function updateAnnotation(id: string, ann: AnnotationUpdate) {
 	return await http(`/api/annotations/${id}`, { method: "PUT", body: ann })
 }
 

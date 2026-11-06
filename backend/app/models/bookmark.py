@@ -9,7 +9,7 @@ from app.db.database import Base
 class Bookmark(Base):
     __tablename__ = "bookmarks"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
     doc_id: Mapped[str] = mapped_column(ForeignKey("documents.id"))
     page: Mapped[int] = mapped_column()
     note: Mapped[str] = mapped_column(String(length=100))

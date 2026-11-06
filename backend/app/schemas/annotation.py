@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, ValidationInfo, field_validator
 from pydantic.alias_generators import to_camel
 
 from app.models.annotation import Style
+from app.schemas.common import PDFRect
 
 
 class AnnotationBase(BaseModel):
@@ -19,7 +20,7 @@ class AnnotationBase(BaseModel):
 
 
 class AnnotationCreate(AnnotationBase):
-    rects: list
+    rects: list[PDFRect]
     doc_id: str
 
 

@@ -22,7 +22,7 @@ import styles from "./SideBar.module.css"
 type SideBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
 
 export default function SideBar(props: SideBarProps) {
-	const { setSideBarStore, sideBarStore } = useSideBarContext()
+	const { setSideBarStore, sideBarStore, documentStore } = useSideBarContext()
 	const [selectedTab, setSelectedTab] = createSignal("folders")
 	const match = useMatch(() => "/viewer/:id")
 	const location = useLocation()
@@ -103,15 +103,13 @@ export default function SideBar(props: SideBarProps) {
 			</Tabs.Content>
 
 			<Tabs.Content as="ol" class={styles.tabs__content} value="annotations" data-tab="annotations">
-				<For each={sideBarStore.documentStore?.annotations}>
+				<For each={documentStore()?.annotations}>
 					{(annotation) => <AnnotationItem annotation={annotation} />}
 				</For>
 			</Tabs.Content>
 
-			<Tabs.Content class={styles.tabs__content} value="bookmarks">
-				<For each={sideBarStore.documentStore?.bookmarks}>
-					{(bm) => <BookmarkItem bookmark={bm} />}
-				</For>
+			<Tabs.Content as="ol" class={styles.tabs__content} value="bookmarks">
+				<For each={documentStore()?.bookmarks}>{(bm) => <BookmarkItem bookmark={bm} />}</For>
 			</Tabs.Content>
 
 			<Tabs.Content

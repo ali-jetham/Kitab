@@ -11,6 +11,7 @@ from app.schemas.document import (
     DocumentRead,
     DocumentUpdate,
     FilterParams,
+    Sentence,
 )
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
@@ -44,7 +45,7 @@ def get_document_file(id: DocumentId, service: DocumentServiceDep) -> FileRespon
     )
 
 
-@router.get("/{id}/{page}/text")
+@router.get("/{id}/{page}/text", status_code=200, response_model=list[Sentence])
 def get_document_page_text(id: DocumentId, page: int, service: DocumentServiceDep):
     return service.get_page_text(id, page)
 

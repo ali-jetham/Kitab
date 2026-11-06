@@ -6,6 +6,7 @@ from pydantic.alias_generators import to_camel
 from app.models.document import FileType
 from app.schemas.annotation import AnnotationRead
 from app.schemas.bookmark import BookmarkRead
+from app.schemas.common import PDFRect
 
 XXH3_128_HEX = r"^[0-9a-f]{32}$"
 DocumentId = Annotated[str, StringConstraints(pattern=XXH3_128_HEX)]
@@ -16,6 +17,11 @@ class FilterParams(BaseModel):
     limit: int = Field(100, gt=0, le=100)
     offset: int = Field(0, ge=0)
     order_by: Literal["title", "created_at", "updated_at", "file_name"] = "file_name"
+
+
+class Sentence(BaseModel):
+    text: str
+    rects: list[PDFRect]
 
 
 class DocumentBase(BaseModel):

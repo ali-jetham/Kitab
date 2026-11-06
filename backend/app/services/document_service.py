@@ -1,15 +1,15 @@
 import io
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import cast
-from PIL import Image, ImageOps
+from typing import TypedDict, cast
 
 import pikepdf
 import pymupdf
 import pymupdf4llm
 import sentencex
 import xxhash
-from ebooklib import epub, ITEM_COVER, ITEM_IMAGE
+from ebooklib import ITEM_COVER, ITEM_IMAGE, epub
+from PIL import Image, ImageOps
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session, load_only, selectinload
 
@@ -18,6 +18,11 @@ from app.models.document import Document
 from app.schemas.document import DocumentUpdate, FilterParams
 from app.utils import helper
 from app.utils.helper import normalize_pikepdf_value
+
+
+class SentenceDict(TypedDict):
+    text: str
+    rects: list[pymupdf.Rect]
 
 
 class DocumentService:
@@ -84,7 +89,7 @@ class DocumentService:
             raise FileNotFoundError
         return str(cover_path)
 
-    def get_page_text(self, id: str, page_number: int):
+    def get_page_text(self, id: str, page_number: int) -> list:
         document_path = self.get_document_file(id)
 
         text = cast(
@@ -97,20 +102,20 @@ class DocumentService:
                 table_format="plain",
             ),
         )
-        sentences: list[str] = sentencex.segment("en", text)  # pyright: ignore[reportAttributeAccessIssue]
+        sentences: list[str] = sentencex.segment("en", text)  # ty: ignore[unresolved-attribute]
         sentences = [s.strip() for s in sentences if s.strip()]
 
         doc = pymupdf.open(document_path)
         page = doc[page_number - 1]
         words = page.get_text("words", sort=True)
-        sentence_objects = []
+        sentence_objects: list[SentenceDict] = []
 
         for sentence in sentences:
             rects = page.search_for(sentence)
             if not rects:
                 rects = self._find_sentence_rects(sentence, words)
 
-            sentence_object = {"text": sentence, "rects": rects}
+            sentence_object: SentenceDict = {"text": sentence, "rects": rects}
             sentence_objects.append(sentence_object)
 
         return sentence_objects
@@ -223,7 +228,9 @@ class DocumentService:
                 if cover is not None:
                     with Image.open(io.BytesIO(cover.get_content())) as img:
                         img = ImageOps.exif_transpose(img).convert("RGB")
-                        img = ImageOps.fit(img, (target_w, target_h), Image.Resampling.LANCZOS)
+                        img = ImageOps.fit(
+                            img, (target_w, target_h), Image.Resampling.LANCZOS
+                        )
                         img.save(cover_path, "JPEG", quality=75, optimize=True)
 
     def _find_epub_cover(self, book: epub.EpubBook):

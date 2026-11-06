@@ -1,69 +1,28 @@
-import { Accessor } from "solid-js"
-import { createStore, reconcile } from "solid-js"
-export type PDFRect = [llx: number, lly: number, urx: number, ury: number]
+import { type Accessor, createStore, reconcile } from "solid-js"
+import type { components } from "../api/schema"
+import { documentApi } from "../api/documentApi"
 
-export type Annotation = {
-	id: string
-	docId: string
-	page: number
-	text: string
-	style: "highlight" | "underline"
-	color: string
-	note: string
-	rects: PDFRect[]
-	createdAt: string
-	updatedAt: string
-}
-export type AnnotationCreate = Omit<Annotation, "createdAt" | "updatedAt">
-export type AnnotationUpdate = Partial<
-	Omit<Annotation, "id" | "docId" | "rects" | "createdAt" | "updatedAt">
->
+export type PDFRect = components["schemas"]["PDFRect"]
 
-export type Bookmark = {
-	id: number
-	docId: string
-	page: number
-	note: string
-	createdAt: string
-	updatedAt: string
-}
-export type BookmarkCreate = Omit<Bookmark, "id" | "createdAt" | "updatedAt">
+export type AnnotationBase = components["schemas"]["AnnotationBase"]
+export type AnnotationRead = components["schemas"]["AnnotationRead"]
+export type AnnotationCreate = components["schemas"]["AnnotationCreate"]
+export type AnnotationUpdate = components["schemas"]["AnnotationUpdate"]
 
-export type Document = {
-	id: string
-	primaryColor: string
-	annotations: Annotation[]
-	bookmarks: Bookmark[]
-	location: []
-	isDirty: boolean
-}
+export type BookmarkCreate = components["schemas"]["BookmarkCreate"]
+export type BookmarkRead = components["schemas"]["BookmarkRead"]
+
+export type Document = components["schemas"]["DocumentRead"]
 
 export function createDocumentStore(id: string) {
-	const [documentStore, setDocumentStore] = createStore<Document>({
-		id: id,
-		primaryColor: "",
-		annotations: [],
-		bookmarks: [],
-		location: [],
-		isDirty: false
-	})
-
-	async function init(doc: Document) {
-		setDocumentStore(
-			reconcile({
-				id,
-				primaryColor: doc.primaryColor,
-				annotations: doc.annotations ?? [],
-				bookmarks: doc.bookmarks ?? [],
-				location: doc.location ?? [],
-				isDirty: false
-			})
-		)
-	}
+	const [documentStore, setDocumentStore] = createStore<Document>(async () =>
+		documentApi.getDoc(id)
+	)
 
 	async function addAnnotation(annotation: AnnotationCreate) {
+		const now = new Date().toUTCString()
 		setDocumentStore((draft) => {
-			draft.annotations.push(annotation)
+			draft.annotations.push({ ...annotation, createdAt: now, updatedAt: now })
 		})
 	}
 
@@ -80,17 +39,18 @@ export function createDocumentStore(id: string) {
 		})
 	}
 
-	function getAnnotationsByPage(page: number): Accessor<Annotation[]> {
+	function getAnnotationsByPage(page: number): Accessor<AnnotationBase[]> {
 		return () => documentStore.annotations.filter((ann) => ann.page === page)
 	}
 
 	function addBookmark(bookmark: BookmarkCreate) {
+		const now = new Date().toUTCString()
 		setDocumentStore((draft) => {
-			draft.bookmarks.push(bookmark)
+			draft.bookmarks.push({ ...bookmark, createdAt: now, updatedAt: now })
 		})
 	}
 
-	function deleteBookmark(id: number) {
+	function deleteBookmark(id: string) {
 		setDocumentStore((draft) => {
 			draft.bookmarks = draft.bookmarks.filter((bm) => bm.id !== id)
 		})
@@ -99,7 +59,6 @@ export function createDocumentStore(id: string) {
 	return {
 		documentStore,
 		actions: {
-			init,
 			addAnnotation,
 			deleteAnnotation,
 			getAnnotationsByPage,

@@ -12,7 +12,7 @@ def get_bookmarks(service: BookmarkServiceDep):
 
 
 @router.get("/{id}", status_code=200, response_model=BookmarkRead)
-def get_bookmark(id: int, service: BookmarkServiceDep):
+def get_bookmark(id: str, service: BookmarkServiceDep):
     return service.get_bookmark(id)
 
 
@@ -22,5 +22,5 @@ def add_bookmark(bookmark: BookmarkCreate, service: BookmarkServiceDep):
 
 
 @router.delete("/{id}", status_code=204)
-def delete_bookmark(id: int, service: BookmarkServiceDep):
+def delete_bookmark(id: str, service: BookmarkServiceDep):
     return service.delete_bookmark(id)

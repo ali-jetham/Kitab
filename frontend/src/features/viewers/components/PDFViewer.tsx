@@ -2,12 +2,11 @@ import { Bookmark } from "@lucide/solid"
 import { usePDFSlick } from "@pdfslick/solid"
 import "@pdfslick/solid/dist/pdf_viewer.css"
 import { Portal } from "@solidjs/web"
-import { createEffect, createStore, onCleanup, Show } from "solid-js"
+import { createEffect, createStore, isPending, onCleanup, Show } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
-import { createDocumentSync } from "../primitives/createDocumentSync"
 import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
 import { createPDFHighlights } from "../primitives/createPDFHighlight"
@@ -31,7 +30,7 @@ type PDFViewerProps = { id: string }
 export default function PDFViewer(props: PDFViewerProps) {
 	let containerRef!: HTMLDivElement
 	const url = documentApi.getFileUrl(props.id)
-	const { sideBarStore, setSideBarStore } = useSideBarContext()
+	const { sideBarStore, setSideBarStore, setDocumentStore } = useSideBarContext()
 	const { setStatusStore } = useStatusBarContext()
 
 	const { viewerRef, thumbsRef, pdfSlickStore, pdfSlick, PDFSlickViewer, error } = usePDFSlick(
@@ -58,7 +57,6 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	const { documentStore, actions } = createDocumentStore(props.id)
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
-	createDocumentSync(props.id, actions)
 	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
 	createPDFCommands(
 		pdfSlickStore,
@@ -98,8 +96,8 @@ export default function PDFViewer(props: PDFViewerProps) {
 					draft.tocState = { status: "error", outline: null }
 				})
 			} else if (pagesReady) {
+				setDocumentStore(documentStore)
 				setSideBarStore((draft) => {
-					draft.documentStore = documentStore
 					draft.tocState = { status: "ready", outline: outline }
 					draft.navigate = (dest: string | any[]) => pdfSlick()?.linkService.goToDestination(dest)
 				})
@@ -115,16 +113,12 @@ export default function PDFViewer(props: PDFViewerProps) {
 		}
 	)
 	onCleanup(() => {
+		setDocumentStore(null)
 		setSideBarStore((draft) => {
 			draft.tocState = { status: "empty", outline: null }
 		})
-		setSideBarStore((draft) => {
-			draft.documentStore = null
-		})
 		setStatusStore((draft) => {
 			draft.currentPage = null
-		})
-		setStatusStore((draft) => {
 			draft.totalPages = null
 		})
 	})

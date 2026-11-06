@@ -1,8 +1,8 @@
 import { Collapsible } from "@kobalte/core/collapsible"
 import { ChevronDownIcon } from "@lucide/solid"
-import { JSX, Show, useContext } from "solid-js"
-import { AppContext, useAppContext } from "../app/App"
-import { useSideBarContext } from "../app/contexts/SideBarContext"
+import { Show } from "solid-js"
+import { JSX } from "@solidjs/web/jsx-runtime"
+import { useAppContext } from "../app/App"
 import styles from "./TreeItem.module.css"
 
 export interface TreeItemProps {
@@ -26,7 +26,9 @@ export function TreeItem(props: TreeItemProps) {
 						e.preventDefault()
 						props.onClick()
 						if (appStore.isMobile()) {
-							setAppStore("isSideBarOpen", false)
+							setAppStore((draft) => {
+								draft.isSideBarOpen = false
+							})
 						}
 					}}
 				>

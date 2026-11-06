@@ -1,5 +1,5 @@
 import { Accessor, For, Show } from "solid-js"
-import { type Annotation } from "../../../stores/createDocumentStore"
+import { type AnnotationRead } from "../../../stores/createDocumentStore"
 import {
 	convertToSVGRect,
 	getPageDimensions,
@@ -11,7 +11,7 @@ import type { ViewerStore } from "./PDFViewer"
 type PDFHighlightLayerProps = {
 	page: any
 	pageNumber: number
-	annotations: Accessor<Annotation[]>
+	annotations: Accessor<AnnotationRead[]>
 	onSelectAnnotation: (id: string) => void
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 }
