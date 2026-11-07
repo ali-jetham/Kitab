@@ -135,11 +135,11 @@ class DocumentService:
 
         for path in self.library_path.rglob("*"):
             if path.is_file() and path.suffix.lower() in self.valid_files:
-                print(path)
                 id = self._generate_content_hash(path)
+                rel = self._get_relative_path(path)
                 if id in documents:
-                    if documents[id].file_path != str(path):
-                        documents[id].file_path = str(self._get_relative_path(path))
+                    if documents[id].file_path != str(rel.parent):
+                        documents[id].file_path = str(rel.parent)
                         documents[id].file_name = path.stem
                     continue
 
@@ -168,8 +168,8 @@ class DocumentService:
                     created_at=datetime.now(UTC),
                 )
                 new_documents.append(document)
-            self.db.add_all(new_documents)
-            self.db.commit()
+        self.db.add_all(new_documents)
+        self.db.commit()
 
     def _get_relative_path(self, path: Path) -> Path:
         return path.relative_to(self.library_path)
@@ -275,7 +275,6 @@ class DocumentService:
         documents = list(self.db.scalars(select(Document)).all())
         for doc in documents:
             path = self.library_path / doc.file_path / (doc.file_name + doc.file_type)
-            print(path)
             if not path.is_file():
                 raise FileNotFoundError(f"File missing for id: {doc.id}")
             self._generate_cover(doc.id, path)

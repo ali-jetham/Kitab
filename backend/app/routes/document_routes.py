@@ -60,12 +60,6 @@ def get_document_cover(id: DocumentId, service: DocumentServiceDep):
     )
 
 
-# TODO: use a job and return the job_id
-@router.post("/scan")
-def scan_documents(service: DocumentServiceDep):
-    service.scan()
-
-
 @router.post("/refresh")
 def refresh_covers(service: DocumentServiceDep):
     service.refresh_covers()

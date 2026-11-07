@@ -15,12 +15,16 @@ from app.routes import (
     settings_routes,
     tts_routes,
 )
+from app.services.watcher_service import WatcherService
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    watcher = WatcherService()
+    await watcher.start()
     yield
+    await watcher.stop()
 
 
 app = FastAPI(lifespan=lifespan)

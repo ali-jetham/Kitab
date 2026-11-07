@@ -17,6 +17,7 @@ dependencies = [
   "pytest>=9.1.1",
   "sentencex>=1.0.32",
   "ebooklib>=0.21",
+  "watchfiles>=1.2.0",
 ]
 
 [dependency-groups]

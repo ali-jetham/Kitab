@@ -57,6 +57,7 @@ dependencies = [
     { name = "sentencex" },
     { name = "soundfile" },
     { name = "sqlalchemy" },
+    { name = "watchfiles" },
     { name = "xxhash" },
 ]
 
@@ -78,6 +79,7 @@ requires-dist = [
     { name = "sentencex", specifier = ">=1.0.32" },
     { name = "soundfile", specifier = ">=0.14.0" },
     { name = "sqlalchemy", specifier = ">=2.0.51" },
+    { name = "watchfiles", specifier = ">=1.2.0" },
     { name = "xxhash", specifier = ">=3.7.0" },
 ]
 
