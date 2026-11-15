@@ -8,14 +8,24 @@ import {
 	TableOfContentsIcon
 } from "@lucide/solid"
 import { useLocation, useMatch } from "@solidjs/router"
-import { createMemo, createSignal, For, Match, onCleanup, Show, Switch } from "solid-js"
-import { type StoreSetter } from "solid-js"
+import {
+	createMemo,
+	createSignal,
+	For,
+	Loading,
+	Match,
+	onCleanup,
+	Show,
+	type StoreSetter,
+	Switch
+} from "solid-js"
 import { documentApi } from "../../api/documentApi"
+import type { AppStore } from "../../app/contexts/AppContext"
 import AnnotationItem from "../../components/AnnotationItem"
 import BookmarkItem from "../../components/BookmarkItem"
 import { FolderNode } from "../../components/FolderNode"
+import Spinner from "../../components/Spinner"
 import TocNode from "../../components/TocNode"
-import { AppStore } from "../App"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
 
@@ -28,7 +38,6 @@ export default function SideBar(props: SideBarProps) {
 	const location = useLocation()
 	const folders = createMemo(() => documentApi.getDocsFolders())
 
-	// dprint-ignore
 	const tabs = [
 		{
 			label: "Folders",
@@ -86,7 +95,9 @@ export default function SideBar(props: SideBarProps) {
 			</Tabs.List>
 
 			<Tabs.Content as="ul" value="folders" class={styles.tabs__content}>
-				<For each={folders()}>{(folder) => <FolderNode {...folder} />}</For>
+				<Loading fallback={<Spinner />}>
+					<For each={folders()}>{(folder) => <FolderNode {...folder} />}</For>
+				</Loading>
 			</Tabs.Content>
 
 			<Tabs.Content class={styles.tabs__content} value="toc">
@@ -96,7 +107,7 @@ export default function SideBar(props: SideBarProps) {
 					</Match>
 					<Match when={sideBarStore.tocState.status === "ready"}>
 						<ol class={styles.tabs__content}>
-							<For each={sideBarStore.tocState.outline}>{(item) => <TocNode outline={item} />}</For>
+							<For each={sideBarStore.tocState.outline}>{(item) => <TocNode item={item} />}</For>
 						</ol>
 					</Match>
 				</Switch>

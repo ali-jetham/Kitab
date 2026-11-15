@@ -1,19 +1,13 @@
-import { onCleanup } from "solid-js"
-import { StoreSetter } from "solid-js"
+import { onCleanup, type StoreSetter } from "solid-js"
 import { ttsApi } from "../../api/ttsApi"
 import { commands } from "../../core/commands"
-import { type AppStore } from "../App"
+import type { AppStore } from "../contexts/AppContext"
 
 export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 	const unregisters = [
 		commands.registerCommand("app.pallete.toggle", () =>
 			setAppStore((draft) => {
 				draft.isCommandPalleteOpen = !draft.isCommandPalleteOpen
-			})
-		),
-		commands.registerCommand("app.pallete.close", () =>
-			setAppStore((draft) => {
-				draft.isCommandPalleteOpen = false
 			})
 		),
 		commands.registerCommand("app.sidebar.toggle", () =>
@@ -59,6 +53,8 @@ export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 	]
 
 	onCleanup(() => {
-		unregisters.forEach((unregister) => unregister())
+		unregisters.forEach((unregister) => {
+			unregister()
+		})
 	})
 }

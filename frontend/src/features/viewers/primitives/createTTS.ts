@@ -1,4 +1,4 @@
-import { PDFSlickState } from "@pdfslick/core"
+import type { PDFSlickState } from "@pdfslick/core"
 import { makeEventListener } from "@solid-primitives/event-listener"
 import {
 	createEffect,
@@ -10,10 +10,10 @@ import {
 	type StoreSetter
 } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
+import type { components } from "../../../api/schema"
 import { ttsApi } from "../../../api/ttsApi"
 import { commands } from "../../../core/commands"
-import { ViewerStore } from "../components/PDFViewer"
-import { components } from "../../../api/schema"
+import type { ViewerStore } from "../components/PDFViewer"
 
 const PREFETCH = 6
 

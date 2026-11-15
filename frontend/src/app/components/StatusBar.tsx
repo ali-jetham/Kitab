@@ -1,8 +1,7 @@
 import { Tooltip } from "@kobalte/core/tooltip"
 import { PanelLeftCloseIcon, PanelLeftIcon } from "@lucide/solid"
-import { Show } from "solid-js"
-import { type StoreSetter } from "solid-js"
-import { AppStore } from "../App"
+import { Show, type StoreSetter } from "solid-js"
+import type { AppStore } from "../contexts/AppContext"
 import { useStatusBarContext } from "../contexts/StatusBarContext"
 import styles from "./StatusBar.module.css"
 

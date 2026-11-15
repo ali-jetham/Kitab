@@ -1,19 +1,29 @@
-import type { TPDFDocumentOutline } from "@pdfslick/core"
-import { createContext, createSignal, type ParentProps, SourceAccessor, useContext } from "solid-js"
-import { createStore, type StoreSetter } from "solid-js"
-import { Document } from "../../stores/createDocumentStore"
+import {
+	createContext,
+	createSignal,
+	createStore,
+	type ParentProps,
+	type SourceAccessor,
+	type StoreSetter,
+	useContext
+} from "solid-js"
+import type { Document } from "../../stores/createDocumentStore"
 
-type Navigate = (dest: string | any[]) => void
+export type TocItem = {
+	label: string
+	target: unknown
+	children?: TocItem[]
+}
 
 export type TocState =
 	| { status: "loading"; outline: null }
-	| { status: "ready"; outline: TPDFDocumentOutline | null }
+	| { status: "ready"; outline: TocItem[] | null }
 	| { status: "error"; outline: null }
 	| { status: "empty"; outline: null }
 
 type SideBarStore = {
 	tocState: TocState
-	navigate: Navigate | null
+	navigate: ((target: unknown) => void) | null
 	thumbnailsSlot: HTMLElement | null
 }
 

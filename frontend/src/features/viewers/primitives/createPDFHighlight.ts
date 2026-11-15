@@ -1,13 +1,19 @@
 import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
 import { debounce } from "@solid-primitives/scheduled"
 import { createComponent, render } from "@solidjs/web"
-import { type Accessor, createEffect, createSignal, onCleanup, onSettled } from "solid-js"
-import { StoreSetter } from "solid-js"
+import {
+	type Accessor,
+	createEffect,
+	createSignal,
+	onCleanup,
+	onSettled,
+	type StoreSetter
+} from "solid-js"
 import { v7 as uuid7 } from "uuid"
 import { annotationApi } from "../../../api/annotationApi"
 import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore"
 import PDFHighlightLayer from "../components/PDFHighlightLayer"
-import { ViewerStore } from "../components/PDFViewer"
+import type { ViewerStore } from "../components/PDFViewer"
 
 export type SVGRect = { x: number; y: number; width: number; height: number }
 

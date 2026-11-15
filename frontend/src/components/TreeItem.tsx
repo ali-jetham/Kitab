@@ -1,8 +1,8 @@
 import { Collapsible } from "@kobalte/core/collapsible"
 import { ChevronDownIcon } from "@lucide/solid"
+import type { JSX } from "@solidjs/web/jsx-runtime"
 import { Show } from "solid-js"
-import { JSX } from "@solidjs/web/jsx-runtime"
-import { useAppContext } from "../app/App"
+import { useAppContext } from "../app/contexts/AppContext"
 import styles from "./TreeItem.module.css"
 
 export interface TreeItemProps {

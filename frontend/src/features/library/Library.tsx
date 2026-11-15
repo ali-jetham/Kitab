@@ -1,5 +1,5 @@
 import { TextField } from "@kobalte/core/text-field"
-import { useLocation, useNavigate, useSearchParams } from "@solidjs/router"
+import { useSearchParams } from "@solidjs/router"
 import { createMemo, For, Loading } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import LibraryItem from "./components/LibraryItem"

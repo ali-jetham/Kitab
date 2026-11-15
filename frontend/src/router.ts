@@ -1,12 +1,12 @@
 import { createRouter, defineRoutes } from "@solidjs/router"
-import App from "./app/App"
+import AppLayout from "./app/AppShell"
 import Library from "./features/library/Library"
 import Viewer from "./features/viewers/Viewer"
 
 const routes = defineRoutes([
 	{
 		path: "/",
-		component: App,
+		component: AppLayout,
 		children: [
 			{ path: "/", component: Library },
 			{ path: "/viewer", component: Viewer },

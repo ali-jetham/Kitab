@@ -1,50 +1,69 @@
-import { CommandId } from "./commands"
+import { createEffect } from "solid-js"
+import { tinykeys } from "tinykeys"
+import { type CommandId, type Context, commands } from "./commands"
 
 type Keybind = {
 	key: string
 	command: CommandId
-	context: KeybindContext
+	context: Context
 	isInputAllowed?: boolean
 }
-type KeybindContext = "global" | "viewer" | "pallete"
 
+// biome-ignore format: Manual formatting
 export const keymap: readonly Keybind[] = [
-	{ key: "Shift+:", command: "app.pallete.toggle", context: "global" },
-	{
-		key: "escape",
-		command: "app.pallete.close",
-		context: "pallete",
-		isInputAllowed: true
-	},
-	{
-		key: "t h",
-		command: "app.sidebar.toggle",
-		context: "global",
-		isInputAllowed: false
-	},
-	{
-		key: "t j",
-		command: "app.statusbar.toggle",
-		context: "global",
-		isInputAllowed: false
-	},
+	{ key: "Shift+:", command: "app.pallete.toggle", context: "app" },
+	{ key: "t h", command: "app.sidebar.toggle", context: "app", isInputAllowed: false	},
+	{ key: "t j", command: "app.statusbar.toggle", context: "app", isInputAllowed: false	},
 
-	{ key: "f h", command: "pdf.fitHeight", context: "viewer" },
-	{ key: "f w", command: "pdf.fitWidth", context: "viewer" },
-	{ key: "=", command: "pdf.zoomIn", context: "viewer" },
-	{ key: "-", command: "pdf.zoomOut", context: "viewer" },
-	{ key: "j", command: "pdf.scrollDown", context: "viewer" },
-	{ key: "k", command: "pdf.scrollUp", context: "viewer" },
-	{ key: "pagedown", command: "pdf.nextPage", context: "viewer" },
-	{ key: "pageup", command: "pdf.prevPage", context: "viewer" },
-	{ key: "n", command: "pdf.nextPage", context: "viewer" },
-	{ key: "p", command: "pdf.prevPage", context: "viewer" },
-	{ key: "r", command: "pdf.rotateClockwise", context: "viewer" },
-	{ key: "Shift+R", command: "pdf.rotateAntiClockwise", context: "viewer" },
+	{ key: "f h", command: "pdf.fitH", context: "pdf" },
+	{ key: "f w", command: "pdf.fitW", context: "pdf" },
+	{ key: "=", command: "pdf.zoomIn", context: "pdf" },
+	{ key: "-", command: "pdf.zoomOut", context: "pdf" },
+	{ key: "j", command: "pdf.scrollDown", context: "pdf" },
+	{ key: "k", command: "pdf.scrollUp", context: "pdf" },
+	{ key: "pagedown", command: "pdf.pageN", context: "pdf" },
+	{ key: "pageup", command: "pdf.pageP", context: "pdf" },
+	{ key: "n", command: "pdf.pageN", context: "pdf" },
+	{ key: "p", command: "pdf.pageP", context: "pdf" },
+	{ key: "r", command: "pdf.rotateCW", context: "pdf" },
+	{ key: "Shift+R", command: "pdf.rotateACW", context: "pdf" },
+	{ key: "g g", command: "pdf.gotoFirstPage", context: "pdf" },
+	{ key: "Shift+G", command: "pdf.gotoLastPage", context: "pdf" },
+	{ key: "d h", command: "pdf.annotation.d", context: "pdf" },
+	{ key: "b a", command: "pdf.bookmark.a", context: "pdf" },
 
-	{ key: "g g", command: "pdf.gotoFirstPage", context: "viewer" },
-	{ key: "Shift+G", command: "pdf.gotoLastPage", context: "viewer" },
-
-	{ key: "d h", command: "pdf.deleteAnnotation", context: "viewer" },
-	{ key: "b a", command: "pdf.addBookmark", context: "viewer" }
+	{ key: "j", command: "epub.goRight", context: "epub" },
+	{ key: "k", command: "epub.goLeft", context: "epub" },
+	{ key: "n", command: "epub.sectionN", context: "epub" },
+	{ key: "p", command: "epub.sectionP", context: "epub" },
+	{ key: "=", command: "epub.textIn", context: "epub" },
+	{ key: "-", command: "epub.textDec", context: "epub" },
 ]
+
+function buildBindings(ctx: Context) {
+	const bindings: Record<string, (event: KeyboardEvent) => void> = {}
+
+	for (const binding of keymap) {
+		if (binding.context !== "app" && binding.context !== ctx) continue
+
+		bindings[binding.key] = (event) => {
+			event.preventDefault()
+			commands.executeCommand(binding.command, { event })
+			console.log(binding.key, "pressed")
+			console.log(binding.command)
+		}
+	}
+
+	return bindings
+}
+
+export function attachKeybinds(target: Window | HTMLElement, context: () => Context) {
+	let unsubscribe: (() => void) | undefined
+
+	createEffect(context, (ctx) => {
+		unsubscribe?.()
+		unsubscribe = tinykeys(target, buildBindings(ctx))
+	})
+
+	return () => unsubscribe?.()
+}

@@ -12,11 +12,7 @@ async function getDocs(folder?: string) {
 }
 
 async function getDocsFolders() {
-	return await http("api/documents:folders", { method: "GET" })
-}
-
-async function scanDocs() {
-	return await http("api/documents/scan", { method: "POST" })
+	return await http("/api/documents:folders", { method: "GET" })
 }
 
 async function refreshCovers() {
@@ -45,6 +41,5 @@ export const documentApi = {
 	getCoverUrl,
 	getFileUrl,
 	getPageText,
-	scanDocs,
 	refreshCovers
 }

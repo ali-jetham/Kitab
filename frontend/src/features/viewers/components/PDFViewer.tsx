@@ -1,11 +1,13 @@
 import { Bookmark } from "@lucide/solid"
-import { PDFSlick, usePDFSlick } from "@pdfslick/solid"
+import { usePDFSlick } from "@pdfslick/solid"
 import "@pdfslick/solid/dist/pdf_viewer.css"
 import { Portal } from "@solidjs/web"
-import { Accessor, createEffect, createStore, isPending, onCleanup, Show } from "solid-js"
+import { createEffect, createStore, onCleanup, onSettled, Show } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
+import { useAppContext } from "../../../app/contexts/AppContext"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
+import { helper } from "../../../core/helper"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
 import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
@@ -28,10 +30,10 @@ export type ViewerStore = {
 type PDFViewerProps = { id: string }
 
 export default function PDFViewer(props: PDFViewerProps) {
-	let containerRef!: HTMLDivElement
 	const url = documentApi.getFileUrl(props.id)
 	const { sideBarStore, setSideBarStore, setDocumentStore } = useSideBarContext()
 	const { setStatusStore } = useStatusBarContext()
+	const { setAppStore } = useAppContext()
 
 	const { viewerRef, thumbsRef, pdfSlickStore, pdfSlick, PDFSlickViewer, error } = usePDFSlick(
 		url,
@@ -56,19 +58,17 @@ export default function PDFViewer(props: PDFViewerProps) {
 	})
 
 	const { documentStore, actions } = createDocumentStore(props.id)
-	const { minScale, maxScale } = createPDFLayout(pdfSlickStore)
-	createPDFGestures(pdfSlickStore, () => containerRef, minScale, maxScale, viewerStore)
-
+	const { minScale, maxScale } = createPDFLayout(pdfSlickStore, pdfSlick)
+	const el = createPDFGestures(pdfSlickStore, pdfSlick, minScale, maxScale, viewerStore)
 	createPDFCommands(
 		pdfSlickStore,
-		pdfSlick as Accessor<PDFSlick>, // TODO: check if this type cast is safe
+		pdfSlick,
 		viewerStore,
 		setViewerStore,
 		actions,
 		minScale,
 		maxScale
 	)
-
 	createTTS(setViewerStore, pdfSlickStore, props.id)
 	const highlights = createPDFHighlights(
 		pdfSlickStore,
@@ -79,18 +79,21 @@ export default function PDFViewer(props: PDFViewerProps) {
 		() => viewerStore.ttsHighlight
 	)
 	const hasBookmark = () => {
-		const currentPage = pdfSlickStore.pageNumber
-		if (!currentPage) return false
-		return documentStore.bookmarks.some((bm) => bm.page === currentPage)
+		if (!pdfSlickStore.pageNumber) return false
+		return documentStore.bookmarks.some((bm) => bm.page === pdfSlickStore.pageNumber)
 	}
+
+	onSettled(() => {
+		setAppStore((draft) => {
+			draft.context = "pdf"
+		})
+	})
 
 	createEffect(
 		() => ({
 			error: error(),
 			pagesReady: pdfSlickStore.pagesReady,
-			outline: pdfSlickStore.documentOutline,
-			page: pdfSlickStore.pageNumber,
-			total: pdfSlickStore.numPages
+			outline: pdfSlickStore.documentOutline
 		}),
 		({ error, pagesReady, outline }) => {
 			if (error) {
@@ -100,12 +103,8 @@ export default function PDFViewer(props: PDFViewerProps) {
 			} else if (pagesReady) {
 				setDocumentStore(documentStore)
 				setSideBarStore((draft) => {
-					draft.tocState = { status: "ready", outline: outline }
-					draft.navigate = (dest: string | any[]) => pdfSlick()?.linkService.goToDestination(dest)
-				})
-				setStatusStore((draft) => {
-					draft.currentPage = pdfSlickStore.pageNumber
-					draft.totalPages = pdfSlickStore.numPages
+					draft.tocState = { status: "ready", outline: outline?.map(helper.fromPDFOutline) ?? null }
+					draft.navigate = (dest) => pdfSlick()?.linkService.goToDestination(dest as string | any[])
 				})
 			} else {
 				setSideBarStore((draft) => {
@@ -114,6 +113,22 @@ export default function PDFViewer(props: PDFViewerProps) {
 			}
 		}
 	)
+
+	createEffect(
+		() => ({
+			ready: pdfSlickStore.pagesReady,
+			page: pdfSlickStore.pageNumber,
+			total: pdfSlickStore.numPages
+		}),
+		({ ready, page, total }) => {
+			if (!ready) return
+			setStatusStore((draft) => {
+				draft.currentPage = page
+				draft.totalPages = total
+			})
+		}
+	)
+
 	onCleanup(() => {
 		setDocumentStore(null)
 		setSideBarStore((draft) => {
@@ -133,16 +148,8 @@ export default function PDFViewer(props: PDFViewerProps) {
 				</Portal>
 			</Show>
 
-			<div ref={containerRef} class="pdfslick-container pdfSlick">
-				<Show
-					when={!error()}
-					fallback={
-						<div class={styles.error}>
-							<p>This document couldn't be loaded.</p>
-							<p>Consider running the Scan library command.</p>
-						</div>
-					}
-				>
+			<div ref={el} class="pdfslick-container pdfSlick">
+				<Show when={!error()} fallback={<p>This document couldn't be loaded.</p>}>
 					<PDFSlickViewer viewerRef={viewerRef} store={pdfSlickStore} pdfSlick={pdfSlick} />
 				</Show>
 

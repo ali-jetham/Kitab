@@ -7,12 +7,7 @@ export function createLibraryCommands() {
 	const navigate = useNavigate()
 
 	const unregisters = [
-		commands.registerCommand("library.scan", async () => {
-			const res = await documentApi.scanDocs()
-		}),
-		commands.registerCommand("library.refreshCovers", () => {
-			const res = documentApi.refreshCovers()
-		}),
+		commands.registerCommand("library.refreshCovers", () => documentApi.refreshCovers()),
 		commands.registerCommand("library.folderSelect", ({ arg }) => {
 			if (!arg) return
 			navigate(`/?folder=${encodeURIComponent(arg)}`)
@@ -20,6 +15,8 @@ export function createLibraryCommands() {
 	]
 
 	onCleanup(() => {
-		unregisters.forEach((unregister) => unregister())
+		unregisters.forEach((unregister) => {
+			unregister()
+		})
 	})
 }

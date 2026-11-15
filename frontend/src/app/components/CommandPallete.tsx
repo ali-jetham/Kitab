@@ -1,8 +1,7 @@
 import { Combobox } from "@kobalte/core/combobox"
-import { createSignal, onSettled } from "solid-js"
-import { StoreSetter } from "solid-js"
+import { createSignal, onSettled, type StoreSetter } from "solid-js"
 import { type Command, commands } from "../../core/commands"
-import { AppStore } from "../App"
+import type { AppStore } from "../contexts/AppContext"
 import styles from "./CommandPallete.module.css"
 
 type CommandPalleteProps = {

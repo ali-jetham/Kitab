@@ -7,11 +7,17 @@
 	z-index: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 0.9rem;
+	gap: 3rem;
 	align-items: stretch;
 	background-color: var(--headerbar-bg-color);
-	padding: 1.5rem;
-	border-top: solid 0.1rem var(--border-color);
+	padding: 1.6rem;
+
+	transition: all ease 300ms;
+	transform: translateY(100%);
+}
+
+.actionbar__visible {
+	transform: translateY(0);
 }
 
 .actionButtons {
@@ -19,7 +25,7 @@
 	justify-content: space-between;
 }
 
-.SliderRoot {
+.slider__root {
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -28,84 +34,39 @@
 	touch-action: none;
 }
 
-.SliderRoot[data-orientation="vertical"] {
-	height: 200px;
-}
-
-.SliderTrack {
-	background-color: var(--view-bg-color);
+.slider__track {
+	background-color: var(--border-color);
 	position: relative;
-	border-radius: 9999px;
-	height: 8px;
+	height: 0.3rem;
 	width: 100%;
 }
 
-.SliderTrack[data-orientation="vertical"] {
-	width: 8px;
-	height: 100%;
-}
-
-.SliderRange {
+.slider__fill {
 	position: absolute;
 	background-color: var(--accent-bg-color);
-	border-radius: 9999px;
 	height: 100%;
 }
 
-.SliderRange[data-orientation="vertical"] {
-	width: 100%;
-	height: unset;
-}
-
-.SliderThumb {
+.slider__thumb {
 	display: block;
-	width: 16px;
-	height: 16px;
+	width: 1rem;
+	height: 1rem;
 	background-color: var(--accent-bg-color);
-	border-radius: 9999px;
+	border-radius: 50%;
 	top: -4px;
 }
 
-.SliderThumb[data-orientation="vertical"] {
-	left: -4px;
-	top: unset;
-}
-
-.SliderThumb:hover {
+.slider__thumb:hover {
 	box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
-.SliderThumb:focus {
+.slider__thumb:focus {
 	outline: none;
 	box-shadow: 0 0 0 5px rgb(from var(--accent-bg-color) r g b / 60%);
 }
 
-.SliderLabel {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-}
-
-.slideEnter,
-.slideExitTo {
-	transform: translateY(100%);
-}
-
-.slideEnterTo,
-.slideExit {
-	transform: translateY(0);
-}
-
-.slideEnterActive,
-.slideExitActive {
-	transition:
-		transform 300ms ease-out,
-		opacity 300ms ease-out;
-}
-
 @media (prefers-reduced-motion: reduce) {
-	.slideEnterActive,
-	.slideExitActive {
+	.actionBar {
 		transition: none;
 	}
 }

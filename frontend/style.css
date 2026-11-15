@@ -6,7 +6,6 @@
 
 ul,
 ol {
-	list-style-type: none;
 	list-style: none;
 }
 
@@ -40,11 +39,9 @@ input {
 	background-color: var(--view-bg-color);
 	color: var(--view-fg-color);
 	outline: none;
-	min-height: 34px;
-	padding-left: 9px;
-	padding-right: 9px;
-	border-spacing: 6px;
-	border-radius: 6px;
+	min-height: 2rem;
+	padding: 0.6rem;
+	border-radius: 0.3rem;
 	border: 1px solid var(--border-color);
 }
 

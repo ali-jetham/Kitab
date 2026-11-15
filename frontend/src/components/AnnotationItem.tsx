@@ -48,7 +48,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 								e.preventDefault()
 								setIsEditing(false)
 								const data = new FormData(e.currentTarget as HTMLFormElement)
-								commands.executeCommand("pdf.updateAnnotation", {
+								commands.executeCommand("pdf.annotation.u", {
 									arg: {
 										id: props.annotation.id,
 										annotation: { text: data.get("text") as string | null }
@@ -93,7 +93,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 								<DropdownMenu.RadioGroup
 									value={props.annotation.style}
 									onChange={(value) =>
-										commands.executeCommand("pdf.updateAnnotation", {
+										commands.executeCommand("pdf.annotation.u", {
 											arg: {
 												id: props.annotation.id,
 												annotation: { style: value }
@@ -124,7 +124,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 
 				<Button
 					onClick={() =>
-						commands.executeCommand("pdf.deleteAnnotation", {
+						commands.executeCommand("pdf.annotation.d", {
 							arg: { id: props.annotation.id }
 						})
 					}

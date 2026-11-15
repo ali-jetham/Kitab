@@ -18,8 +18,8 @@ importers:
         specifier: ^2.0.0-alpha.4
         version: 2.0.0-alpha.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       '@lucide/solid':
-        specifier: ^1.68.0
-        version: 1.68.0(solid-js@2.0.0-rc.16)
+        specifier: ^1.73.0
+        version: 1.73.0(solid-js@2.0.0-rc.16)
       '@pdfslick/core':
         specifier: ^4.0.3
         version: 4.0.3
@@ -33,6 +33,9 @@ importers:
         specifier: 4.0.0-next.6
         version: 4.0.0-next.6(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       '@solid-primitives/pointer':
+        specifier: 1.0.0-next.4
+        version: 1.0.0-next.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
+      '@solid-primitives/presence':
         specifier: 1.0.0-next.4
         version: 1.0.0-next.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       '@solid-primitives/resize-observer':
@@ -901,8 +904,8 @@ packages:
       '@solidjs/web': 2.0.0-rc.16
       solid-js: 2.0.0-rc.16
 
-  '@lucide/solid@1.68.0':
-    resolution: {integrity: sha512-ba5HXx8sbkBnAHqygu+GJPx04cgfJ45rbjZf9I3kfj24vPOyEXOiLviqeWJ8bXd/vgrAy27qxR6dYAbU8Vev2A==}
+  '@lucide/solid@1.73.0':
+    resolution: {integrity: sha512-y/vwcf9YX0gV3+Kiv0/bURyzGqFPKoZe9dfUT5gJMbkuz2hLUcIq1YxV2/p6h3TgfablaBNUEsKd+VsyMxBgrA==}
     peerDependencies:
       solid-js: ^2.0.0-rc.0
 
@@ -1396,6 +1399,11 @@ packages:
     resolution: {integrity: sha512-p8uYuwV7JkR7DCa+ytkDz3EyhTaraZgg+KjU4Li/KCFthKA801kp+XUhRF+LctLNc6wY5HAQBwgAQZfMTHYMHA==}
     peerDependencies:
       solid-js: ^2.0.0-rc.0
+
+  '@solid-primitives/presence@1.0.0-next.4':
+    resolution: {integrity: sha512-l8FCTsVF9DFrTQQbwweY7ZwP+gBA2pvZhRpKGjmJp8R9rIKOdEnc6TJj6NM9MfN0/PQDXNWBG2DFN6Id+GlQGw==}
+    peerDependencies:
+      solid-js: ^2.0.0-rc.14
 
   '@solid-primitives/props@4.0.0-next.3':
     resolution: {integrity: sha512-V2Gn96sQLLhwyiAcGogExqP8+5++Itv0/KBQMNiNp/ldNwbQkr8Q11Ku5VXswYFiFmuiHJ/pGANfwzgsla7zpA==}
@@ -3742,7 +3750,7 @@ snapshots:
       '@solidjs/web': 2.0.0-rc.16(solid-js@2.0.0-rc.16)
       solid-js: 2.0.0-rc.16
 
-  '@lucide/solid@1.68.0(solid-js@2.0.0-rc.16)':
+  '@lucide/solid@1.73.0(solid-js@2.0.0-rc.16)':
     dependencies:
       solid-js: 2.0.0-rc.16
 
@@ -4119,6 +4127,13 @@ snapshots:
       solid-js: 2.0.0-rc.16
 
   '@solid-primitives/presence@1.0.0-next.2(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
+    dependencies:
+      '@solid-primitives/utils': 7.0.0-next.7(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
+      solid-js: 2.0.0-rc.16
+    transitivePeerDependencies:
+      - '@solidjs/web'
+
+  '@solid-primitives/presence@1.0.0-next.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
     dependencies:
       '@solid-primitives/utils': 7.0.0-next.7(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       solid-js: 2.0.0-rc.16

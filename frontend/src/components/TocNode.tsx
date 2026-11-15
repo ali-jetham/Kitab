@@ -1,20 +1,22 @@
-import { TPDFDocumentOutline } from "@pdfslick/core"
 import { For } from "solid-js"
+import type { TocItem } from "../app/contexts/SideBarContext"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { TreeItem } from "./TreeItem"
 
-type TocNodeProps = { outline: TPDFDocumentOutline[number] }
+type TocNodeProps = {
+	item: TocItem
+}
 
 export default function TocNode(props: TocNodeProps) {
 	const { sideBarStore } = useSideBarContext()
 
 	return (
 		<TreeItem
-			label={props.outline.title}
-			hasChildren={props.outline.items.length > 0}
-			onClick={() => sideBarStore.navigate?.(props.outline.dest)}
+			label={props.item.label}
+			hasChildren={!!props.item.children?.length}
+			onClick={() => sideBarStore.navigate?.(props.item.target)}
 		>
-			<For each={props.outline.items}>{(item) => <TocNode outline={item} />}</For>
+			<For each={props.item.children}>{(child) => <TocNode item={child} />}</For>
 		</TreeItem>
 	)
 }

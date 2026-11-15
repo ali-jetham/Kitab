@@ -1,4 +1,4 @@
-import { DeleteIcon, TrashIcon } from "@lucide/solid"
+import { DeleteIcon } from "@lucide/solid"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
 import { BookmarkRead } from "../stores/createDocumentStore"
@@ -21,7 +21,7 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 			</button>
 			<button
 				onClick={() => {
-					commands.executeCommand("pdf.deleteBookmark", {
+					commands.executeCommand("pdf.bookmark.d", {
 						arg: { id: props.bookmark.id }
 					})
 				}}
