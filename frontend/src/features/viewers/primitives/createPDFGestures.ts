@@ -1,6 +1,6 @@
 import { type PDFSlick, type PDFSlickState, ScrollMode } from "@pdfslick/core"
 import { createWindowSize } from "@solid-primitives/resize-observer"
-import { type Accessor, createEffect, createSignal, onSettled } from "solid-js"
+import { type Accessor, createSignal, onSettled } from "solid-js"
 import { useAppContext } from "../../../app/contexts/AppContext"
 import type { ViewerStore } from "../components/PDFViewer"
 
@@ -24,21 +24,18 @@ export function createPDFGestures(
 	const [trigger, setTrigger] = createSignal(0)
 	const { appStore, setAppStore } = useAppContext()
 
-	// create once — not inside a touch handler
 	const windowSize = createWindowSize()
 
 	function getDistanceBetweenTouches(e: TouchEvent): number {
-		return Math.hypot(
-			e.touches[0].pageX - e.touches[1].pageX,
-			e.touches[0].pageY - e.touches[1].pageY
-		)
+		const [a, b] = e.touches
+		if (!a || !b) return 0
+		return Math.hypot(a.pageX - b.pageX, a.pageY - b.pageY)
 	}
 
 	function getMidpoint(e: TouchEvent): number[] {
-		return [
-			(e.touches[0].clientX + e.touches[1].clientX) / 2,
-			(e.touches[0].clientY + e.touches[1].clientY) / 2
-		]
+		const [a, b] = e.touches
+		if (!a || !b) return []
+		return [(a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2]
 	}
 
 	function onTapNavigation(e: TouchEvent) {
@@ -54,6 +51,7 @@ export function createPDFGestures(
 		}
 
 		const touch = e.changedTouches[0]
+		if (!touch) return
 		if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > tapSlop) return
 
 		const zoneWidth = windowSize.width / 3
@@ -174,9 +172,6 @@ export function createPDFGestures(
 	onSettled(() => {
 		if (!el) return
 
-		console.info(el)
-		if (!el) return
-
 		el.addEventListener("touchstart", handleTouchStart, { passive: false })
 		el.addEventListener("touchmove", handleTouchMove, { passive: false })
 		el.addEventListener("touchend", handleTouchEnd)
@@ -189,22 +184,6 @@ export function createPDFGestures(
 			el.removeEventListener("touchcancel", handleTouchEnd)
 		}
 	})
-
-	// TODO: move to createViewerGestures
-	createEffect(
-		() => trigger(),
-		() => {
-			if (!appStore.isActionOpen) return
-
-			const timer = setTimeout(() => {
-				setAppStore((draft) => {
-					draft.isActionOpen = false
-				})
-			}, 3000)
-
-			return () => clearTimeout(timer)
-		}
-	)
 
 	return (node: HTMLElement) => {
 		el = node

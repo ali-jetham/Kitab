@@ -1,12 +1,16 @@
+import { Button } from "@kobalte/core/button"
 import { TextField } from "@kobalte/core/text-field"
+import { SearchXIcon } from "@lucide/solid"
 import { useSearchParams } from "@solidjs/router"
-import { createMemo, For, Loading } from "solid-js"
+import { createMemo, createSignal, For, Loading } from "solid-js"
 import { documentApi } from "../../api/documentApi"
+import Spinner from "../../components/Spinner"
 import LibraryItem from "./components/LibraryItem"
 import styles from "./Library.module.css"
 import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library() {
+	const [value, setValue] = createSignal("")
 	const [searchParams, setSearchParams] = useSearchParams()
 	const books = createMemo(() => documentApi.getDocs([searchParams.folder].flat()[0]))
 	createLibraryCommands()
@@ -20,19 +24,17 @@ export default function Library() {
 
 	return (
 		<div class={styles.library}>
-			<TextField class={styles.textField}>
-				<TextField.Label />
-				<TextField.Input
-					class={styles.input}
-					placeholder="Search for books"
-					onChange={(e) => setSearchParams({ q: e.target.value })}
-				/>
-				<TextField.Description />
-				<TextField.ErrorMessage />
+			<TextField
+				value={value()}
+				onChange={(value) => {
+					setValue(value)
+					setSearchParams({ q: value })
+				}}
+				class={styles.textField}
+			>
+				<TextField.Input placeholder="Search for books" />
 			</TextField>
-
-			<Loading fallback={<div>Loading books...</div>}>
-				{/* TODO: show when no books found, waiting for Solid 2 */}
+			<Loading fallback={<Spinner />}>
 				<div class={styles.bookshelf}>
 					<For each={filteredBooks()}>
 						{(book) => (

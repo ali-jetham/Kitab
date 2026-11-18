@@ -21,7 +21,6 @@ export type AppStore = {
 		  }[]
 		| null
 	commandPalleteSelectedCommand: CommandId | null
-	trigger: number // TODO: find if this is even used
 	context: Context
 }
 
@@ -43,7 +42,6 @@ export function AppProvider(props: ParentProps) {
 		isStatusOpen: true,
 		commandPalleteArgs: null,
 		commandPalleteSelectedCommand: null,
-		trigger: 0,
 		context: "app"
 	})
 
