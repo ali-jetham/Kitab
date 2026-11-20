@@ -17,7 +17,7 @@ from app.schemas.document import (
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
-@router.get("/", status_code=200, response_model=list[DocumentBase])
+@router.get("", status_code=200, response_model=list[DocumentBase])
 def get_documents(
     service: DocumentServiceDep, filter_query: Annotated[FilterParams, Query()]
 ):

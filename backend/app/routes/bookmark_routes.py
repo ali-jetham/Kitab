@@ -6,7 +6,7 @@ from app.schemas.bookmark import BookmarkCreate, BookmarkRead
 router = APIRouter(prefix="/api/bookmarks", tags=["bookmarks"])
 
 
-@router.get("/", status_code=200, response_model=list[BookmarkRead])
+@router.get("", status_code=200, response_model=list[BookmarkRead])
 def get_bookmarks(service: BookmarkServiceDep):
     return service.get_bookmarks()
 

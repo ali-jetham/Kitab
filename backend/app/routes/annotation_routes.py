@@ -11,7 +11,7 @@ from app.schemas.annotation import (
 router = APIRouter(prefix="/api/annotations", tags=["annotations"])
 
 
-@router.get("/", status_code=200, response_model=list[AnnotationBase])
+@router.get("", status_code=200, response_model=list[AnnotationBase])
 def get_all(service: AnnotationServiceDep):
     return service.get_all_annotations()
 
