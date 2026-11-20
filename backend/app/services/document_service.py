@@ -201,10 +201,13 @@ class DocumentService:
                 return title, author
 
     def _get_epub_metadata(self, path: Path):
-        book = epub.read_epub(path)
-        title = book.get_metadata("DC", "title")[0][0]
-        author = [name for name, _ in book.get_metadata("DC", "creator")]
-        return title, author
+        try:
+            book = epub.read_epub(path)
+            title = book.get_metadata("DC", "title")[0][0]
+            author = [name for name, _ in book.get_metadata("DC", "creator")]
+            return title, author
+        except Exception as e:
+            print(e)
 
     def _generate_cover(self, document_id: str, document_path: Path) -> None:
         cover_folder = self.library_path / ".covers"

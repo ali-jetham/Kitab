@@ -17,7 +17,7 @@ RUN uv sync --locked --no-install-project --no-dev
 COPY backend/ .
 RUN uv sync --locked --no-dev
 
-COPY --from=frontend-builder /build/dist ./dist
+COPY --from=frontend-builder /build/dist/client ./dist
 
 EXPOSE 8000
 ENV ENVIRONMENT=prod

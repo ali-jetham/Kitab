@@ -1,6 +1,5 @@
 import type { ParentProps } from "solid-js"
-import "../themes.css"
-import "../style.css"
+
 import "@fontsource/adwaita-sans"
 import { HydrationScript } from "@solidjs/web"
 

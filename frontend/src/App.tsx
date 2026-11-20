@@ -1,6 +1,8 @@
 import { Title } from "@solidjs/meta"
 import { Errored } from "solid-js"
 import { Router } from "./router"
+import "../themes.css"
+import "../style.css"
 
 export default function App() {
 	return (
