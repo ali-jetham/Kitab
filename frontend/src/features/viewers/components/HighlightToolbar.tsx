@@ -14,19 +14,19 @@ export type HighlightToolbarProps = {
 }
 
 export default function HighlightToolbar(props: HighlightToolbarProps) {
-	const colors = ["#ffd400", "#ff6666", "#2ea8e5", "#e56eee", "#aaaaaa"]
+	const colors = ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93", "#666666"]
 
 	return (
 		<Popover
 			open={props.open}
 			anchorRef={() => props.anchorRef}
 			placement="top"
-			onOpenChange={(open) =>
-				props.setViewerStore((prev) => ({
-					...prev,
-					showHighlightToolbar: open
-				}))
-			}
+			onOpenChange={(open) => {
+				props.setViewerStore((draft) => {
+					draft.showHighlightToolbar = open
+				})
+				window.getSelection()?.removeAllRanges()
+			}}
 			preventScroll={true}
 		>
 			<Popover.Portal>

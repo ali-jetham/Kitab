@@ -11,12 +11,13 @@ import { helper } from "../../../core/helper"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
 import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
-import { createPDFHighlights } from "../primitives/createPDFHighlight"
+import { createPDFHighlights, PendingAnnotation } from "../primitives/createPDFHighlight"
 import { createPDFLayout } from "../primitives/createPDFLayout"
 import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
 import PDFThumbnails from "./PDFThumbnails"
 import styles from "./PDFViewer.module.css"
+import { commands } from "../../../core/commands"
 
 export type ViewerStore = {
 	docId: string
@@ -24,6 +25,7 @@ export type ViewerStore = {
 	anchorRef: HTMLElement | undefined
 	selectedColor: string
 	annotationId: string | null
+	pendingAnnotation: PendingAnnotation | null
 	ttsHighlight: { page: number; rects: PDFRect[] } | null
 }
 
@@ -51,16 +53,16 @@ export default function PDFViewer(props: PDFViewerProps) {
 	const [viewerStore, setViewerStore] = createStore<ViewerStore>({
 		docId: props.id,
 		annotationId: null,
+		pendingAnnotation: null,
 		anchorRef: undefined,
 		selectedColor: "#ffd400",
 		showHighlightToolbar: false,
 		ttsHighlight: null
 	})
-
 	const { documentStore, actions } = createDocumentStore(props.id)
 	const { minScale, maxScale } = createPDFLayout(pdfSlickStore, pdfSlick)
-	const el = createPDFGestures(pdfSlickStore, pdfSlick, minScale, maxScale, viewerStore)
 	createPDFCommands(
+		props.id,
 		pdfSlickStore,
 		pdfSlick,
 		viewerStore,
@@ -69,15 +71,9 @@ export default function PDFViewer(props: PDFViewerProps) {
 		minScale,
 		maxScale
 	)
+	const el = createPDFGestures(pdfSlickStore, pdfSlick, minScale, maxScale, viewerStore)
 	createTTS(setViewerStore, pdfSlickStore, props.id)
-	const highlights = createPDFHighlights(
-		pdfSlickStore,
-		props.id,
-		actions,
-		viewerStore.selectedColor,
-		setViewerStore,
-		() => viewerStore.ttsHighlight
-	)
+	createPDFHighlights(pdfSlickStore, actions, setViewerStore, () => viewerStore.ttsHighlight)
 	const hasBookmark = () => {
 		if (!pdfSlickStore.pageNumber) return false
 		return documentStore.bookmarks.some((bm) => bm.page === pdfSlickStore.pageNumber)
@@ -158,22 +154,21 @@ export default function PDFViewer(props: PDFViewerProps) {
 					anchorRef={viewerStore.anchorRef}
 					setViewerStore={setViewerStore}
 					onSelectColor={(color) => {
+						if (!viewerStore.pendingAnnotation) return
+						commands.executeCommand("pdf.annotation.a", {
+							arg: { ...viewerStore.pendingAnnotation, color }
+						})
+						window.getSelection()?.removeAllRanges()
 						setViewerStore((draft) => {
 							draft.selectedColor = color
+							draft.showHighlightToolbar = false
+							draft.pendingAnnotation = null
 						})
-						setViewerStore((prev) => ({
-							...prev,
-							showHighlightToolbar: false,
-							anchorRef: undefined
-						}))
-						highlights.commitAnnotation(color)
 					}}
 				/>
 
 				<Show when={hasBookmark()}>
-					<div class={styles.bookmark}>
-						<Bookmark fill="red" stroke="red" />
-					</div>
+					<Bookmark class={styles.bookmark} />
 				</Show>
 			</div>
 		</>

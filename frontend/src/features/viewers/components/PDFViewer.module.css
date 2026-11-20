@@ -1,3 +1,5 @@
 .bookmark {
 	position: absolute;
+	fill: var(--red-bg-color);
+	stroke: var(--red-bg-color);
 }

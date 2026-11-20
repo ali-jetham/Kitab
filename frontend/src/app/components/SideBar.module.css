@@ -1,6 +1,4 @@
 .tabs {
-	user-select: none;
-	-webkit-user-select: none;
 	grid-area: sidebar;
 	width: 100%;
 	display: flex;

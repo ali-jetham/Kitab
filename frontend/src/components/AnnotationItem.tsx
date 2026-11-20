@@ -120,8 +120,6 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 					</DropdownMenu.Portal>
 				</DropdownMenu>
 
-				<Button></Button>
-
 				<Button
 					onClick={() =>
 						commands.executeCommand("pdf.annotation.d", {

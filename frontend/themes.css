@@ -12,6 +12,8 @@
 
 	--accent-bg-color: #3584e4;
 	--accent-fg-color: #ffffff;
+
+	--red-bg-color: #e62d42;
 }
 
 html[data-theme="light"] {

@@ -123,23 +123,23 @@ export default function SideBar(props: SideBarProps) {
 				<For each={documentStore()?.bookmarks}>{(bm) => <BookmarkItem bookmark={bm} />}</For>
 			</Tabs.Content>
 
-			<Tabs.Content
+			{/*<Tabs.Content
 				class={styles.tabs__content}
 				value="thumbnails"
 				data-tab="thumbnails"
 				forceMount
 				style={{ display: selectedTab() === "thumbnails" ? undefined : "none" }}
 				ref={(el) => {
-					setSideBarStore((d) => {
-						d.thumbnailsSlot = el
+					setSideBarStore((draft) => {
+						draft.thumbnailsSlot = el
 					})
 					onCleanup(() =>
-						setSideBarStore((d) => {
-							d.thumbnailsSlot = null
+						setSideBarStore((draft) => {
+							draft.thumbnailsSlot = null
 						})
 					)
 				}}
-			/>
+			/>*/}
 		</Tabs>
 	)
 }

@@ -1,6 +1,5 @@
 import solid from "@solidjs/vite-plugin"
 import { defineConfig, loadEnv } from "vite"
-import { VitePWA } from "vite-plugin-pwa"
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "")
@@ -27,7 +26,11 @@ export default defineConfig(({ mode }) => {
 			// 	}
 			// })
 		],
-		server: { port: 3000, proxy: { "/api": env.VITE_BACKEND_URL ?? "http://localhost:8000" } },
+		server: {
+			port: 3000,
+			proxy: { "/api": env.VITE_BACKEND_URL ?? "http://localhost:8000" },
+			allowedHosts: ["legion"]
+		},
 		preview: { port: 3000 },
 		optimizeDeps: { exclude: ["@pdfslick/core"] },
 		build: { target: "esnext" }

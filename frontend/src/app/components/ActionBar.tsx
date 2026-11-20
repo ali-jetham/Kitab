@@ -20,7 +20,7 @@ export default function ActionBar(props: ActionBarProps) {
 	const [showSlider, setShowSlider] = createSignal(false)
 
 	return (
-		<div class={[styles.actionBar, { [styles.actionbar__visible]: props.visible() }]}>
+		<div class={[styles.actionBar, { [styles.actionbar__visible!]: props.visible() }]}>
 			<Show when={showSlider()}>
 				<Slider class={styles.slider__root}>
 					<Slider.Track class={styles.slider__track}>

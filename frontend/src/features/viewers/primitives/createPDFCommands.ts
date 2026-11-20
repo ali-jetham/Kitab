@@ -5,8 +5,10 @@ import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
 import { commands } from "../../../core/commands"
 import type { ViewerStore } from "../components/PDFViewer"
+import { AnnotationCreate } from "../../../stores/createDocumentStore"
 
 export function createPDFCommands(
+	docId: string,
 	pdfSlickStore: PDFSlickState,
 	pdfSlick: Accessor<PDFSlick>,
 	viewerStore: ViewerStore,
@@ -54,9 +56,24 @@ export function createPDFCommands(
 		commands.registerCommand("pdf.ScrollV", () => pdfSlick().setScrollMode(ScrollMode.VERTICAL)),
 		commands.registerCommand("pdf.ScrollH", () => pdfSlick().setScrollMode(ScrollMode.HORIZONTAL)),
 		commands.registerCommand("pdf.SinglePage", () => pdfSlick().setScrollMode(ScrollMode.PAGE)),
+		commands.registerCommand("pdf.annotation.a", ({ arg }) => {
+			if (!arg) return
+			const annotation: AnnotationCreate = {
+				id: uuidv7(),
+				docId: docId,
+				style: "highlight",
+				color: arg.color,
+				note: "",
+				page: arg.page,
+				text: arg.text,
+				rects: arg.rects
+			}
+			actions.addAnnotation(annotation)
+			annotationApi.addAnnotation(annotation)
+		}),
 		commands.registerCommand("pdf.annotation.d", ({ arg }) => {
 			let id: any
-			if (typeof arg === "string") id = arg
+			if (arg?.id) id = arg.id
 			else if (viewerStore.annotationId) id = viewerStore.annotationId
 			else return
 			actions.deleteAnnotation(id)

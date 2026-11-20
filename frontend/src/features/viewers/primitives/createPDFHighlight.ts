@@ -1,92 +1,20 @@
 import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
-import { debounce } from "@solid-primitives/scheduled"
 import { createComponent, render } from "@solidjs/web"
-import {
-	type Accessor,
-	createEffect,
-	createSignal,
-	onCleanup,
-	onSettled,
-	type StoreSetter
-} from "solid-js"
-import { v7 as uuid7 } from "uuid"
-import { annotationApi } from "../../../api/annotationApi"
+import { type Accessor, createEffect, onCleanup, onSettled, type StoreSetter } from "solid-js"
 import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore"
 import PDFHighlightLayer from "../components/PDFHighlightLayer"
 import type { ViewerStore } from "../components/PDFViewer"
 
 export type SVGRect = { x: number; y: number; width: number; height: number }
-
-type PendingAnnotation = {
-	pageNumber: number
-	text: string
-	pdfRects: PDFRect[]
-}
+export type PendingAnnotation = Pick<AnnotationCreate, "page" | "text" | "rects" | "color">
 
 export function createPDFHighlights(
 	pdfSlickStore: PDFSlickState,
-	docId: string,
 	actions: any,
-	selectedColor: string,
 	setViewerStore: StoreSetter<ViewerStore>,
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 ) {
-	const DEFAULT_HIGHLIGHT_COLOR = "#FFCC99"
-	let isMouseDown = false
-	const [pendingAnnotation, setPendingAnnotation] = createSignal<PendingAnnotation | null>(null)
-
-	function commitAnnotation(color?: string) {
-		const pending = pendingAnnotation()
-		if (!pending) return
-
-		const activeColor = color ?? selectedColor ?? DEFAULT_HIGHLIGHT_COLOR
-
-		const annotation: AnnotationCreate = {
-			id: uuid7(),
-			docId: docId,
-			style: "highlight",
-			color: activeColor,
-			note: "",
-			page: pending.pageNumber,
-			text: pending.text,
-			rects: pending.pdfRects
-		}
-
-		actions.addAnnotation(annotation)
-		annotationApi.addAnnotation(annotation)
-		window.getSelection()?.removeAllRanges()
-		setPendingAnnotation(null)
-	}
-
-	// TODO: rewrite this
-	function mergeSelectionRects(selectionRects: DOMRect[]): DOMRect[] {
-		const sorted = selectionRects.toSorted((a, b) => {
-			if (Math.abs(a.y - b.y) > 3) return a.y - b.y
-			return a.x - b.x
-		})
-		const merged: DOMRect[] = []
-		let i = 0
-		while (i < sorted.length) {
-			const lineY = sorted[i].y
-			let j = i
-			while (j < sorted.length && Math.abs(sorted[j].y - lineY) <= 3) {
-				j++
-			}
-			const lineRects = sorted.slice(i, j)
-			const minX = Math.min(...lineRects.map((r) => r.left))
-			const maxRight = Math.max(...lineRects.map((r) => r.right))
-			const minY = Math.min(...lineRects.map((r) => r.top))
-			const maxBottom = Math.max(...lineRects.map((r) => r.bottom))
-			merged.push(new DOMRect(minX, minY, maxRight - minX, maxBottom - minY))
-
-			i = j
-		}
-		return merged
-	}
-
 	function handleSelectionChange(e: Event) {
-		if (isMouseDown) return
-
 		const selection = window.getSelection()
 		if (!selection || selection.isCollapsed) return
 
@@ -96,14 +24,13 @@ export function createPDFHighlights(
 				: selection?.anchorNode?.parentElement) ?? undefined
 
 		const range = selection.getRangeAt(0)
-		const selectionRects: DOMRect[] = [...range.getClientRects()].filter(
-			(rect) => rect.width > 0 && rect.height > 0
-		)
-		const mergedRects = mergeSelectionRects(selectionRects)
+		const selectionRects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0)
+		const mergedRects = convertToMergeRects(selectionRects)
 
-		const pageNumber = pdfSlickStore.pdfSlick?.viewer.currentPageNumber
-		const page = pageNumber ? pdfSlickStore.pdfSlick?.getPageView(pageNumber - 1) : undefined
-		if (!page?.canvas || !page.viewport || !pageNumber) return
+		const page = pdfSlickStore.pageNumber
+			? pdfSlickStore.pdfSlick?.getPageView(pdfSlickStore.pageNumber - 1)
+			: undefined
+		if (!page?.canvas || !page.viewport) return
 
 		const canvasRect = (page.canvas as HTMLCanvasElement).getBoundingClientRect()
 		const pdfRects = mergedRects.map((rect) => {
@@ -111,18 +38,19 @@ export function createPDFHighlights(
 			return convertToPDFRect(relativeRect, page.viewport)
 		})
 
-		setPendingAnnotation({
-			pageNumber,
-			text: selection.toString().replaceAll("\n", " "),
-			pdfRects
+		setViewerStore((draft) => {
+			draft.pendingAnnotation = {
+				page: pdfSlickStore.pageNumber,
+				text: selection.toString().replaceAll("\n", " "),
+				rects: pdfRects,
+				color: ""
+			}
+			draft.showHighlightToolbar = true
+			draft.anchorRef = anchorEl
 		})
-		setViewerStore((prev) => ({
-			...prev,
-			showHighlightToolbar: true,
-			anchorRef: anchorEl
-		}))
 	}
 
+	// FIXME: only create one PDFHighlightLayer that updates based on pages
 	function handlePageRendered(e: TEventBusEvent) {
 		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1)
 		if (!page) return
@@ -134,46 +62,22 @@ export function createPDFHighlights(
 					page,
 					pageNumber: e.pageNumber,
 					annotations,
+					ttsHighlight,
 					onSelectAnnotation: (id: string) =>
 						setViewerStore((draft) => {
 							draft.annotationId = id
-						}),
-					ttsHighlight
+						})
 				}),
 			page.div
 		)
 	}
 
-	const debouncedHandleSelectionChange = debounce(handleSelectionChange, 100)
-
-	function handleMouseDown(e: MouseEvent) {
-		if (e.button === 0) isMouseDown = true
-	}
-
-	function handleMouseUp(e: MouseEvent) {
-		if (e.button !== 0 || !isMouseDown) return
-		isMouseDown = false
-		debouncedHandleSelectionChange(new Event("selectionchange"))
-	}
-
-	function handleWindowBlur() {
-		isMouseDown = false
-		debouncedHandleSelectionChange.clear()
-	}
-
 	onSettled(() => {
-		document.addEventListener("selectionchange", debouncedHandleSelectionChange)
-		document.addEventListener("mousedown", handleMouseDown, true)
-		document.addEventListener("mouseup", handleMouseUp, true)
-		window.addEventListener("blur", handleWindowBlur)
-	})
+		document.addEventListener("pointerup", handleSelectionChange)
 
-	onCleanup(() => {
-		document.removeEventListener("selectionchange", debouncedHandleSelectionChange)
-		document.removeEventListener("mousedown", handleMouseDown, true)
-		document.removeEventListener("mouseup", handleMouseUp, true)
-		window.removeEventListener("blur", handleWindowBlur)
-		debouncedHandleSelectionChange.clear()
+		return () => {
+			document.removeEventListener("pointerup", handleSelectionChange)
+		}
 	})
 
 	createEffect(
@@ -187,8 +91,31 @@ export function createPDFHighlights(
 			})
 		}
 	)
+}
 
-	return { commitAnnotation }
+/**
+ * Merges overlapping and/or redundant rects into one rect per line.
+ */
+function convertToMergeRects(rects: DOMRect[]): DOMRect[] {
+	rects.sort((a, b) => a.y - b.y)
+	const merged: DOMRect[] = []
+
+	for (const rect of rects) {
+		const i = merged.length - 1
+		const line = merged[i]
+
+		if (line && Math.abs(rect.y - line.y) <= 3) {
+			const left = Math.min(line.left, rect.left)
+			const top = Math.min(line.top, rect.top)
+			const right = Math.max(line.right, rect.right)
+			const bottom = Math.max(line.bottom, rect.bottom)
+			merged[i] = new DOMRect(left, top, right - left, bottom - top)
+		} else {
+			merged.push(rect)
+		}
+	}
+
+	return merged
 }
 
 export function getPageDimensions(pdfPage: any) {
