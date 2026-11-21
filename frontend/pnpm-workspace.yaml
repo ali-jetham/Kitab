@@ -1,5 +1,8 @@
 allowBuilds:
   dprint: false
   esbuild: true
+minimumReleaseAgeExclude:
+  - "@kobalte/core@2.0.0-alpha.5"
+  - "@kobalte/utils@2.0.0-alpha.2"
 overrides:
   pdfjs-dist: 6.2.108
