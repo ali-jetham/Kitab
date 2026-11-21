@@ -10,8 +10,8 @@ import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library() {
 	const { setAppStore } = useAppContext()
-	const [value, setValue] = createSignal("")
 	const [searchParams, setSearchParams] = useSearchParams()
+	const [value, setValue] = createSignal((searchParams.q as string ?? ""))
 	const books = createMemo(() => documentApi.getDocs([searchParams.folder].flat()[0]))
 	createLibraryCommands()
 
