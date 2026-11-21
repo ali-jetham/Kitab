@@ -42,7 +42,7 @@ export function AppProvider(props: ParentProps) {
 		isStatusOpen: true,
 		commandPalleteArgs: null,
 		commandPalleteSelectedCommand: null,
-		context: "app"
+		context: "App"
 	})
 
 	return <AppContext value={{ appStore, setAppStore }}>{props.children}</AppContext>

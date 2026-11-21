@@ -24,6 +24,7 @@
 		"@solid-primitives/resize-observer": "^4.0.0-next.7",
 		"@solid-primitives/scheduled": "2.0.0-next.2",
 		"@solid-primitives/timer": "1.4.5-next.1",
+		"@solid-primitives/transition-group": "^2.0.0",
 		"@solidjs/compiler": "2.0.0-rc.09",
 		"@solidjs/meta": "1.0.0-next.2",
 		"@solidjs/router": "2.0.0-next.42",

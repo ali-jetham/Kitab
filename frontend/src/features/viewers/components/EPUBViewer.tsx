@@ -71,7 +71,7 @@ export default function EPUBViewer(props: EPUBViewerProps) {
 
 	onSettled(() => {
 		setAppStore((draft) => {
-			draft.context = "epub"
+			draft.context = "EPUB"
 		})
 		load()
 	})

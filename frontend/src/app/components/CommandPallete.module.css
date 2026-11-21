@@ -12,7 +12,7 @@
 	width: 60%;
 	background-color: var(--popover-bg-color);
 	color: var(--popover-fg-color);
-	border: solid 1px var(--border-color);
+	border: solid 0.1rem var(--accent-bg-color);
 	border-top-left-radius: 0.6rem;
 	border-top-right-radius: 0.6rem;
 	box-shadow: var(--shadow-soft);
@@ -29,7 +29,7 @@
 
 .combobox__input {
 	appearance: none;
-	display: inline-flex;
+	width: 100%;
 	min-height: 40px;
 	background: var(--popover-bg-color);
 	color: var(--popover-fg-color);
@@ -37,8 +37,15 @@
 	border: none;
 }
 
+.combobox__input:focus {
+	outline: none;
+}
+
 .combobox__content {
 	height: 60vh;
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
 	background-color: var(--popover-bg-color);
 	border-right: 1px solid var(--border-color);
 	border-left: 1px solid var(--border-color);
@@ -66,7 +73,7 @@
 	line-height: 1;
 	color: var(--popover-fg-color);
 	border-radius: 0.3rem;
-	height: 32px;
+	height: 2rem;
 	padding: 0 8px;
 	position: relative;
 	outline: none;
@@ -91,13 +98,16 @@
 	.combobox {
 		padding-top: 1rem;
 	}
+
 	.combobox__control {
 		width: 90%;
 		border: none;
 	}
+
 	.combobox__input {
 		display: none;
 	}
+
 	.combobox__content {
 		border-top: none;
 		min-height: 80vh;

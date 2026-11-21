@@ -1,7 +1,8 @@
 import { Combobox } from "@kobalte/core/combobox"
-import { createSignal, onSettled, type StoreSetter } from "solid-js"
+import { createSignal, For, onSettled, Show, type StoreSetter } from "solid-js"
 import { type Command, commands } from "../../core/commands"
-import type { AppStore } from "../contexts/AppContext"
+import { KEYMAP_MAP } from "../../core/keymap"
+import { type AppStore, useAppContext } from "../contexts/AppContext"
 import styles from "./CommandPallete.module.css"
 
 type CommandPalleteProps = {
@@ -10,14 +11,17 @@ type CommandPalleteProps = {
 }
 
 export default function CommandPallete(props: CommandPalleteProps) {
-	const options = commands.COMMANDS.filter((c) => !c.hidden)
+	let inputRef: HTMLInputElement | undefined
+	const { appStore } = useAppContext()
+	const options = commands.COMMANDS.filter(
+		(c) => !c.hidden && (c.group === "App" || c.group === appStore.context)
+	)
 	const grouped = Object.groupBy(options, (option) => option.group ?? "Other")
 	const result = Object.entries(grouped).map(([label, options]) => ({
 		label,
 		options
 	}))
 	const [value, setValue] = createSignal<Command | null>()
-	let inputRef: HTMLInputElement | undefined
 
 	onSettled(() => {
 		inputRef?.focus()
@@ -50,6 +54,11 @@ export default function CommandPallete(props: CommandPalleteProps) {
 			itemComponent={(props) => (
 				<Combobox.Item item={props.item} class={styles.combobox__item}>
 					<Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
+					<Show when={KEYMAP_MAP.get(props.item.rawValue.id) ?? []}>
+						<div>
+							<For each={KEYMAP_MAP.get(props.item.rawValue.id)}>{(kbd) => <kbd>{kbd}</kbd>}</For>
+						</div>
+					</Show>
 				</Combobox.Item>
 			)}
 			sectionComponent={(props) => (

@@ -123,7 +123,7 @@ export default function SideBar(props: SideBarProps) {
 				<For each={documentStore()?.bookmarks}>{(bm) => <BookmarkItem bookmark={bm} />}</For>
 			</Tabs.Content>
 
-			{/*<Tabs.Content
+			<Tabs.Content
 				class={styles.tabs__content}
 				value="thumbnails"
 				data-tab="thumbnails"
@@ -139,7 +139,7 @@ export default function SideBar(props: SideBarProps) {
 						})
 					)
 				}}
-			/>*/}
+			/>
 		</Tabs>
 	)
 }

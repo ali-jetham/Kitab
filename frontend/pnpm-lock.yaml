@@ -47,6 +47,9 @@ importers:
       '@solid-primitives/timer':
         specifier: 1.4.5-next.1
         version: 1.4.5-next.1(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
+      '@solid-primitives/transition-group':
+        specifier: ^2.0.0
+        version: 2.0.0(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
       '@solidjs/compiler':
         specifier: 2.0.0-rc.09
         version: 2.0.0-rc.9
@@ -1453,6 +1456,11 @@ packages:
       '@solidjs/web': ^2.0.0-rc.0
       solid-js: ^2.0.0-rc.0
 
+  '@solid-primitives/transition-group@2.0.0':
+    resolution: {integrity: sha512-HCstnv2QWHRlGOgvWLnSAElnQr5m3DAWegp+1ZTeRqkbSfTf9oJhMYNw7gJLVO3M0AvySS7VYUgRESH2hy/ArA==}
+    peerDependencies:
+      solid-js: ^2.0.0
+
   '@solid-primitives/trigger@3.0.0-next.4':
     resolution: {integrity: sha512-1HGZKCglbvXsktzEOeBseHhiXefX2G9Svl4F3AM2+rxGXmznCKfCGitShPZJAhbtENc9dT4hhJgbSDGHgtbBcg==}
     peerDependencies:
@@ -1464,6 +1472,12 @@ packages:
     peerDependencies:
       '@solidjs/web': ^2.0.0-rc.0
       solid-js: ^2.0.0-rc.0
+
+  '@solid-primitives/utils@7.0.0':
+    resolution: {integrity: sha512-3Vd28A7nroFfubjX0LbYThB1TQnuXzxjXup4DmeL4zg+XxDwwx2FWGkkCx0n7foYuqi22uf7q5GS9BX74sg/vQ==}
+    peerDependencies:
+      '@solidjs/web': ^2.0.0
+      solid-js: ^2.0.0
 
   '@solid-primitives/utils@7.0.0-next.7':
     resolution: {integrity: sha512-t1ZYgNililGfuHBJ34iT/m3b75MxNOSyjmPrm2MVhNnUM76hBziULCteA6YQ0laIb6THBv8gRvssHK2BxMYw3Q==}
@@ -4192,6 +4206,13 @@ snapshots:
       '@solidjs/web': 2.0.0-rc.16(solid-js@2.0.0-rc.16)
       solid-js: 2.0.0-rc.16
 
+  '@solid-primitives/transition-group@2.0.0(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
+    dependencies:
+      '@solid-primitives/utils': 7.0.0(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
+      solid-js: 2.0.0-rc.16
+    transitivePeerDependencies:
+      - '@solidjs/web'
+
   '@solid-primitives/trigger@3.0.0-next.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
     dependencies:
       '@solid-primitives/utils': 7.0.0-next.7(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
@@ -4201,6 +4222,11 @@ snapshots:
   '@solid-primitives/upload@1.0.0-next.4(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
     dependencies:
       '@solid-primitives/drag-drop': 0.1.0-next.0(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)
+      '@solidjs/web': 2.0.0-rc.16(solid-js@2.0.0-rc.16)
+      solid-js: 2.0.0-rc.16
+
+  '@solid-primitives/utils@7.0.0(@solidjs/web@2.0.0-rc.16(solid-js@2.0.0-rc.16))(solid-js@2.0.0-rc.16)':
+    dependencies:
       '@solidjs/web': 2.0.0-rc.16(solid-js@2.0.0-rc.16)
       solid-js: 2.0.0-rc.16
 

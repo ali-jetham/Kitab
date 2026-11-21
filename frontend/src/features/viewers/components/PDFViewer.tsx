@@ -7,17 +7,17 @@ import { documentApi } from "../../../api/documentApi"
 import { useAppContext } from "../../../app/contexts/AppContext"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
 import { useStatusBarContext } from "../../../app/contexts/StatusBarContext"
+import { commands } from "../../../core/commands"
 import { helper } from "../../../core/helper"
 import { createDocumentStore, type PDFRect } from "../../../stores/createDocumentStore"
 import { createPDFCommands } from "../primitives/createPDFCommands"
 import { createPDFGestures } from "../primitives/createPDFGestures"
-import { createPDFHighlights, PendingAnnotation } from "../primitives/createPDFHighlight"
+import { createPDFHighlights, type PendingAnnotation } from "../primitives/createPDFHighlight"
 import { createPDFLayout } from "../primitives/createPDFLayout"
 import { createTTS } from "../primitives/createTTS"
 import HighlightToolbar from "./HighlightToolbar"
 import PDFThumbnails from "./PDFThumbnails"
 import styles from "./PDFViewer.module.css"
-import { commands } from "../../../core/commands"
 
 export type ViewerStore = {
 	docId: string
@@ -81,7 +81,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 
 	onSettled(() => {
 		setAppStore((draft) => {
-			draft.context = "pdf"
+			draft.context = "PDF"
 		})
 	})
 

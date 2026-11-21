@@ -9,9 +9,9 @@
 	flex-direction: column;
 	gap: 3rem;
 	align-items: stretch;
-	background-color: var(--headerbar-bg-color);
+	background-color: var(--sidebar-bg-color);
 	padding: 1.6rem;
-
+	border-top: solid 0.1rem var(--border-color);
 	transition: all ease 300ms;
 	transform: translateY(100%);
 }

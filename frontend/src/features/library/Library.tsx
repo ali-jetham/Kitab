@@ -1,15 +1,15 @@
-import { Button } from "@kobalte/core/button"
 import { TextField } from "@kobalte/core/text-field"
-import { SearchXIcon } from "@lucide/solid"
 import { useSearchParams } from "@solidjs/router"
-import { createMemo, createSignal, For, Loading } from "solid-js"
+import { createMemo, createSignal, For, Loading, onSettled } from "solid-js"
 import { documentApi } from "../../api/documentApi"
+import { useAppContext } from "../../app/contexts/AppContext"
 import Spinner from "../../components/Spinner"
 import LibraryItem from "./components/LibraryItem"
 import styles from "./Library.module.css"
 import { createLibraryCommands } from "./primitives/createLibraryCommands"
 
 export default function Library() {
+	const { setAppStore } = useAppContext()
 	const [value, setValue] = createSignal("")
 	const [searchParams, setSearchParams] = useSearchParams()
 	const books = createMemo(() => documentApi.getDocs([searchParams.folder].flat()[0]))
@@ -21,6 +21,12 @@ export default function Library() {
 				? book.title?.toLowerCase().includes((searchParams.q as string)?.toLowerCase() ?? "")
 				: book.fileName?.toLowerCase().includes((searchParams.q as string)?.toLowerCase() ?? "")
 		})
+
+	onSettled(() => {
+		setAppStore((draft) => {
+			draft.context = "Library"
+		})
+	})
 
 	return (
 		<div class={styles.library}>

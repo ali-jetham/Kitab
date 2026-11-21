@@ -1,5 +1,5 @@
-import { PendingAnnotation } from "../features/viewers/primitives/createPDFHighlight"
-import type { AnnotationCreate, AnnotationUpdate } from "../stores/createDocumentStore"
+import type { PendingAnnotation } from "../features/viewers/primitives/createPDFHighlight"
+import type { AnnotationUpdate } from "../stores/createDocumentStore"
 
 // biome-ignore format: Manual formatting
 const COMMANDS = [
@@ -24,8 +24,8 @@ const COMMANDS = [
 	{ id: "pdf.ScrollH",           label: "Horizontal Scrolling View", hidden: false, withArgs: false, group: "PDF" },
 	{ id: "pdf.SinglePage",        label: "Single Page View",          hidden: false, withArgs: false, group: "PDF" },
 	{ id: "pdf.annotation.a",      label: "Add Highlight",             hidden: true,  withArgs: true,  group: "PDF" },
-	{ id: "pdf.annotation.u",      label: "Edit Selected Highlight",   hidden: true,  withArgs: true, group:  "PDF" },
-	{ id: "pdf.annotation.d",      label: "Delete Selected Highlight", hidden: true,  withArgs: true, group:  "PDF" },
+	{ id: "pdf.annotation.u",      label: "Edit Selected Highlight",   hidden: true,  withArgs: true,  group: "PDF" },
+	{ id: "pdf.annotation.d",      label: "Delete Selected Highlight", hidden: true,  withArgs: true,  group: "PDF" },
 	{ id: "pdf.bookmark.a",        label: "Add Bookmark",              hidden: true,  withArgs: false, group: "PDF" },
 	{ id: "pdf.bookmark.d",        label: "Delete Bookmark",           hidden: true,  withArgs: true,  group: "PDF" },
 	{ id: "pdf.readAloud",         label: "Toggle Read Aloud",         hidden: false, withArgs: false, group: "PDF" },
@@ -38,12 +38,14 @@ const COMMANDS = [
 	{ id: "epub.goRight",          label: "Scroll Right",              hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.sectionN",         label: "Next Section",              hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.sectionP",         label: "Previous Section",          hidden: false, withArgs: false, group: "EPUB" },
-	{ id: "epub.Scrolled",        label: "Scrolling Mode",             hidden: false, withArgs: false, group: "EPUB" },
+	{ id: "epub.Scrolled",         label: "Scrolling Mode",            hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.Paginated",        label: "Paginated Mode",            hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.textIn",           label: "Zoom In",                   hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.textDec",          label: "Zoom Out",                  hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.textReset",        label: "Zoom Reset",                hidden: false, withArgs: false, group: "EPUB" },
 ] as const
+
+export const COMMANDS_MAP = new Map(COMMANDS.map((c) => [c.id, c]))
 
 type CommandArgs = {
 	"pdf.annotation.a": PendingAnnotation
@@ -61,7 +63,7 @@ export type Command = {
 	hidden: boolean
 	withArgs: boolean
 }
-export type Context = "app" | "palette" | "pdf" | "epub"
+export type Context = "App" | "Library" | "PDF" | "EPUB"
 export type CommandContext<K extends CommandId = CommandId> = {
 	event?: KeyboardEvent
 	count?: number
