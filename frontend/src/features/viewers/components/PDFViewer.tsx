@@ -2,7 +2,7 @@ import { Bookmark } from "@lucide/solid"
 import { usePDFSlick } from "@pdfslick/solid"
 import "@pdfslick/solid/dist/pdf_viewer.css"
 import { Portal } from "@solidjs/web"
-import { createEffect, createStore, onCleanup, onSettled, Show } from "solid-js"
+import { createEffect, createStore, onCleanup, onSettled, Show, untrack } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
 import { useAppContext } from "../../../app/contexts/AppContext"
 import { useSideBarContext } from "../../../app/contexts/SideBarContext"
@@ -73,7 +73,13 @@ export default function PDFViewer(props: PDFViewerProps) {
 	)
 	const el = createPDFGestures(pdfSlickStore, pdfSlick, minScale, maxScale, viewerStore)
 	createTTS(setViewerStore, pdfSlickStore, props.id)
-	createPDFHighlights(pdfSlickStore, actions, setViewerStore, () => viewerStore.ttsHighlight)
+	createPDFHighlights(
+		pdfSlickStore,
+		pdfSlick,
+		actions,
+		setViewerStore,
+		() => viewerStore.ttsHighlight
+	)
 	const hasBookmark = () => {
 		if (!pdfSlickStore.pageNumber) return false
 		return documentStore.bookmarks.some((bm) => bm.page === pdfSlickStore.pageNumber)
@@ -94,17 +100,21 @@ export default function PDFViewer(props: PDFViewerProps) {
 		({ error, pagesReady, outline }) => {
 			if (error) {
 				setSideBarStore((draft) => {
-					draft.tocState = { status: "error", outline: null }
+					draft.tocState.status = "error"
 				})
 			} else if (pagesReady) {
 				setDocumentStore(documentStore)
 				setSideBarStore((draft) => {
-					draft.tocState = { status: "ready", outline: outline?.map(helper.fromPDFOutline) ?? null }
+					draft.tocState = {
+						status: "ready",
+						outline: untrack(() => outline?.map(helper.fromPDFOutline) ?? null)
+					}
+					// biome-ignore lint/suspicious/noExplicitAny: string | any[] is the type signature of the method
 					draft.navigate = (dest) => pdfSlick()?.linkService.goToDestination(dest as string | any[])
 				})
 			} else {
 				setSideBarStore((draft) => {
-					draft.tocState = { status: "loading", outline: null }
+					draft.tocState.status = "loading"
 				})
 			}
 		}
@@ -128,7 +138,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	onCleanup(() => {
 		setDocumentStore(null)
 		setSideBarStore((draft) => {
-			draft.tocState = { status: "empty", outline: null }
+			draft.tocState.status = "empty"
 		})
 		setStatusStore((draft) => {
 			draft.currentPage = null

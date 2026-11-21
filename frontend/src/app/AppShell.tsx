@@ -1,4 +1,5 @@
 import { createPresence } from "@solid-primitives/presence"
+import { createSwitchTransition } from "@solid-primitives/transition-group"
 import type { RouteSectionProps } from "@solidjs/router"
 import { type JSX, Portal, Show } from "@solidjs/web"
 import { children, onSettled } from "solid-js"
@@ -12,7 +13,6 @@ import { AppProvider, useAppContext } from "./contexts/AppContext"
 import { SideBarProvider } from "./contexts/SideBarContext"
 import { StatusBarProvider } from "./contexts/StatusBarContext"
 import { createAppCommands } from "./primitives/createAppCommands"
-import { createSwitchTransition } from "@solid-primitives/transition-group"
 
 export default function AppShell(props: RouteSectionProps) {
 	return (

@@ -1,6 +1,6 @@
 import { TextField } from "@kobalte/core/text-field"
 import { useSearchParams } from "@solidjs/router"
-import { createMemo, createSignal, For, Loading, onSettled } from "solid-js"
+import { createMemo, createSignal, For, Loading, onSettled, untrack } from "solid-js"
 import { documentApi } from "../../api/documentApi"
 import { useAppContext } from "../../app/contexts/AppContext"
 import Spinner from "../../components/Spinner"
@@ -11,7 +11,7 @@ import { createLibraryCommands } from "./primitives/createLibraryCommands"
 export default function Library() {
 	const { setAppStore } = useAppContext()
 	const [searchParams, setSearchParams] = useSearchParams()
-	const [value, setValue] = createSignal((searchParams.q as string ?? ""))
+	const [value, setValue] = createSignal(untrack(() => (searchParams.q as string) ?? ""))
 	const books = createMemo(() => documentApi.getDocs([searchParams.folder].flat()[0]))
 	createLibraryCommands()
 

@@ -1,5 +1,5 @@
 import { http } from "../core/http"
-import { AnnotationUpdate, AnnotationCreate } from "../stores/createDocumentStore"
+import type { AnnotationCreate, AnnotationUpdate } from "../stores/createDocumentStore"
 
 async function getAllAnnotations() {
 	return await http(`/api/annotations`, { method: "GET" })

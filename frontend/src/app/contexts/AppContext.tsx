@@ -4,6 +4,7 @@ import {
 	createStore,
 	type ParentProps,
 	type StoreSetter,
+	untrack,
 	useContext
 } from "solid-js"
 import type { CommandId, Context } from "../../core/commands"
@@ -38,7 +39,7 @@ export function AppProvider(props: ParentProps) {
 		isMobile,
 		isCommandPalleteOpen: false,
 		isActionOpen: true,
-		isSideBarOpen: !isMobile(),
+		isSideBarOpen: untrack(() => !isMobile()),
 		isStatusOpen: true,
 		commandPalleteArgs: null,
 		commandPalleteSelectedCommand: null,

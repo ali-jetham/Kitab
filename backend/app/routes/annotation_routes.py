@@ -16,7 +16,7 @@ def get_all(service: AnnotationServiceDep):
     return service.get_all_annotations()
 
 
-@router.post("/", status_code=200, response_model=AnnotationRead)
+@router.post("", status_code=200, response_model=AnnotationRead)
 def add(ann: AnnotationCreate, service: AnnotationServiceDep):
     return service.add_annotation(ann)
 

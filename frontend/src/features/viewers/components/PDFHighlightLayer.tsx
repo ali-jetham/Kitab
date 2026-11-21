@@ -1,5 +1,5 @@
-import { Accessor, For, Show } from "solid-js"
-import { type AnnotationRead } from "../../../stores/createDocumentStore"
+import { type Accessor, For, Show } from "solid-js"
+import type { AnnotationRead } from "../../../stores/createDocumentStore"
 import {
 	convertToSVGRect,
 	getPageDimensions,
@@ -24,38 +24,38 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 	const { width, height } = getPageDimensions(props.page)
 	const transform = getRotationTransform(props.page.viewport.rotation, baseW, baseH)
 
-	function handleClick(e: MouseEvent) {
-		e.stopPropagation()
-		const target = (e.target as Element).closest("[data-annotation-id]")
-		const annotationId = target?.getAttribute("data-annotation-id")
-		if (annotationId) {
-			props.onSelectAnnotation(annotationId)
-		}
-	}
-
 	return (
 		<svg
 			viewBox={`0 0 ${width} ${height}`}
 			class={styles.highlightLayer}
 			preserveAspectRatio="none"
 			data-highlightLayer="true"
+			role="presentation"
 		>
 			<g transform={transform} style={{ "pointer-events": "auto" }}>
 				<For each={props.annotations()}>
 					{(annotation) => (
-						<g data-annotation-id={annotation.id}>
+						<g
+							data-annotation-id={annotation.id}
+							onClick={(e) => {
+								e.stopPropagation()
+								props.onSelectAnnotation(annotation.id)
+							}}
+						>
 							<For each={annotation.rects}>
 								{(r) => {
 									const rect = convertToSVGRect(r, props.page)
 									return (
+										// biome-ignore lint/a11y/useSemanticElements: using button is not possible here
 										<rect
-											onClick={handleClick}
 											x={rect.x}
 											y={rect.y}
 											width={rect.width}
 											height={rect.height}
 											fill={annotation.color}
 											fill-opacity="0.3"
+											style={{ cursor: "pointer" }}
+											role="button"
 										/>
 									)
 								}}

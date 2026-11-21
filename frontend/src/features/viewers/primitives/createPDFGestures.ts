@@ -1,6 +1,6 @@
 import { type PDFSlick, type PDFSlickState, ScrollMode } from "@pdfslick/core"
 import { createWindowSize } from "@solid-primitives/resize-observer"
-import { type Accessor, createSignal, onSettled } from "solid-js"
+import { type Accessor, onSettled } from "solid-js"
 import { useAppContext } from "../../../app/contexts/AppContext"
 import type { ViewerStore } from "../components/PDFViewer"
 
@@ -21,8 +21,7 @@ export function createPDFGestures(
 	let tapCancelled = false
 	const tapSlop = 10
 
-	const [trigger, setTrigger] = createSignal(0)
-	const { appStore, setAppStore } = useAppContext()
+	const { setAppStore } = useAppContext()
 
 	const windowSize = createWindowSize()
 
@@ -66,7 +65,6 @@ export function createPDFGestures(
 			setAppStore((draft) => {
 				draft.isActionOpen = !draft.isActionOpen
 			})
-			setTrigger((n) => n + 1)
 		}
 	}
 

@@ -11,7 +11,7 @@ type CommandPalleteProps = {
 }
 
 export default function CommandPallete(props: CommandPalleteProps) {
-	let inputRef: HTMLInputElement | undefined
+	let inputRef!: HTMLInputElement
 	const { appStore } = useAppContext()
 	const options = commands.COMMANDS.filter(
 		(c) => !c.hidden && (c.group === "App" || c.group === appStore.context)
@@ -24,7 +24,7 @@ export default function CommandPallete(props: CommandPalleteProps) {
 	const [value, setValue] = createSignal<Command | null>()
 
 	onSettled(() => {
-		inputRef?.focus()
+		requestAnimationFrame(() => inputRef?.focus())
 	})
 
 	return (

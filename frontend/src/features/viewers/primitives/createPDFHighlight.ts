@@ -1,4 +1,4 @@
-import type { PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
+import type { PDFSlick, PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
 import { createComponent, render } from "@solidjs/web"
 import { type Accessor, createEffect, onCleanup, onSettled, type StoreSetter } from "solid-js"
 import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore"
@@ -10,6 +10,7 @@ export type PendingAnnotation = Pick<AnnotationCreate, "page" | "text" | "rects"
 
 export function createPDFHighlights(
 	pdfSlickStore: PDFSlickState,
+	pdfSlick: Accessor<PDFSlick | null>,
 	actions: any,
 	setViewerStore: StoreSetter<ViewerStore>,
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
@@ -28,7 +29,7 @@ export function createPDFHighlights(
 		const mergedRects = convertToMergeRects(selectionRects)
 
 		const page = pdfSlickStore.pageNumber
-			? pdfSlickStore.pdfSlick?.getPageView(pdfSlickStore.pageNumber - 1)
+			? pdfSlick()?.getPageView(pdfSlickStore.pageNumber - 1)
 			: undefined
 		if (!page?.canvas || !page.viewport) return
 
@@ -52,7 +53,7 @@ export function createPDFHighlights(
 
 	// FIXME: only create one PDFHighlightLayer that updates based on pages
 	function handlePageRendered(e: TEventBusEvent) {
-		const page = pdfSlickStore.pdfSlick?.getPageView(e.pageNumber - 1)
+		const page = pdfSlick()?.getPageView(e.pageNumber - 1)
 		if (!page) return
 		if (page.div.querySelector("[data-highlightLayer]")) return
 		const annotations = actions.getAnnotationsByPage(e.pageNumber)
@@ -81,10 +82,10 @@ export function createPDFHighlights(
 	})
 
 	createEffect(
-		() => pdfSlickStore.pdfSlick,
+		() => pdfSlick(),
 		(pdfSlick) => {
 			if (!pdfSlick) return
-			pdfSlick.eventBus.on("pagerendered", handlePageRendered)
+			pdfSlick?.eventBus.on("pagerendered", handlePageRendered)
 
 			onCleanup(() => {
 				pdfSlick?.eventBus.off("pagerendered", handlePageRendered)

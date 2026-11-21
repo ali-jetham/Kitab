@@ -71,6 +71,12 @@ export default function SideBar(props: SideBarProps) {
 		}
 	]
 
+	onCleanup(() =>
+		setSideBarStore((draft) => {
+			draft.thumbnailsSlot = null
+		})
+	)
+
 	return (
 		<Tabs class={styles.tabs} value={selectedTab()} onChange={setSelectedTab}>
 			<Tabs.List class={styles.tabs__list}>
@@ -133,11 +139,6 @@ export default function SideBar(props: SideBarProps) {
 					setSideBarStore((draft) => {
 						draft.thumbnailsSlot = el
 					})
-					onCleanup(() =>
-						setSideBarStore((draft) => {
-							draft.thumbnailsSlot = null
-						})
-					)
 				}}
 			/>
 		</Tabs>
