@@ -7,7 +7,7 @@ import {
 	type StoreSetter,
 	useContext
 } from "solid-js"
-import type { Document } from "../../stores/createDocumentStore"
+import type { DocumentRead } from "../../api/types/types.gen"
 
 export type TocItem = {
 	label: string
@@ -30,7 +30,7 @@ type SideBarStore = {
 type SideBarContextType = {
 	sideBarStore: SideBarStore
 	setSideBarStore: StoreSetter<SideBarStore>
-	documentStore: SourceAccessor<Document | undefined>
+	documentStore: SourceAccessor<DocumentRead | undefined>
 	setDocumentStore: any
 }
 
@@ -42,7 +42,7 @@ export function SideBarProvider(props: ParentProps) {
 		tocState: { status: "empty", outline: null },
 		thumbnailsSlot: null
 	})
-	const [documentStore, setDocumentStore] = createSignal<Document>()
+	const [documentStore, setDocumentStore] = createSignal<DocumentRead>()
 
 	return (
 		<SideBarContext value={{ sideBarStore, setSideBarStore, documentStore, setDocumentStore }}>

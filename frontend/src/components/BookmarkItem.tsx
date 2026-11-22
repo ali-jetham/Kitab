@@ -1,7 +1,7 @@
 import { DeleteIcon } from "@lucide/solid"
+import type { BookmarkRead } from "../api/types/types.gen"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
-import { BookmarkRead } from "../stores/createDocumentStore"
 import styles from "./BookmarkItem.module.css"
 
 type BookmarkItemProps = { bookmark: BookmarkRead }

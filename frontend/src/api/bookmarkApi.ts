@@ -1,5 +1,6 @@
 import { http } from "../core/http"
-import { BookmarkCreate } from "../stores/createDocumentStore"
+import type { BookmarkCreate } from "./types/types.gen"
+
 const BASE_URL = "/api/bookmarks"
 
 async function getBookmark() {}

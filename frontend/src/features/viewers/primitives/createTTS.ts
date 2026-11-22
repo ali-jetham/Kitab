@@ -10,14 +10,12 @@ import {
 	type StoreSetter
 } from "solid-js"
 import { documentApi } from "../../../api/documentApi"
-import type { components } from "../../../api/schema"
 import { ttsApi } from "../../../api/ttsApi"
+import type { Sentence } from "../../../api/types/types.gen"
 import { commands } from "../../../core/commands"
 import type { ViewerStore } from "../components/PDFViewer"
 
 const PREFETCH = 6
-
-export type Sentence = components["schemas"]["Sentence"]
 
 export function createTTS(
 	setViewerStore: StoreSetter<ViewerStore>,

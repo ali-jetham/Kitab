@@ -1,5 +1,5 @@
+import type { AnnotationUpdate } from "../api/types/types.gen"
 import type { PendingAnnotation } from "../features/viewers/primitives/createPDFHighlight"
-import type { AnnotationUpdate } from "../stores/createDocumentStore"
 
 // biome-ignore format: Manual formatting
 const COMMANDS = [

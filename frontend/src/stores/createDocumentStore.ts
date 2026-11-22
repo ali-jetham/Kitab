@@ -1,21 +1,15 @@
-import { type Accessor, createStore, reconcile } from "solid-js"
-import type { components } from "../api/schema"
+import { type Accessor, createStore } from "solid-js"
 import { documentApi } from "../api/documentApi"
-
-export type PDFRect = components["schemas"]["PDFRect"]
-
-export type AnnotationBase = components["schemas"]["AnnotationBase"]
-export type AnnotationRead = components["schemas"]["AnnotationRead"]
-export type AnnotationCreate = components["schemas"]["AnnotationCreate"]
-export type AnnotationUpdate = components["schemas"]["AnnotationUpdate"]
-
-export type BookmarkCreate = components["schemas"]["BookmarkCreate"]
-export type BookmarkRead = components["schemas"]["BookmarkRead"]
-
-export type Document = components["schemas"]["DocumentRead"]
+import type {
+	AnnotationBase,
+	AnnotationCreate,
+	AnnotationUpdate,
+	BookmarkCreate,
+	DocumentRead
+} from "../api/types/types.gen"
 
 export function createDocumentStore(id: string) {
-	const [documentStore, setDocumentStore] = createStore<Document>(async () =>
+	const [documentStore, setDocumentStore] = createStore<DocumentRead>(async () =>
 		documentApi.getDoc(id)
 	)
 

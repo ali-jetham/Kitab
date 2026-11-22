@@ -1,7 +1,7 @@
 import type { PDFSlick, PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
 import { createComponent, render } from "@solidjs/web"
 import { type Accessor, createEffect, onCleanup, onSettled, type StoreSetter } from "solid-js"
-import type { AnnotationCreate, PDFRect } from "../../../stores/createDocumentStore"
+import type { AnnotationCreate, PDFRect } from "../../../api/types/types.gen"
 import PDFHighlightLayer from "../components/PDFHighlightLayer"
 import type { ViewerStore } from "../components/PDFViewer"
 

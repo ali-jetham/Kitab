@@ -6,9 +6,9 @@ import { DropdownMenu } from "@kobalte/core/dropdown-menu"
 import { TextField } from "@kobalte/core/text-field"
 import { DotIcon, HighlighterIcon, SquarePenIcon, TrashIcon, UnderlineIcon } from "@lucide/solid"
 import { createSignal, Match, Show, Switch } from "solid-js"
+import type { AnnotationRead } from "../api/types/types.gen"
 import { useSideBarContext } from "../app/contexts/SideBarContext"
 import { commands } from "../core/commands"
-import { AnnotationRead } from "../stores/createDocumentStore"
 import styles from "./AnnotationItem.module.css"
 
 type AnnotationItemProps = { annotation: AnnotationRead }

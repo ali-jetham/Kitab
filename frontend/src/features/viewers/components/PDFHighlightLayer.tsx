@@ -1,5 +1,5 @@
 import { type Accessor, For, Show } from "solid-js"
-import type { AnnotationRead } from "../../../stores/createDocumentStore"
+import type { AnnotationRead } from "../../../api/types/types.gen"
 import {
 	convertToSVGRect,
 	getPageDimensions,

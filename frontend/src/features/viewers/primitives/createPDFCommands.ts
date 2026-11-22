@@ -3,8 +3,8 @@ import { type Accessor, onCleanup, type StoreSetter } from "solid-js"
 import { v7 as uuidv7 } from "uuid"
 import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
+import type { AnnotationCreate } from "../../../api/types/types.gen"
 import { type CommandContext, type CommandId, commands } from "../../../core/commands"
-import type { AnnotationCreate } from "../../../stores/createDocumentStore"
 import type { ViewerStore } from "../components/PDFViewer"
 
 export function createPDFCommands(
