@@ -1,7 +1,6 @@
 import { Button } from "@kobalte/core/button"
-import { PDFSlick, type PDFSlickState, PDFSlickThumbnails } from "@pdfslick/solid"
-import { createResizeObserver } from "@solid-primitives/resize-observer"
-import { Accessor, createSignal, onSettled, Show } from "solid-js"
+import { type PDFSlick, type PDFSlickState, PDFSlickThumbnails } from "@pdfslick/solid"
+import { type Accessor, Show } from "solid-js"
 import styles from "./PDFThumbnails.module.css"
 
 type ThumbnailsProps = {
@@ -11,19 +10,8 @@ type ThumbnailsProps = {
 }
 
 export default function PDFThumbnails(props: ThumbnailsProps) {
-	let ref!: HTMLDivElement
-	const [width, setWidth] = createSignal(200)
-
-	createResizeObserver(ref, ({ width }, el) => {
-		if (el === ref) {
-			setWidth(width)
-		}
-	})
-
-	onSettled(() => {})
-
 	return (
-		<div class={styles.thumbnails__container} ref={ref}>
+		<div class={styles.thumbnails__container}>
 			<PDFSlickThumbnails
 				thumbsRef={props.thumbsRef}
 				store={props.store}
@@ -38,7 +26,13 @@ export default function PDFThumbnails(props: ThumbnailsProps) {
 							onClick={() => props.pdfSlick()?.gotoPage(pageNumber)}
 						>
 							<Show when={src}>
-								<img src={src!} width={width} height={height} decoding="async" />
+								<img
+									src={src!}
+									alt="Page Thumbnail"
+									width={width}
+									height={height}
+									decoding="async"
+								/>
 							</Show>
 						</Button>
 						<p class={styles.label}>{pageLabel ?? pageNumber}</p>

@@ -12,6 +12,7 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 	return (
 		<li class={styles.bookmarkitem}>
 			<button
+				type="button"
 				class={styles.bookmarkitem__navigate}
 				onClick={() => {
 					sideBarStore.navigate?.([props.bookmark.page - 1, { name: "XYZ" }, null, null, null])
@@ -20,6 +21,7 @@ export default function BookmarkItem(props: BookmarkItemProps) {
 				<span>{props.bookmark.page}</span>
 			</button>
 			<button
+				type="button"
 				onClick={() => {
 					commands.executeCommand("pdf.bookmark.d", {
 						arg: { id: props.bookmark.id }

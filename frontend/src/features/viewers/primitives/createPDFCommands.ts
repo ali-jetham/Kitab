@@ -5,6 +5,7 @@ import { annotationApi } from "../../../api/annotationApi"
 import { bookmarkApi } from "../../../api/bookmarkApi"
 import type { AnnotationCreate } from "../../../api/types/types.gen"
 import { type CommandContext, type CommandId, commands } from "../../../core/commands"
+import type { DocumentStoreActions } from "../../../stores/createDocumentStore"
 import type { ViewerStore } from "../components/PDFViewer"
 
 export function createPDFCommands(
@@ -13,7 +14,7 @@ export function createPDFCommands(
 	pdfSlick: Accessor<PDFSlick | null>,
 	viewerStore: ViewerStore,
 	setViewerStore: StoreSetter<ViewerStore>,
-	actions: any,
+	actions: DocumentStoreActions,
 	minScale: Accessor<number>,
 	maxScale: Accessor<number>
 ) {
@@ -89,13 +90,15 @@ export function createPDFCommands(
 			})
 		}),
 		register("pdf.bookmark.a", (slick) => {
+			const id = uuidv7()
 			actions.addBookmark({
+				id,
 				docId: viewerStore.docId,
 				note: "",
 				page: slick.viewer.currentPageNumber
 			})
 			bookmarkApi.addBookmark({
-				id: uuidv7(),
+				id,
 				docId: viewerStore.docId,
 				note: "",
 				page: slick.viewer.currentPageNumber

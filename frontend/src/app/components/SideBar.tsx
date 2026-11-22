@@ -8,19 +8,8 @@ import {
 	TableOfContentsIcon
 } from "@lucide/solid"
 import { useLocation, useMatch } from "@solidjs/router"
-import {
-	createMemo,
-	createSignal,
-	For,
-	Loading,
-	Match,
-	onCleanup,
-	Show,
-	type StoreSetter,
-	Switch
-} from "solid-js"
+import { createMemo, createSignal, For, Loading, Match, onCleanup, Show, Switch } from "solid-js"
 import { documentApi } from "../../api/documentApi"
-import type { AppStore } from "../../app/contexts/AppContext"
 import AnnotationItem from "../../components/AnnotationItem"
 import BookmarkItem from "../../components/BookmarkItem"
 import { FolderNode } from "../../components/FolderNode"
@@ -29,9 +18,7 @@ import TocNode from "../../components/TocNode"
 import { useSideBarContext } from "../contexts/SideBarContext"
 import styles from "./SideBar.module.css"
 
-type SideBarProps = { appStore: AppStore; setAppStore: StoreSetter<AppStore> }
-
-export default function SideBar(props: SideBarProps) {
+export default function SideBar() {
 	const { setSideBarStore, sideBarStore, documentStore } = useSideBarContext()
 	const [selectedTab, setSelectedTab] = createSignal("folders")
 	const match = useMatch(() => "/viewer/:id")

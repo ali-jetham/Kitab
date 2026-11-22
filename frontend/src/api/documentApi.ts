@@ -1,13 +1,16 @@
 import { http } from "../core/http"
+import type { DocumentBase } from "./types/types.gen"
 
 async function getDoc(id: string) {
 	return await http(`/api/documents/${id}`, { method: "GET" })
 }
 
-async function getDocs(folder?: string) {
+async function getDocs(folder?: string): Promise<DocumentBase[]> {
 	return await http("api/documents", {
 		method: "GET",
-		queryParams: { folder }
+		queryParams: {
+			...(folder !== undefined ? { folder } : {})
+		}
 	})
 }
 

@@ -8,7 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!**/src/lib/foliate-js/**"]
+		"includes": ["**", "!**/src/lib/foliate-js", "!src/api/types/types.gen.ts"]
 	},
 	"formatter": {
 		"enabled": true,

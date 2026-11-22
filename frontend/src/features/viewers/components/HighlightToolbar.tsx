@@ -1,10 +1,9 @@
 import { ColorSwatch } from "@kobalte/core/color-swatch"
 import { parseColor } from "@kobalte/core/colors"
 import { Popover } from "@kobalte/core/popover"
-import { For } from "solid-js"
-import { StoreSetter } from "solid-js"
+import { For, type StoreSetter } from "solid-js"
 import styles from "./HighlightToolbar.module.css"
-import { ViewerStore } from "./PDFViewer"
+import type { ViewerStore } from "./PDFViewer"
 
 export type HighlightToolbarProps = {
 	open: boolean

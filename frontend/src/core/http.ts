@@ -1,6 +1,6 @@
 interface RequestOptions extends Omit<RequestInit, "body"> {
 	body?: any
-	queryParams?: Record<string, any>
+	queryParams?: Record<string, string | number>
 }
 
 export async function http(
@@ -22,10 +22,20 @@ export async function http(
 				url += (url.includes("?") ? "&" : "?") + queryString
 			}
 		}
+
+		const postContent = ["POST", "PUT"].includes(options.method?.toUpperCase() ?? "")
+			? {
+					headers: {
+						"Content-Type": "application/json",
+						...options.headers
+					},
+					body: body !== undefined ? JSON.stringify(body) : undefined
+				}
+			: {}
+
 		const response = await fetch(url, {
 			...requestInit,
-			headers: { "Content-Type": "application/json" }, // TODO: apply when POST
-			body: JSON.stringify(body) // TODO: apply only when POST
+			...postContent
 		})
 
 		if (!response.ok) {

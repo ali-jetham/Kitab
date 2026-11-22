@@ -14,7 +14,7 @@ async function updateAnnotation(id: string, ann: AnnotationUpdate) {
 }
 
 async function deleteAnnotation(id: string) {
-	return await http(`/api/annotations/${id}`, { method: "DELETE" }, async (r) => null)
+	return await http(`/api/annotations/${id}`, { method: "DELETE" }, async (_r) => null)
 }
 
 export const annotationApi = {

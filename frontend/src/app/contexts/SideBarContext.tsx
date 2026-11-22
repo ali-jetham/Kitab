@@ -3,6 +3,7 @@ import {
 	createSignal,
 	createStore,
 	type ParentProps,
+	type Setter,
 	type SourceAccessor,
 	type StoreSetter,
 	useContext
@@ -31,7 +32,7 @@ type SideBarContextType = {
 	sideBarStore: SideBarStore
 	setSideBarStore: StoreSetter<SideBarStore>
 	documentStore: SourceAccessor<DocumentRead | undefined>
-	setDocumentStore: any
+	setDocumentStore: Setter<DocumentRead | undefined>
 }
 
 const SideBarContext = createContext<SideBarContextType>()

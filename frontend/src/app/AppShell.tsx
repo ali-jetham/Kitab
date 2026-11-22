@@ -71,7 +71,7 @@ function AppLayout(props: { children: JSX.Element }) {
 	return (
 		<div class={styles.app} data-sidebar={appStore.isSideBarOpen ? "open" : "closed"}>
 			<Show when={appStore.isSideBarOpen}>
-				<SideBar appStore={appStore} setAppStore={setAppStore} />
+				<SideBar />
 			</Show>
 			<main class={styles.main}>{props.children}</main>
 

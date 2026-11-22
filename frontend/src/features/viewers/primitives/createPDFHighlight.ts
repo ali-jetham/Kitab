@@ -1,7 +1,14 @@
-import type { PDFSlick, PDFSlickState, TEventBusEvent } from "@pdfslick/solid"
+import type {
+	PDFPage,
+	PDFPageViewport,
+	PDFSlick,
+	PDFSlickState,
+	TEventBusEvent
+} from "@pdfslick/solid"
 import { createComponent, render } from "@solidjs/web"
 import { type Accessor, createEffect, onCleanup, onSettled, type StoreSetter } from "solid-js"
 import type { AnnotationCreate, PDFRect } from "../../../api/types/types.gen"
+import type { DocumentStoreActions } from "../../../stores/createDocumentStore"
 import PDFHighlightLayer from "../components/PDFHighlightLayer"
 import type { ViewerStore } from "../components/PDFViewer"
 
@@ -11,11 +18,11 @@ export type PendingAnnotation = Pick<AnnotationCreate, "page" | "text" | "rects"
 export function createPDFHighlights(
 	pdfSlickStore: PDFSlickState,
 	pdfSlick: Accessor<PDFSlick | null>,
-	actions: any,
+	actions: DocumentStoreActions,
 	setViewerStore: StoreSetter<ViewerStore>,
 	ttsHighlight: Accessor<ViewerStore["ttsHighlight"]>
 ) {
-	function handleSelectionChange(e: Event) {
+	function handleSelectionChange() {
 		const selection = window.getSelection()
 		if (!selection || selection.isCollapsed) return
 
@@ -119,7 +126,7 @@ function convertToMergeRects(rects: DOMRect[]): DOMRect[] {
 	return merged
 }
 
-export function getPageDimensions(pdfPage: any) {
+export function getPageDimensions(pdfPage: PDFPage) {
 	const rotation = pdfPage.viewport.rotation
 	const { width, height } = pdfPage.pdfPage.getViewport({ scale: 1, rotation })
 	return { width, height }
@@ -135,7 +142,7 @@ export function getRotationTransform(rotation: number, width: number, height: nu
 	return transforms[rotation] ?? ""
 }
 
-export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, page: any): SVGRect {
+export function convertToSVGRect([llx, lly, urx, ury]: PDFRect, page: PDFPage): SVGRect {
 	const [x0, , , y1] = page.viewport.viewBox
 	return {
 		x: Math.min(llx, urx) - x0,
@@ -154,7 +161,7 @@ export function convertToCanvasRelativeRect(rect: DOMRect, canvasRect: DOMRect):
 	)
 }
 
-export function convertToPDFRect(rect: DOMRect, viewport: any): PDFRect {
+export function convertToPDFRect(rect: DOMRect, viewport: PDFPageViewport): PDFRect {
 	const [x1, y1] = viewport.convertToPdfPoint(rect.left, rect.top)
 	const [x2, y2] = viewport.convertToPdfPoint(rect.right, rect.bottom)
 	return [x1, y1, x2, y2]

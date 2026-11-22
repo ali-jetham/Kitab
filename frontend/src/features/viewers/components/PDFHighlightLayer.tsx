@@ -1,3 +1,4 @@
+import type { PDFPage } from "@pdfslick/solid"
 import { type Accessor, For, Show } from "solid-js"
 import type { AnnotationRead } from "../../../api/types/types.gen"
 import {
@@ -9,7 +10,7 @@ import styles from "./PDFHighlightLayer.module.css"
 import type { ViewerStore } from "./PDFViewer"
 
 type PDFHighlightLayerProps = {
-	page: any
+	page: PDFPage
 	pageNumber: number
 	annotations: Accessor<AnnotationRead[]>
 	onSelectAnnotation: (id: string) => void
@@ -35,7 +36,9 @@ export default function PDFHighlightLayer(props: PDFHighlightLayerProps) {
 			<g transform={transform} style={{ "pointer-events": "auto" }}>
 				<For each={props.annotations()}>
 					{(annotation) => (
+						// biome-ignore lint/a11y/useSemanticElements: using button is not possible here
 						<g
+							role="button"
 							data-annotation-id={annotation.id}
 							onClick={(e) => {
 								e.stopPropagation()

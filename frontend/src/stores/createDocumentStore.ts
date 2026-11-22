@@ -1,12 +1,14 @@
 import { type Accessor, createStore } from "solid-js"
 import { documentApi } from "../api/documentApi"
 import type {
-	AnnotationBase,
 	AnnotationCreate,
+	AnnotationRead,
 	AnnotationUpdate,
 	BookmarkCreate,
 	DocumentRead
 } from "../api/types/types.gen"
+
+export type DocumentStoreActions = ReturnType<typeof createDocumentStore>["actions"]
 
 export function createDocumentStore(id: string) {
 	const [documentStore, setDocumentStore] = createStore<DocumentRead>(async () =>
@@ -33,7 +35,7 @@ export function createDocumentStore(id: string) {
 		})
 	}
 
-	function getAnnotationsByPage(page: number): Accessor<AnnotationBase[]> {
+	function getAnnotationsByPage(page: number): Accessor<AnnotationRead[]> {
 		return () => documentStore.annotations.filter((ann) => ann.page === page)
 	}
 

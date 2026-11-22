@@ -137,7 +137,7 @@ export default function PDFViewer(props: PDFViewerProps) {
 	)
 
 	onCleanup(() => {
-		setDocumentStore(null)
+		setDocumentStore(undefined)
 		setSideBarStore((draft) => {
 			draft.tocState.status = "empty"
 		})

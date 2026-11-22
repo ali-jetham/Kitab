@@ -72,7 +72,7 @@ export default function AnnotationItem(props: AnnotationItemProps) {
 			</Collapsible.Trigger>
 			<Collapsible.Content class={styles.item__buttons}>
 				<DropdownMenu>
-					<DropdownMenu.Trigger class={styles.dropdown__trigger}>
+					<DropdownMenu.Trigger>
 						<SquarePenIcon size={20} style={{ color: "var(--accent-bg-color)" }} />
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Portal>

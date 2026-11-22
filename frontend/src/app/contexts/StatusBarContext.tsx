@@ -1,5 +1,10 @@
-import { createContext, ParentProps, useContext } from "solid-js"
-import { createStore, StoreSetter } from "solid-js"
+import {
+	createContext,
+	createStore,
+	type ParentProps,
+	type StoreSetter,
+	useContext
+} from "solid-js"
 
 type StatusBarStore = { currentPage: number | null; totalPages: number | null }
 type StatusBarContextType = {
