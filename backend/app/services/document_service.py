@@ -139,7 +139,7 @@ class DocumentService:
                 rel = self._get_relative_path(path)
                 if id in documents:
                     if documents[id].file_path != str(rel.parent):
-                        documents[id].file_path = str(rel.parent)
+                        documents[id].file_path = rel.parent.as_posix()
                         documents[id].file_name = path.stem
                     continue
 
@@ -160,7 +160,7 @@ class DocumentService:
 
                 document = Document(
                     id=id,
-                    file_path=str(self._get_relative_path(path).parent),
+                    file_path=self._get_relative_path(path).parent.as_posix(),
                     file_name=path.stem,
                     file_type=path.suffix,
                     title=title,
