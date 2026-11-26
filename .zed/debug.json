@@ -1,19 +1,20 @@
-// see: https://zed.dev/docs/debugger
 [
 	{
 		"adapter": "Debugpy",
 		"label": "debugpy: FastAPI",
 		"request": "launch",
 		"module": "uvicorn",
-		"python": "$ZED_WORKTREE_ROOT/backend/.venv/bin/python",
+		"python": "$ZED_WORKTREE_ROOT/backend/.venv/Scripts/python",
 		"cwd": "$ZED_WORKTREE_ROOT/backend",
 		"args": ["app.main:app", "--reload"],
 		"jinja": true
 	},
-
 	{
 		"adapter": "JavaScript",
 		"label": "JS",
-
+		"request": "launch",
+		"type": "msedge",
+		"url": "http://localhost:3000",
+		"webRoot": "$ZED_WORKTREE_ROOT/frontend"
 	}
 ]
