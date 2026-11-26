@@ -144,18 +144,15 @@ class DocumentService:
                     continue
 
                 if path.suffix == ".pdf":
-                    metadata = self._get_metadata(path)
-                    try:
-                        self._generate_cover(id, path)
-                    except pymupdf.FileDataError:
-                        print(f"Count not generate cover for {id}")
+                    metadata = self._get_pdf_metadata(path)
                 elif path.suffix == ".epub":
                     metadata = self._get_epub_metadata(path)
                 else:
-                    metadata = None
-
+                    continue
                 if metadata is None:
                     continue
+
+                self._generate_cover(id, path)
                 title, author = metadata
 
                 document = Document(
@@ -174,31 +171,16 @@ class DocumentService:
     def _get_relative_path(self, path: Path) -> Path:
         return path.relative_to(self.library_path)
 
-    def _get_metadata(self, path: Path):
+    def _get_pdf_metadata(self, path: Path):
         """Uses pikepdf to parse PDF metadata."""
-        match path.suffix:
-            case ".pdf":
-                try:
-                    with pikepdf.open(path) as pdf:
-                        meta = pdf.open_metadata()
-                        title = (
-                            normalize_pikepdf_value(meta.get("dc:title"))
-                            if meta
-                            else None
-                        )
-                        author = (
-                            normalize_pikepdf_value(meta.get("dc:creator"))
-                            if meta
-                            else None
-                        )
-                    return title, author
-                except pikepdf.PdfError:
-                    return None
-            case ".epub":
-                book = epub.read_epub(path)
-                title = book.get_metadata("DC", "title")[0][0]
-                author = [name for name, _ in book.get_metadata("DC", "creator")]
-                return title, author
+        try:
+            with pikepdf.open(path) as pdf:
+                meta = pdf.open_metadata()
+                title = meta.get("dc:title")  # TODO: check is title needs normalization
+                author = normalize_pikepdf_value(meta.get("dc:creator"))
+            return title, author
+        except pikepdf.PdfError:
+            print(f"Could not read PDF metadata for {path}")
 
     def _get_epub_metadata(self, path: Path):
         try:
@@ -217,14 +199,18 @@ class DocumentService:
 
         match document_path.suffix:
             case ".pdf":
-                with pymupdf.open(document_path) as d:
-                    page = d[0]
-                    rect = page.rect
-                    matrix = pymupdf.Matrix(
-                        target_w / rect.width, target_h / rect.height
-                    )
-                    pix = page.get_pixmap(matrix=matrix, alpha=False)
-                    pix.save(cover_path, "jpg", jpg_quality=75)
+                try:
+                    with pymupdf.open(document_path) as d:
+                        page = d[0]
+                        rect = page.rect
+                        matrix = pymupdf.Matrix(
+                            target_w / rect.width, target_h / rect.height
+                        )
+                        pix = page.get_pixmap(matrix=matrix, alpha=False)
+                        pix.save(cover_path, "jpg", jpg_quality=75)
+                except pymupdf.FileDataError:
+                    print(f"Count not generate cover for {id}")
+
             case ".epub":
                 book = epub.read_epub(document_path)
                 cover = self._find_epub_cover(book)

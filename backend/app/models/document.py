@@ -21,9 +21,8 @@ class Document(Base):
     file_path: Mapped[str] = mapped_column()
     file_name: Mapped[str] = mapped_column()
     file_type: Mapped[FileType] = mapped_column(Enum(FileType, name="file_type"))
-
     title: Mapped[str] = mapped_column(nullable=True)
-    author: Mapped[str] = mapped_column(JSON())
+    author: Mapped[list[str]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
