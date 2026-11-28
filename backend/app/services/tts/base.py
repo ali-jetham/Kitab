@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class TTSEngine(ABC):
+class TTSModel(ABC):
     @abstractmethod
     def stream(
         self,

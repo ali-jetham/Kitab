@@ -7,10 +7,10 @@ from kokoro_onnx import Kokoro
 from kokoro_onnx.tokenizer import Tokenizer
 
 from app.core.config import settings
-from app.services.tts.base import TTSEngine
+from app.services.tts.base import TTSModel
 
 
-class KokoroEngine(TTSEngine):
+class KokoroModel(TTSModel):
     def __init__(self, model: str):
         self.library_path: Path = settings.LIBRARY_PATH
         self.model_path: Path = settings.MODEL_PATH

@@ -6,7 +6,7 @@ RUN pnpm install --frozen-lockfile
 COPY frontend/ .
 RUN pnpm run build
 
-FROM python:3.14-slim-trixie
+FROM python:3.14-slim-trixie AS app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV UV_PYTHON_DOWNLOADS=0
@@ -23,3 +23,13 @@ EXPOSE 8000
 ENV ENVIRONMENT=prod
 ENV PATH="/app/.venv/bin:$PATH"
 CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]
+
+FROM scratch AS kokoro-assets
+ADD https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/kokoro-v1.0.onnx /models/
+ADD https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/voices-v1.0.bin /models/
+
+FROM app AS tts
+COPY --from=kokoro-assets /models /opt/kitab/tts
+ENV MODEL_PATH=/opt/kitab/tts
+
+FROM app AS default

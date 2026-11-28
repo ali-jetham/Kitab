@@ -40,10 +40,8 @@ def get_bookmark_service(
     return BookmarkService(db)
 
 
-def get_tts_service(
-    db: Session = Depends(get_db),
-):
-    return TTSService(db)
+def get_tts_service():
+    return TTSService()
 
 
 AnnotationServiceDep = Annotated[AnnotationService, Depends(get_annotation_service)]

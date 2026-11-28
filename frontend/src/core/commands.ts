@@ -7,7 +7,6 @@ const COMMANDS = [
 	{ id: "app.pallete.toggle",    label: "",                          hidden: true,  withArgs: false, group: "App" },
 	{ id: "app.sidebar.toggle",    label: "Toggle Sidebar",            hidden: false, withArgs: false, group: "App" },
 	{ id: "app.statusbar.toggle",  label: "Toggle Statusbar",          hidden: false, withArgs: false, group: "App" },
-	{ id: "app.downloadTTS",       label: "Setup Read Aloud",          hidden: false, withArgs: true,  group: "App" },
 
 	{ id: "library.refreshCovers", label: "Refresh Covers",            hidden: false, withArgs: false, group: "Library" },
 	{ id: "library.folderSelect",  label: "Select Folder",             hidden: true,  withArgs: true,  group: "Library" },
@@ -55,7 +54,6 @@ type CommandArgs = {
 	"pdf.annotation.d": { id: string }
 	"pdf.bookmark.d": { id: string }
 	"library.folderSelect": string
-	"app.downloadTTS": string
 }
 
 export type CommandId = (typeof COMMANDS)[number]["id"]

@@ -66,9 +66,7 @@ async def integrity_error_handler(request, exc):
 async def onnxruntime_error_handler(request, exc):
     return JSONResponse(
         status_code=404,
-        content={
-            "message": "Model file count not be found. Make sure you have setup TTS."
-        },
+        content={"message": "Model file count not be found."},
     )
 
 

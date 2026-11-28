@@ -1,5 +1,4 @@
 import { onCleanup, type StoreSetter } from "solid-js"
-import { ttsApi } from "../../api/ttsApi"
 import { commands } from "../../core/commands"
 import type { AppStore } from "../contexts/AppContext"
 
@@ -20,27 +19,6 @@ export function createAppCommands(setAppStore: StoreSetter<AppStore>) {
 				draft.isStatusOpen = !draft.isStatusOpen
 			})
 		),
-
-		commands.registerCommand("app.downloadTTS", async ({ arg }) => {
-			if (!arg) {
-				const models = await ttsApi.getModels()
-				setAppStore((draft) => {
-					draft.commandPalleteArgs = [
-						{
-							label: "Models",
-							options: models.map(({ id, quality }) => ({
-								id,
-								label: quality,
-								hidden: false
-							}))
-						}
-					]
-				})
-				return
-			}
-			console.log("downloading model: ", arg)
-			ttsApi.downloadModel(arg)
-		}),
 		commands.registerCommand("app.theme.toggle", () => {
 			const html = document.documentElement
 			const theme = html.getAttribute("data-theme")

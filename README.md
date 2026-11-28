@@ -48,7 +48,6 @@ services:
       - "8000:8000"
     volumes:
      - /path/to/library:/app/library # directory for your PDF books/documents
-     - /path/to/models:/app/models  # directory for downloaded TTS models 
 ```
 
 
