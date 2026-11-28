@@ -33,6 +33,8 @@ const COMMANDS = [
 	{ id: "pdf.zoomOut",           label: "Zoom Out",                  hidden: true,  withArgs: false, group: "PDF" },
 	{ id: "pdf.scrollDown",        label: "Scroll Document Down",      hidden: true,  withArgs: false, group: "PDF" },
 	{ id: "pdf.scrollUp",          label: "Scroll Document Up",        hidden: true,  withArgs: false, group: "PDF" },
+	{ id: "pdf.scrollRight",       label: "Scroll Document Right",     hidden: true,  withArgs: false, group: "PDF" },
+	{ id: "pdf.scrollLeft",        label: "Scroll Document Left",      hidden: true,  withArgs: false, group: "PDF" },
 
 	{ id: "epub.goLeft",           label: "Scroll Left",               hidden: false, withArgs: false, group: "EPUB" },
 	{ id: "epub.goRight",          label: "Scroll Right",              hidden: false, withArgs: false, group: "EPUB" },

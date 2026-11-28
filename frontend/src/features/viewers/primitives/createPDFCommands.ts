@@ -60,6 +60,12 @@ export function createPDFCommands(
 		register("pdf.scrollUp", (slick) =>
 			slick.viewer.container.scrollBy({ top: -100, behavior: "instant" })
 		),
+		register("pdf.scrollRight", (slick) =>
+			slick.viewer.container.scrollBy({ left: 100, behavior: "instant" })
+		),
+		register("pdf.scrollLeft", (slick) =>
+			slick.viewer.container.scrollBy({ left: -100, behavior: "instant" })
+		),
 		register("pdf.ScrollV", (slick) => slick.setScrollMode(ScrollMode.VERTICAL)),
 		register("pdf.ScrollH", (slick) => slick.setScrollMode(ScrollMode.HORIZONTAL)),
 		register("pdf.SinglePage", (slick) => slick.setScrollMode(ScrollMode.PAGE)),
